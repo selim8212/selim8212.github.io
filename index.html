@@ -13,13 +13,54 @@
         .search-box { display: flex; width: 40%; }
         .search-box input { width: 100%; padding: 10px; background: #121212; border: 1px solid #303030; color: white; border-radius: 4px 0 0 4px; outline: none; }
         .search-box button { padding: 10px 20px; background: #303030; border: none; color: white; cursor: pointer; border-radius: 0 4px 4px 0; }
+
+        /* ÜYELİK VE AVATAR STİLLERİ */
+        .auth-buttons { display: flex; gap: 10px; align-items: center; }
+        .btn-auth { padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; }
+        .btn-login { background: #ff0000; color: white; }
+        .btn-login:hover { background: #cc0000; }
         
+        .user-profile { display: none; align-items: center; gap: 10px; }
+        .user-avatar-img { 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            cursor: pointer;
+            border: 2px solid #ff0000;
+        }
+        .user-avatar-text { 
+            width: 36px; 
+            height: 36px; 
+            background: #ff0000; 
+            color: white; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold; 
+            font-size: 16px; 
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        /* BANNER ALANI */
+        .profile-banner-container {
+            display: none;
+            width: 100%;
+            height: 120px;
+            background-color: #1a1a1a;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            border-bottom: 1px solid #333;
+        }
+
         .categories-bar { background: #212121; padding: 10px 30px; display: flex; gap: 10px; border-top: 1px solid #333; overflow-x: auto; }
         .category-chip { background: #373737; color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 500; white-space: nowrap; }
         .category-chip.active { background: white; color: black; }
 
         .main-layout { display: flex; padding: 20px; gap: 20px; max-width: 1600px; margin: 0 auto; }
-        
         .sidebar-menu { flex: 1; background: #1f1f1f; padding: 15px; border-radius: 12px; height: fit-content; min-width: 200px; }
         .menu-list { list-style: none; padding: 0; margin: 0; }
         .menu-list li { padding: 10px; border-radius: 6px; cursor: pointer; font-size: 14px; }
@@ -27,11 +68,9 @@
 
         .video-player-section { flex: 3; position: sticky; top: 150px; height: fit-content; }
         
-        /* Gözden Kaçması İmkansız Ana Oynatıcı Kutusu */
         .video-container-box { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 2px solid #333; }
         .video-container-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
-        /* Telif Durumunda Çıkacak Kurtarıcı Buton */
         .bypass-trigger-btn { display: block; width: 100%; margin-top: 10px; padding: 12px; background: #ff5500; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-align: center; font-size: 14px; }
         .bypass-trigger-btn:hover { background: #ff3300; }
 
@@ -48,23 +87,50 @@
         .thumbnail-box img { position: absolute; top:0; left:0; width:100%; height:100%; object-fit: cover; }
         .card-info { padding: 10px; }
         .card-title { font-size: 13px; font-weight: bold; margin: 0 0 5px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .card-channel { color: #aaa; font-size: 11px; margin: 0; }
         
         .load-more-btn { display: block; width: 180px; margin: 20px auto; padding: 10px; background: #ff0000; color: white; border: none; border-radius: 25px; font-size: 14px; cursor: pointer; font-weight: bold; }
 
-        /* ARKA PLAN MODAL KATMANI */
         .bypass-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
         .modal-content { width: 90%; max-width: 950px; height: 55vh; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid #444; }
         .close-modal { margin-top: 15px; background: #ff0000; color: white; border: none; padding: 10px 30px; font-weight: bold; border-radius: 20px; cursor: pointer; }
+
+        /* KAYIT VE GİRİŞ MODALİ (TAB YAPISI) */
+        .auth-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center; }
+        .auth-box { background: #212121; padding: 25px; border-radius: 12px; width: 100%; max-width: 400px; border: 1px solid #333; position: relative; }
+        
+        .auth-tabs { display: flex; border-bottom: 1px solid #333; margin-bottom: 20px; }
+        .auth-tab { flex: 1; padding: 10px; text-align: center; cursor: pointer; font-weight: bold; color: #aaa; border-bottom: 2px solid transparent; }
+        .auth-tab.active { color: #ff0000; border-bottom-color: #ff0000; }
+
+        .auth-form-group { margin-bottom: 15px; }
+        .auth-form-group label { display: block; font-size: 12px; color: #aaa; margin-bottom: 5px; }
+        .auth-form-group input { width: 100%; padding: 10px; background: #121212; border: 1px solid #333; border-radius: 6px; color: white; box-sizing: border-box; outline: none; }
+        .auth-form-group input[type="file"] { padding: 5px; font-size: 12px; }
+        .btn-submit-auth { width: 100%; padding: 12px; background: #ff0000; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-submit-auth:hover { background: #cc0000; }
+        .close-auth { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #aaa; font-size: 18px; cursor: pointer; }
     </style>
 </head>
 <body>
 
+    <!-- YÜKLENEN BANNER GÖRÜNTÜLEME ALANI -->
+    <div id="profileBanner" class="profile-banner-container"></div>
+
     <header>
         <h1 onclick="changeCategory('Ana Sayfa', this)">SelTube<span>PREMIUM</span></h1>
+        
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="SelTube'da arama yapın...">
             <button onclick="searchNewQuery()">Ara</button>
+        </div>
+
+        <div class="auth-buttons" id="authButtons">
+            <button class="btn-auth btn-login" onclick="openAuthModal('login')">Giriş Yap / Kayıt Ol</button>
+        </div>
+
+        <div class="user-profile" id="userProfile">
+            <div id="avatarContainer" onclick="openAuthModal('edit')"></div>
+            <button onclick="logoutUser()" style="background:#333; color:#aaa; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:12px;">Çıkış</button>
         </div>
     </header>
 
@@ -108,11 +174,59 @@
         </div>
     </div>
 
+    <!-- BYPASS MODAL -->
     <div id="bypassLayer" class="bypass-modal">
         <div class="modal-content">
             <iframe id="bypassPlayer" width="100%" height="100%" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         </div>
         <button class="close-modal" onclick="closeBypassVideo()">❌ Oynatıcıyı Kapat (Geri Dön)</button>
+    </div>
+
+    <!-- GİRİŞ YAP & KAYIT OL MODALİ -->
+    <div id="authModal" class="auth-modal">
+        <div class="auth-box">
+            <button class="close-auth" onclick="closeAuthModal()">✕</button>
+
+            <!-- SEKMELER -->
+            <div class="auth-tabs" id="authTabsHeader">
+                <div class="auth-tab active" id="tabLoginBtn" onclick="switchAuthTab('login')">Giriş Yap</div>
+                <div class="auth-tab" id="tabRegisterBtn" onclick="switchAuthTab('register')">Kayıt Ol</div>
+            </div>
+
+            <!-- GİRİŞ YAP FORMU -->
+            <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+                <div class="auth-form-group">
+                    <label>E-Posta Adresi</label>
+                    <input type="email" id="loginEmail" required placeholder="ornek@mail.com">
+                </div>
+                <div class="auth-form-group">
+                    <label>Şifre</label>
+                    <input type="password" id="loginPassword" required placeholder="******">
+                </div>
+                <button type="submit" class="btn-submit-auth">Giriş Yap</button>
+            </form>
+
+            <!-- KAYIT OL FORMU -->
+            <form id="registerForm" onsubmit="handleRegisterSubmit(event)" style="display: none;">
+                <div class="auth-form-group">
+                    <label>E-Posta Adresi</label>
+                    <input type="email" id="regEmail" required placeholder="ornek@mail.com">
+                </div>
+                <div class="auth-form-group">
+                    <label>Şifre Oluştur</label>
+                    <input type="password" id="regPassword" required placeholder="******">
+                </div>
+                <div class="auth-form-group">
+                    <label>Profil Fotoğrafı Seç (İsteğe Bağlı)</label>
+                    <input type="file" id="avatarFileInput" accept="image/*">
+                </div>
+                <div class="auth-form-group">
+                    <label>Kanal Banner Resmi Seç (İsteğe Bağlı)</label>
+                    <input type="file" id="bannerFileInput" accept="image/*">
+                </div>
+                <button type="submit" class="btn-submit-auth">Kayıt Ol ve Başla</button>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -152,7 +266,7 @@
 
                     data.items.forEach(item => {
                         const vId = (currentMode === 'Ana Sayfa' || currentMode === 'Trendler') ? item.id : item.id.videoId;
-                        if(!vId) return; 
+                        if(!vId) return;
                         
                         const title = item.snippet.title;
                         const thumb = item.snippet.thumbnails.high ? item.snippet.thumbnails.high.url : item.snippet.thumbnails.medium.url;
@@ -177,11 +291,8 @@
 
         function loadVideoDetails(videoId) {
             activeVideoId = videoId;
-            
-            // Standart oynatıcıyı dolduruyoruz
             document.getElementById('mainPlayer').src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
             
-            // Meta dataları çekme
             const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${videoId}&part=snippet,statistics`;
             fetch(detailsUrl).then(res => res.json()).then(data => {
                 if(data.items && data.items.length > 0) {
@@ -194,13 +305,10 @@
             });
         }
 
-        // AKILLI TETİKLEYİCİ MODAL AÇICI
         function triggerBypass() {
             if(!activeVideoId) return;
             const modal = document.getElementById('bypassLayer');
             const iframe = document.getElementById('bypassPlayer');
-            
-            // YouTube'un ana site gibi davranmasını sağlayan özel parametreli embed yapısı
             iframe.src = `https://www.youtube.com/embed/${activeVideoId}?autoplay=1&modestbranding=1&rel=0&origin=${window.location.origin}`;
             modal.style.display = "flex";
         }
@@ -234,6 +342,131 @@
             nextPageToken = ''; document.getElementById('videoGrid').innerHTML = '';
             fetchVideos();
         }
+
+        /* --- KAYIT & GİRİŞ SİSTEMİ MANTIĞI --- */
+        function openAuthModal(defaultTab = 'login') {
+            document.getElementById('authModal').style.display = "flex";
+            switchAuthTab(defaultTab);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').style.display = "none";
+        }
+
+        function switchAuthTab(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const tabLoginBtn = document.getElementById('tabLoginBtn');
+            const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+
+            if(tab === 'login') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+                tabLoginBtn.classList.add('active');
+                tabRegisterBtn.classList.remove('active');
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                tabRegisterBtn.classList.add('active');
+                tabLoginBtn.classList.remove('active');
+            }
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                if(!file) return resolve(null);
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        async function handleRegisterSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const avatarFile = document.getElementById('avatarFileInput').files[0];
+            const bannerFile = document.getElementById('bannerFileInput').files[0];
+
+            let users = JSON.parse(localStorage.getItem('selTubeUsers') || '[]');
+            
+            // E-posta kontrolü
+            if(users.some(u => u.email === email)) {
+                alert("Bu e-posta adresi zaten kayıtlı!");
+                return;
+            }
+
+            let newUser = {
+                email: email,
+                password: password,
+                avatar: await fileToBase64(avatarFile),
+                banner: await fileToBase64(bannerFile)
+            };
+
+            users.push(newUser);
+            localStorage.setItem('selTubeUsers', JSON.stringify(users));
+            localStorage.setItem('selTubeActiveUser', JSON.stringify(newUser));
+
+            alert("Kayıt başarılı! Giriş yapıldı.");
+            loadUserProfile();
+            closeAuthModal();
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            let users = JSON.parse(localStorage.getItem('selTubeUsers') || '[]');
+            let foundUser = users.find(u => u.email === email && u.password === password);
+
+            if(foundUser) {
+                localStorage.setItem('selTubeActiveUser', JSON.stringify(foundUser));
+                loadUserProfile();
+                closeAuthModal();
+            } else {
+                alert("E-posta veya şifre hatalı!");
+            }
+        }
+
+        function loadUserProfile() {
+            const rawActiveUser = localStorage.getItem('selTubeActiveUser');
+            if(!rawActiveUser) return;
+
+            const activeUser = JSON.parse(rawActiveUser);
+            if(activeUser && activeUser.email) {
+                document.getElementById('authButtons').style.display = "none";
+                document.getElementById('userProfile').style.display = "flex";
+
+                const avatarContainer = document.getElementById('avatarContainer');
+                if(activeUser.avatar) {
+                    avatarContainer.innerHTML = `<img src="${activeUser.avatar}" class="user-avatar-img" title="${activeUser.email}">`;
+                } else {
+                    const firstLetter = activeUser.email.charAt(0).toUpperCase();
+                    avatarContainer.innerHTML = `<div class="user-avatar-text" title="${activeUser.email}">${firstLetter}</div>`;
+                }
+
+                if(activeUser.banner) {
+                    const bannerEl = document.getElementById('profileBanner');
+                    bannerEl.style.backgroundImage = `url('${activeUser.banner}')`;
+                    bannerEl.style.display = "block";
+                }
+            }
+        }
+
+        function logoutUser() {
+            if(confirm("Çıkış yapmak istediğinize emin misiniz?")) {
+                localStorage.removeItem('selTubeActiveUser');
+                document.getElementById('authButtons').style.display = "flex";
+                document.getElementById('userProfile').style.display = "none";
+                document.getElementById('profileBanner').style.display = "none";
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadUserProfile();
+        });
 
         fetchVideos();
     </script>
