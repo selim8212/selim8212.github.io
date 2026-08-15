@@ -133,7 +133,7 @@
         </div>
 
         <div class="user-profile" id="userProfile">
-            <div id="avatarContainer"></div>
+            <div id="avatarContainer" style="cursor: default;"></div>
             <button id="logoutBtn" style="background:#cc0000; color:white; border:none; padding:8px 14px; border-radius:20px; cursor:pointer; font-size:12px; font-weight:bold;">Çıkış Yap</button>
         </div>
     </header>
@@ -507,8 +507,8 @@
             } else {
                 loginForm.style.display = 'none';
                 registerForm.style.display = 'block';
-                tabRegisterBtn.classList.add('active');
-                tabLoginBtn.classList.remove('active');
+                tabLoginBtn.classList.add('active');
+                tabRegisterBtn.classList.remove('active');
             }
         }
 
