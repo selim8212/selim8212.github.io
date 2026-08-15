@@ -19,18 +19,18 @@
         .btn-login { background: #ff0000; color: white; }
         .btn-login:hover { background: #cc0000; }
         
-        .user-profile { display: none; align-items: center; gap: 10px; }
+        .user-profile { display: none; align-items: center; gap: 12px; }
         .user-avatar-img { 
-            width: 36px; 
-            height: 36px; 
+            width: 38px; 
+            height: 38px; 
             border-radius: 50%; 
             object-fit: cover; 
-            cursor: pointer;
+            cursor: default;
             border: 2px solid #ff0000;
         }
         .user-avatar-text { 
-            width: 36px; 
-            height: 36px; 
+            width: 38px; 
+            height: 38px; 
             background: #ff0000; 
             color: white; 
             border-radius: 50%; 
@@ -39,7 +39,7 @@
             justify-content: center; 
             font-weight: bold; 
             font-size: 16px; 
-            cursor: pointer;
+            cursor: default;
             user-select: none;
         }
         
@@ -133,8 +133,8 @@
         </div>
 
         <div class="user-profile" id="userProfile">
-            <div id="avatarContainer" onclick="openAuthModal('edit')"></div>
-            <button id="logoutBtn" style="background:#333; color:#aaa; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:12px;">Çıkış</button>
+            <div id="avatarContainer"></div>
+            <button id="logoutBtn" style="background:#cc0000; color:white; border:none; padding:8px 14px; border-radius:20px; cursor:pointer; font-size:12px; font-weight:bold;">Çıkış Yap</button>
         </div>
     </header>
 
@@ -267,14 +267,19 @@
 
         // Oturum Durumu Takibi
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('authButtons').style.display = "none";
-                document.getElementById('userProfile').style.display = "flex";
-                
-                const avatarContainer = document.getElementById('avatarContainer');
-                const userCustomData = JSON.parse(localStorage.getItem(`selTubeUserData_${user.uid}`) || '{}');
+            const authBtnGroup = document.getElementById('authButtons');
+            const userProfileGroup = document.getElementById('userProfile');
+            const avatarContainer = document.getElementById('avatarContainer');
+            const bannerEl = document.getElementById('profileBanner');
 
+            if (user) {
+                // Kullanıcı Giriş Yapmışsa
+                authBtnGroup.style.display = "none";
+                userProfileGroup.style.display = "flex";
+                
+                const userCustomData = JSON.parse(localStorage.getItem(`selTubeUserData_${user.uid}`) || '{}');
                 const avatarSrc = userCustomData.avatar || user.photoURL;
+
                 if(avatarSrc) {
                     avatarContainer.innerHTML = `<img src="${avatarSrc}" class="user-avatar-img" title="${user.email}">`;
                 } else {
@@ -283,14 +288,16 @@
                 }
 
                 if(userCustomData.banner) {
-                    const bannerEl = document.getElementById('profileBanner');
                     bannerEl.style.backgroundImage = `url('${userCustomData.banner}')`;
                     bannerEl.style.display = "block";
+                } else {
+                    bannerEl.style.display = "none";
                 }
             } else {
-                document.getElementById('authButtons').style.display = "flex";
-                document.getElementById('userProfile').style.display = "none";
-                document.getElementById('profileBanner').style.display = "none";
+                // Kullanıcı Çıkış Yapmışsa
+                authBtnGroup.style.display = "flex";
+                userProfileGroup.style.display = "none";
+                bannerEl.style.display = "none";
             }
         });
 
@@ -306,7 +313,6 @@
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                // Doğrulama E-postası Gönder
                 await sendEmailVerification(user);
                 alert("Kayıt başarılı! Doğrulama e-postası gönderildi.");
 
