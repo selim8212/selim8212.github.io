@@ -197,13 +197,13 @@
         <div class="auth-box">
             <button class="close-auth" onclick="closeAuthModal()">✕</button>
 
-            <div class="auth-tabs" id="authTabsHeader">
-                <div class="auth-tab active" id="tabLoginBtn" onclick="switchAuthTab('login')">Giriş Yap</div>
-                <div class="auth-tab" id="tabRegisterBtn" onclick="switchAuthTab('register')">Kayıt Ol</div>
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tabLoginBtn">Giriş Yap</div>
+                <div class="auth-tab" id="tabRegisterBtn">Kayıt Ol</div>
             </div>
 
             <!-- GİRİŞ FORMU -->
-            <form id="loginForm">
+            <form id="loginForm" style="display: block;">
                 <div class="auth-form-group">
                     <label>E-Posta Adresi</label>
                     <input type="email" id="loginEmail" required placeholder="ornek@mail.com">
@@ -385,6 +385,11 @@
         let currentMode = 'Ana Sayfa'; 
         let currentQuery = '';
         let activeVideoId = '';
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById('tabLoginBtn').addEventListener('click', () => switchAuthTab('login'));
+            document.getElementById('tabRegisterBtn').addEventListener('click', () => switchAuthTab('register'));
+        });
 
         function openProfileDetails() {
             if (window.currentUserData) {
