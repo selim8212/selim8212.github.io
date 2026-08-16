@@ -20,13 +20,19 @@
         .btn-login:hover { background: #cc0000; }
         
         .user-profile { display: none; align-items: center; gap: 12px; }
+        #avatarContainer { cursor: pointer; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; }
+        
         .user-avatar-img { 
             width: 38px; 
             height: 38px; 
             border-radius: 50%; 
             object-fit: cover; 
-            cursor: default;
+            cursor: pointer;
             border: 2px solid #ff0000;
+            transition: transform 0.2s;
+        }
+        .user-avatar-img:hover, .user-avatar-text:hover {
+            transform: scale(1.08);
         }
         .user-avatar-text { 
             width: 38px; 
@@ -39,8 +45,9 @@
             justify-content: center; 
             font-weight: bold; 
             font-size: 16px; 
-            cursor: default;
+            cursor: pointer;
             user-select: none;
+            transition: transform 0.2s;
         }
         
         .profile-banner-container {
@@ -133,7 +140,7 @@
         </div>
 
         <div class="user-profile" id="userProfile">
-            <div id="avatarContainer" style="cursor: default;"></div>
+            <div id="avatarContainer" onclick="openProfileDetails()"></div>
             <button id="logoutBtn" style="background:#cc0000; color:white; border:none; padding:8px 14px; border-radius:20px; cursor:pointer; font-size:12px; font-weight:bold;">Çıkış Yap</button>
         </div>
     </header>
@@ -265,6 +272,8 @@
         const auth = getAuth(app);
         const googleProvider = new GoogleAuthProvider();
 
+        window.currentUserData = null;
+
         // Oturum Durumu Takibi
         onAuthStateChanged(auth, (user) => {
             const authBtnGroup = document.getElementById('authButtons');
@@ -273,7 +282,7 @@
             const bannerEl = document.getElementById('profileBanner');
 
             if (user) {
-                // Kullanıcı Giriş Yapmışsa
+                window.currentUserData = user;
                 authBtnGroup.style.display = "none";
                 userProfileGroup.style.display = "flex";
                 
@@ -294,7 +303,7 @@
                     bannerEl.style.display = "none";
                 }
             } else {
-                // Kullanıcı Çıkış Yapmışsa
+                window.currentUserData = null;
                 authBtnGroup.style.display = "flex";
                 userProfileGroup.style.display = "none";
                 bannerEl.style.display = "none";
@@ -376,6 +385,12 @@
         let currentMode = 'Ana Sayfa'; 
         let currentQuery = '';
         let activeVideoId = '';
+
+        function openProfileDetails() {
+            if (window.currentUserData) {
+                alert("Giriş Yapılan E-Posta: " + window.currentUserData.email);
+            }
+        }
 
         async function fetchVideos() {
             const loadBtn = document.getElementById('loadMoreBtn');
@@ -507,8 +522,8 @@
             } else {
                 loginForm.style.display = 'none';
                 registerForm.style.display = 'block';
-                tabLoginBtn.classList.add('active');
-                tabRegisterBtn.classList.remove('active');
+                tabRegisterBtn.classList.add('active');
+                tabLoginBtn.classList.remove('active');
             }
         }
 
