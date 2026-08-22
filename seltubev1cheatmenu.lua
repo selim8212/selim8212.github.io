@@ -1,5 +1,5 @@
 -- ==============================================================================
--- 👑 SELTUBE V1 PREMIUM ALPHA (RGB NEON & FIX FLY ENGINE) 👑
+-- 👑 SELTUBE V1 PREMIUM ALPHA (FIXED CFRAME FLY & ULTRA MODULE SUITE) 👑
 -- ==============================================================================
 
 local TweenService = game:GetService("TweenService")
@@ -7,6 +7,8 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local SoundService = game:GetService("SoundService")
+local Lighting = game:GetService("Lighting")
+local TeleportService = game:GetService("TeleportService")
 local LocalPlayer = Players.LocalPlayer
 
 -- ------------------------------------------------------------------------------
@@ -28,7 +30,7 @@ local SOUND_CLICK = 6895079853
 local SOUND_POWER = 9113881268
 
 -- ------------------------------------------------------------------------------
--- 2. GUI KURULUMU
+-- 2. GUI KURULUMU & RGB NEON TEMASI
 -- ------------------------------------------------------------------------------
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "SelTubeV1PremiumAlpha"
@@ -40,8 +42,8 @@ MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
 MainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 18)
 MainFrame.BorderSizePixel = 0
-MainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
-MainFrame.Size = UDim2.new(0, 480, 0, 360)
+MainFrame.Position = UDim2.new(0.25, 0, 0.15, 0)
+MainFrame.Size = UDim2.new(0, 550, 0, 420)
 MainFrame.ClipsDescendants = true
 MainFrame.Active = true
 MainFrame.Draggable = true
@@ -50,7 +52,6 @@ local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 14)
 MainCorner.Parent = MainFrame
 
--- KESİNTİSİZ RGB STROKE (Dış Kenarlık)
 local MainRGB = Instance.new("UIStroke")
 MainRGB.Thickness = 2.5
 MainRGB.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
@@ -65,11 +66,11 @@ task.spawn(function()
     end
 end)
 
--- SOL PANEL (PROFILE & HEADER)
+-- SOL PANEL (PROFİL VE AÇILIŞ)
 local LeftPanel = Instance.new("Frame")
 LeftPanel.Parent = MainFrame
 LeftPanel.BackgroundColor3 = Color3.fromRGB(18, 18, 26)
-LeftPanel.Size = UDim2.new(0, 150, 1, 0)
+LeftPanel.Size = UDim2.new(0, 160, 1, 0)
 
 local LeftCorner = Instance.new("UICorner")
 LeftCorner.CornerRadius = UDim.new(0, 14)
@@ -78,7 +79,7 @@ LeftCorner.Parent = LeftPanel
 local AvatarImage = Instance.new("ImageLabel")
 AvatarImage.Parent = LeftPanel
 AvatarImage.BackgroundColor3 = Color3.fromRGB(28, 28, 38)
-AvatarImage.Position = UDim2.new(0.23, 0, 0.08, 0)
+AvatarImage.Position = UDim2.new(0.25, 0, 0.06, 0)
 AvatarImage.Size = UDim2.new(0, 80, 0, 80)
 AvatarImage.Image = "rbxthumb://type=AvatarHeadShot&id=" .. LocalPlayer.UserId .. "&w=150&h=150"
 
@@ -102,20 +103,20 @@ end)
 local WelcomeLabel = Instance.new("TextLabel")
 WelcomeLabel.Parent = LeftPanel
 WelcomeLabel.BackgroundTransparency = 1
-WelcomeLabel.Position = UDim2.new(0.05, 0, 0.33, 0)
+WelcomeLabel.Position = UDim2.new(0.05, 0, 0.28, 0)
 WelcomeLabel.Size = UDim2.new(0.9, 0, 0.1, 0)
 WelcomeLabel.Font = Enum.Font.GothamBold
 WelcomeLabel.Text = "Hoş Geldin,\n" .. LocalPlayer.DisplayName .. "!"
 WelcomeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 WelcomeLabel.TextSize = 11
 
--- SAĞ İÇERİK ALANI
+-- KATEGORİ İÇERİK ALANI
 local ContentFrame = Instance.new("ScrollingFrame")
 ContentFrame.Parent = MainFrame
 ContentFrame.BackgroundTransparency = 1
-ContentFrame.Position = UDim2.new(0.33, 0, 0.12, 0)
-ContentFrame.Size = UDim2.new(0.65, 0, 0.85, 0)
-ContentFrame.CanvasSize = UDim2.new(0, 0, 0, 420)
+ContentFrame.Position = UDim2.new(0.31, 0, 0.12, 0)
+ContentFrame.Size = UDim2.new(0.67, 0, 0.85, 0)
+ContentFrame.CanvasSize = UDim2.new(0, 0, 0, 850)
 ContentFrame.ScrollBarThickness = 4
 
 local UIList = Instance.new("UIListLayout")
@@ -123,11 +124,11 @@ UIList.Parent = ContentFrame
 UIList.SortOrder = Enum.SortOrder.LayoutOrder
 UIList.Padding = UDim.new(0, 8)
 
--- BAŞLIK VE KAPATMA
+-- ÜST BAŞLIK VE KAPATMA
 local TitleText = Instance.new("TextLabel")
 TitleText.Parent = MainFrame
 TitleText.BackgroundTransparency = 1
-TitleText.Position = UDim2.new(0.33, 0, 0.02, 0)
+TitleText.Position = UDim2.new(0.31, 0, 0.02, 0)
 TitleText.Size = UDim2.new(0.5, 0, 0.08, 0)
 TitleText.Font = Enum.Font.GothamBold
 TitleText.Text = "👑 SELTUBE V1 PREMIUM ALPHA"
@@ -138,7 +139,7 @@ TitleText.TextXAlignment = Enum.TextXAlignment.Left
 local CloseBtn = Instance.new("TextButton")
 CloseBtn.Parent = MainFrame
 CloseBtn.BackgroundColor3 = Color3.fromRGB(200, 30, 50)
-CloseBtn.Position = UDim2.new(0.91, 0, 0.03, 0)
+CloseBtn.Position = UDim2.new(0.92, 0, 0.03, 0)
 CloseBtn.Size = UDim2.new(0, 26, 0, 26)
 CloseBtn.Font = Enum.Font.GothamBold
 CloseBtn.Text = "X"
@@ -149,7 +150,6 @@ local CloseCorner = Instance.new("UICorner")
 CloseCorner.CornerRadius = UDim.new(0, 6)
 CloseCorner.Parent = CloseBtn
 
--- GİZLE / AÇ BUTONU
 local OpenGui = Instance.new("ScreenGui")
 OpenGui.Name = "SelTubeAlphaOpenGui"
 OpenGui.Parent = game.CoreGui
@@ -196,82 +196,68 @@ OpenBtn.MouseButton1Click:Connect(function()
     playSound(SOUND_OPEN, 0.4)
     OpenBtn.Visible = false
     MainFrame.Visible = true
-    MainFrame:TweenSize(UDim2.new(0, 480, 0, 360), Enum.EasingDirection.Out, Enum.EasingStyle.Back, 0.3, true)
+    MainFrame:TweenSize(UDim2.new(0, 550, 0, 420), Enum.EasingDirection.Out, Enum.EasingStyle.Back, 0.3, true)
 end)
 
 -- ------------------------------------------------------------------------------
--- 3. KUSURSUZ KAMERA-ODAKLI FLY MOTORU
+-- 3. KUSURSUZ CFRAME FLY MOTORU (TAKILMAYAN VE AKICI)
 -- ------------------------------------------------------------------------------
 local flying = false
-local flySpeed = 60
-local bodyVel, bodyGyro, flyConnection
+local flySpeed = 50
+local flyConnection
 
-local function toggleFly()
+local function toggleFly(state)
+    flying = state
     local char = LocalPlayer.Character
-    if not char or not char:FindFirstChild("HumanoidRootPart") or not char:FindFirstChild("Humanoid") then return end
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
     local hrp = char.HumanoidRootPart
-    local humanoid = char.Humanoid
-    local camera = workspace.CurrentCamera
-
-    flying = not flying
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
 
     if flying then
         playSound(SOUND_POWER, 0.5)
-        humanoid.PlatformStand = true
+        if humanoid then humanoid.PlatformStand = true end
 
-        bodyVel = Instance.new("BodyVelocity")
-        bodyVel.MaxForce = Vector3.new(1/0, 1/0, 1/0)
-        bodyVel.Velocity = Vector3.zero
-        bodyVel.Parent = hrp
-
-        bodyGyro = Instance.new("BodyGyro")
-        bodyGyro.MaxTorque = Vector3.new(1/0, 1/0, 1/0)
-        bodyGyro.CFrame = hrp.CFrame
-        bodyGyro.Parent = hrp
-
-        flyConnection = RunService.RenderStepped:Connect(function()
-            if not flying then return end
-
-            local moveDir = Vector3.zero
+        flyConnection = RunService.RenderStepped:Connect(function(delta)
+            if not flying or not hrp then return end
+            
+            local camera = workspace.CurrentCamera
+            local moveVector = Vector3.zero
 
             if UserInputService:IsKeyDown(Enum.KeyCode.W) then
-                moveDir = moveDir + camera.CFrame.LookVector
+                moveVector = moveVector + camera.CFrame.LookVector
             end
             if UserInputService:IsKeyDown(Enum.KeyCode.S) then
-                moveDir = moveDir - camera.CFrame.LookVector
+                moveVector = moveVector - camera.CFrame.LookVector
             end
             if UserInputService:IsKeyDown(Enum.KeyCode.A) then
-                moveDir = moveDir - camera.CFrame.RightVector
+                moveVector = moveVector - camera.CFrame.RightVector
             end
             if UserInputService:IsKeyDown(Enum.KeyCode.D) then
-                moveDir = moveDir + camera.CFrame.RightVector
+                moveVector = moveVector + camera.CFrame.RightVector
             end
             if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
-                moveDir = moveDir + Vector3.new(0, 1, 0)
+                moveVector = moveVector + Vector3.new(0, 1, 0)
             end
             if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
-                moveDir = moveDir - Vector3.new(0, 1, 0)
+                moveVector = moveVector - Vector3.new(0, 1, 0)
             end
 
-            if moveDir.Magnitude > 0 then
-                bodyVel.Velocity = moveDir.Unit * flySpeed
-            else
-                bodyVel.Velocity = Vector3.zero
+            if moveVector.Magnitude > 0 then
+                moveVector = moveVector.Unit
+                hrp.CFrame = hrp.CFrame + (moveVector * flySpeed * delta)
             end
-
-            bodyGyro.CFrame = camera.CFrame
+            hrp.Velocity = Vector3.zero
         end)
     else
         playSound(SOUND_POWER, 0.4)
         if flyConnection then flyConnection:Disconnect() end
-        if bodyVel then bodyVel:Destroy() end
-        if bodyGyro then bodyGyro:Destroy() end
-        humanoid.PlatformStand = false
+        if humanoid then humanoid.PlatformStand = false end
+        hrp.Velocity = Vector3.zero
     end
 end
 
 -- ------------------------------------------------------------------------------
--- 4. BİLEŞEN EKLENMESİ (BUTTONS, TOGGLES, SLIDERS)
+-- 4. BİLEŞEN OLUŞTURUCULAR
 -- ------------------------------------------------------------------------------
 local function addToggle(text, callback)
     local btn = Instance.new("TextButton")
@@ -371,18 +357,49 @@ local function addSlider(text, minVal, maxVal, defaultVal, callback)
     end)
 end
 
--- ELEMANLARI YÜKLE
-addToggle("🚀 Kamera Odaklı Fly", function(state)
-    toggleFly()
+local function addActionButton(text, callback)
+    local btn = Instance.new("TextButton")
+    btn.Parent = ContentFrame
+    btn.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
+    btn.Size = UDim2.new(0.96, 0, 0, 36)
+    btn.Font = Enum.Font.GothamBold
+    btn.Text = text
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextSize = 11
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = btn
+
+    btn.MouseButton1Click:Connect(function()
+        playSound(SOUND_CLICK, 0.4)
+        callback()
+    end)
+end
+
+-- ------------------------------------------------------------------------------
+-- 5. TÜM HİLE MODÜLLERİNİN YÜKLENMESİ
+-- ------------------------------------------------------------------------------
+
+-- HAREKET & FLY MODÜLLERİ
+addToggle("🚀 Kamera Odaklı CFrame Fly", function(state)
+    toggleFly(state)
 end)
 
-addSlider("⚡ Fly Hızı", 20, 250, 60, function(val)
+addSlider("⚡ Uçuş Hızı (Fly Speed)", 10, 300, 50, function(val)
     flySpeed = val
 end)
 
-addSlider("🏃 WalkSpeed", 16, 250, 16, function(val)
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-        LocalPlayer.Character.Humanoid.WalkSpeed = val
+addSlider("🏃 Yürüme Hızı (WalkSpeed)", 16, 250, 16, function(val)
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+        LocalPlayer.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = val
+    end
+end)
+
+addSlider("🦘 Zıplama Gücü (JumpPower)", 50, 350, 50, function(val)
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+        LocalPlayer.Character:FindFirstChildOfClass("Humanoid").JumpPower = val
+        LocalPlayer.Character:FindFirstChildOfClass("Humanoid").UseJumpPower = true
     end
 end)
 
@@ -396,6 +413,110 @@ RunService.Stepped:Connect(function()
             if part:IsA("BasePart") then part.CanCollide = false end
         end
     end
+end)
+
+addToggle("🦘 Infinite Jump (Sonsuz Zıplama)", function(state)
+    _G.InfJump = state
+end)
+
+UserInputService.JumpRequest:Connect(function()
+    if _G.InfJump and LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+        LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+    end
+end)
+
+-- GÖRSEL VE ESP MODÜLLERİ
+addToggle("👁️ Player Highlight ESP", function(state)
+    _G.ESP = state
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer and p.Character then
+            local hl = p.Character:FindFirstChild("SelTubeESP")
+            if state then
+                if not hl then
+                    hl = Instance.new("Highlight")
+                    hl.Name = "SelTubeESP"
+                    hl.FillColor = Color3.fromRGB(255, 0, 80)
+                    hl.OutlineColor = Color3.fromRGB(255, 255, 255)
+                    hl.Parent = p.Character
+                end
+            else
+                if hl then hl:Destroy() end
+            end
+        end
+    end
+end)
+
+addToggle("☀️ Fullbright (Geceyi Gündüz Yap)", function(state)
+    if state then
+        Lighting.Ambient = Color3.fromRGB(255, 255, 255)
+        Lighting.Brightness = 2
+        Lighting.ClockTime = 14
+    else
+        Lighting.Ambient = Color3.fromRGB(128, 128, 128)
+        Lighting.Brightness = 1
+    end
+end)
+
+addToggle("👤 Ghost / Şeffaflık Modu", function(state)
+    if LocalPlayer.Character then
+        for _, part in ipairs(LocalPlayer.Character:GetDescendants()) do
+            if part:IsA("BasePart") or part:IsA("Decal") then
+                part.Transparency = state and 0.6 or 0
+            end
+        end
+    end
+end)
+
+-- COMBAT VE OYUNCU ARAÇLARI
+addToggle("🎯 Target Lock / Aimbot", function(state)
+    _G.Aimbot = state
+end)
+
+RunService.RenderStepped:Connect(function()
+    if _G.Aimbot then
+        local camera = workspace.CurrentCamera
+        local closest = nil
+        local dist = math.huge
+
+        for _, p in ipairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                local d = (p.Character.HumanoidRootPart.Position - camera.CFrame.Position).Magnitude
+                if d < dist then
+                    dist = d
+                    closest = p
+                end
+            end
+        end
+
+        if closest and closest.Character:FindFirstChild("HumanoidRootPart") then
+            camera.CFrame = CFrame.new(camera.CFrame.Position, closest.Character.HumanoidRootPart.Position)
+        end
+    end
+end)
+
+addActionButton("🌀 En Yakın Oyuncuya Işınlan (TP To Nearest)", function()
+    local char = LocalPlayer.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+    
+    local target = nil
+    local dist = math.huge
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+            local d = (p.Character.HumanoidRootPart.Position - char.HumanoidRootPart.Position).Magnitude
+            if d < dist then
+                dist = d
+                target = p
+            end
+        end
+    end
+
+    if target and target.Character:FindFirstChild("HumanoidRootPart") then
+        char.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 3)
+    end
+end)
+
+addActionButton("🔄 Sunucuya Tekrar Katıl (Rejoin)", function()
+    TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
 end)
 
 playSound(SOUND_OPEN, 0.6)
