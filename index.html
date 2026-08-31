@@ -15,10 +15,14 @@
         .search-box button { padding: 10px 20px; background: #303030; border: none; color: white; cursor: pointer; border-radius: 0 4px 4px 0; }
 
         .auth-buttons { display: flex; gap: 10px; align-items: center; }
-        .btn-auth { padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; }
+        .btn-auth { padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
         .btn-login { background: #ff0000; color: white; }
         .btn-login:hover { background: #cc0000; }
         
+        /* Mobil İndirme Butonu Stili */
+        .btn-download-app { background: #e50914; color: white; border: 1px solid #ff3333; }
+        .btn-download-app:hover { background: #b80710; }
+
         .user-profile { display: none; align-items: center; gap: 12px; }
         #avatarContainer { cursor: pointer; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; }
         
@@ -137,10 +141,14 @@
 
         <div class="auth-buttons" id="authButtons">
             <button class="btn-auth btn-login" onclick="openAuthModal('login')">Giriş Yap / Kayıt Ol</button>
+            <!-- EKLENEN MOBİL SÜRÜM İNDİR BUTONU -->
+            <a href="http://selim8212.github.io/SelTube-1.0.apk" class="btn-auth btn-download-app" target="_blank">📱 SelTube Mobil Sürümü İndir</a>
         </div>
 
         <div class="user-profile" id="userProfile">
             <div id="avatarContainer" onclick="openProfileDetails()"></div>
+            <!-- Giriş yapıldığında da gözükmesi için eklenen mobil indirme linki -->
+            <a href="http://selim8212.github.io/SelTube-1.0.apk" class="btn-auth btn-download-app" target="_blank" style="font-size: 11px; padding: 6px 12px;">📱 APK İndir</a>
             <button id="logoutBtn" style="background:#cc0000; color:white; border:none; padding:8px 14px; border-radius:20px; cursor:pointer; font-size:12px; font-weight:bold;">Çıkış Yap</button>
         </div>
     </header>
