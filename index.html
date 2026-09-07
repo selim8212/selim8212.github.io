@@ -136,6 +136,95 @@
         </main>
     </div>
 
+    <!-- YOUTUBE İZLEME SAYFASI MODALI (WATCH VIEW) -->
+    <div id="video-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden overflow-y-auto">
+        <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
+            
+            <!-- SOL TARAF: Oynatıcı, Başlık, Kanal Detayları, Yorumlar -->
+            <div class="flex-1">
+                <!-- Video Oynatıcı -->
+                <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-yt-border">
+                    <iframe id="modal-iframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+
+                <!-- Video Başlığı -->
+                <h1 id="modal-title" class="text-lg md:text-xl font-bold mt-4 text-white">Video Başlığı</h1>
+
+                <!-- Kanal Bilgisi ve Etkileşim Butonları -->
+                <div class="flex flex-wrap items-center justify-between gap-4 mt-4 pb-4 border-b border-yt-border">
+                    <div class="flex items-center space-x-3">
+                        <div id="modal-avatar-container" class="w-11 h-11 rounded-full overflow-hidden bg-neutral-800 flex items-center justify-center font-bold text-white shadow">S</div>
+                        <div>
+                            <h4 id="modal-channel" class="font-bold text-sm text-white">Kanal Adı</h4>
+                            <span id="modal-subs" class="text-xs text-gray-400">125 B abonesi</span>
+                        </div>
+                        <button onclick="toggleSubscribe(this)" class="ml-4 bg-white hover:bg-gray-200 text-black font-semibold text-xs px-4 py-2 rounded-full transition">Abone Ol</button>
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <div class="flex items-center bg-yt-card border border-yt-border rounded-full overflow-hidden">
+                            <button onclick="likeVideo(this)" class="flex items-center space-x-1.5 px-3 py-1.5 hover:bg-yt-hover text-sm border-r border-yt-border transition">
+                                <i class="fa-regular fa-thumbs-up"></i> <span id="like-count">1.4 B</span>
+                            </button>
+                            <button onclick="dislikeVideo(this)" class="px-3 py-1.5 hover:bg-yt-hover text-sm transition">
+                                <i class="fa-regular fa-thumbs-down"></i>
+                            </button>
+                        </div>
+                        <button onclick="openExternalPlayer()" class="flex items-center space-x-1.5 bg-yt-card hover:bg-yt-hover border border-yt-border text-xs px-3.5 py-2 rounded-full transition">
+                            <i class="fa-solid fa-external-link-alt"></i> <span>YouTube'da Aç</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Açıklama Kutusu -->
+                <div class="bg-yt-card/60 p-3.5 rounded-xl mt-4 text-xs text-gray-300 leading-relaxed border border-yt-border">
+                    <p class="font-semibold mb-1 text-white">Görüntülenme: <span id="modal-views" class="font-normal text-gray-400">45 bin görüntülenme • 2 gün önce</span></p>
+                    <p>SelTube Premium üzerinden kesintisiz, reklamsız ve gelişmiş YouTube deneyiminin tadını çıkarın. İyi seyirler dileriz!</p>
+                </div>
+
+                <!-- Yorumlar Bölümü -->
+                <div class="mt-6">
+                    <h3 class="text-base font-bold mb-4 flex items-center space-x-2">
+                        <i class="fa-regular fa-comments text-red-500"></i> <span>Yorumlar (3)</span>
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center font-bold text-xs">A</div>
+                            <div class="flex-1 bg-yt-card p-3 rounded-xl border border-yt-border text-xs">
+                                <div class="flex items-center justify-between mb-1"><span class="font-semibold text-gray-200">Ahmet Yılmaz</span><span class="text-[10px] text-gray-500">1 gün önce</span></div>
+                                <p class="text-gray-300">Uygulama harika olmuş, ellerine sağlık Selim Bey!</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center font-bold text-xs">M</div>
+                            <div class="flex-1 bg-yt-card p-3 rounded-xl border border-yt-border text-xs">
+                                <div class="flex items-center justify-between mb-1"><span class="font-semibold text-gray-200">Mehmet Demir</span><span class="text-[10px] text-gray-500">3 saat önce</span></div>
+                                <p class="text-gray-300">APK indirdim telefonda da kusursuz çalışıyor.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SAĞ TARAF: Yan Panel (Önerilen Diğer Videolar ve Çarpı Butonu) -->
+            <div class="w-full lg:w-96 flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-sm uppercase tracking-wider text-gray-400">Önerilen Videolar</h3>
+                    <button onclick="closeVideoModal()" class="bg-yt-card hover:bg-yt-hover text-gray-300 hover:text-white px-3 py-1.5 rounded-full text-xs font-bold border border-yt-border transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-xmark text-sm"></i> <span>Kapat</span>
+                    </button>
+                </div>
+
+                <!-- Diğer Videolar Listesi -->
+                <div id="sidebar-recommendations" class="space-y-3 overflow-y-auto max-h-[80vh] pr-1">
+                    <!-- Dinamik dolacak -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <!-- AYARLAR MODALI -->
     <div id="settings-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="bg-yt-card border border-yt-border w-full max-w-md rounded-2xl overflow-hidden shadow-2xl p-6 relative">
@@ -143,7 +232,6 @@
             <h2 class="text-xl font-bold mb-6 flex items-center space-x-2"><i class="fa-solid fa-gear text-red-600"></i> <span data-i18n="settings_title">Ayarlar</span></h2>
             
             <div class="space-y-5">
-                <!-- Tema Seçimi -->
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider" data-i18n="theme_label">Tema Modu</label>
                     <select id="theme-select" onchange="changeTheme(this.value)" class="w-full bg-[#121212] border border-yt-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-600">
@@ -152,7 +240,6 @@
                     </select>
                 </div>
 
-                <!-- Dil Seçimi -->
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider" data-i18n="lang_label">Dil Seçimi</label>
                     <select id="lang-select" onchange="changeLanguage(this.value)" class="w-full bg-[#121212] border border-yt-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-600">
@@ -161,40 +248,12 @@
                     </select>
                 </div>
 
-                <!-- APK İndirme Kısayolu -->
                 <div class="pt-2 border-t border-yt-border">
                     <a href="SelTube-1.0.apk" download class="flex items-center justify-center space-x-2 w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl text-sm transition shadow-lg">
                         <i class="fa-solid fa-download"></i>
                         <span data-i18n="download_apk">SelTube APK İndir</span>
                     </a>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- VİDEO MODALI -->
-    <div id="video-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-yt-card border border-yt-border w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh]">
-            <div class="flex items-center justify-between px-5 py-3.5 border-b border-yt-border bg-[#181818]">
-                <h3 id="modal-title" class="font-bold text-base truncate text-white">Oynatıcı</h3>
-                <button onclick="closeVideoModal()" class="text-gray-400 hover:text-white p-1.5 rounded-full hover:bg-yt-hover transition">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
-            </div>
-            <div class="relative w-full aspect-video bg-black flex items-center justify-center">
-                <iframe id="modal-iframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-            <div class="p-4 flex items-center justify-between border-t border-yt-border bg-[#181818]">
-                <div class="flex items-center space-x-3">
-                    <div id="modal-avatar" class="w-10 h-10 rounded-full overflow-hidden bg-neutral-800 flex items-center justify-center font-bold text-white shadow">S</div>
-                    <div>
-                        <h4 id="modal-channel" class="font-bold text-sm text-white">Kanal Adı</h4>
-                        <span class="text-xs text-gray-400">SelTube Premium</span>
-                    </div>
-                </div>
-                <button onclick="openExternalPlayer()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-lg">
-                    <i class="fa-solid fa-external-link-alt"></i> <span data-i18n="open_yt">YouTube'da Aç</span>
-                </button>
             </div>
         </div>
     </div>
@@ -222,8 +281,9 @@
     <!-- JAVASCRIPT -->
     <script>
         const API_KEY = 'AIzaSyCGByshlekmVd_A3f_8DDd9_CJ8gdA75Mw';
+        let globalVideosData = [];
+        let channelAvatarsCache = {};
 
-        // Dil Sözlüğü
         const translations = {
             tr: {
                 search_placeholder: "YouTube'da ara...",
@@ -288,7 +348,6 @@
             });
         });
 
-        // Tema Değiştirme
         function changeTheme(theme) {
             const html = document.getElementById('html-root');
             const body = document.getElementById('body-theme');
@@ -301,7 +360,6 @@
             }
         }
 
-        // Dil Değiştirme
         function changeLanguage(lang) {
             currentLang = lang;
             document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -325,7 +383,7 @@
                 const data = await response.json();
 
                 if (data.items && data.items.length > 0) {
-                    // Kanal detaylarından profil resimlerini çekmek için kanal ID'lerini topla
+                    globalVideosData = data.items;
                     const channelIds = [...new Set(data.items.map(item => item.snippet.channelId))].join(',');
                     fetchChannelAvatars(data.items, channelIds);
                 } else {
@@ -337,27 +395,34 @@
             }
         }
 
-        // Kanalın gerçek profil fotoğrafını çekme (Kırmızı arka plan olmadan direkt görsel)
         async function fetchChannelAvatars(videoItems, channelIds) {
-            const channelUrl = `https://www.googleapis.com/youtube/v3/channels?part=snippet&id=${channelIds}&key=${API_KEY}`;
-            let channelAvatars = {};
-
+            const channelUrl = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelIds}&key=${API_KEY}`;
             try {
                 const res = await fetch(channelUrl);
                 const chData = await res.json();
                 if(chData.items) {
                     chData.items.forEach(ch => {
-                        channelAvatars[ch.id] = ch.snippet.thumbnails.default.url;
+                        channelAvatarsCache[ch.id] = {
+                            avatar: ch.snippet.thumbnails.default.url,
+                            subscribers: formatSubscriberCount(ch.statistics.subscriberCount)
+                        };
                     });
                 }
             } catch(e) {
-                console.error('Kanal resmi alınamadı', e);
+                console.error('Kanal bilgileri alınamadı', e);
             }
 
-            renderVideos(videoItems, channelAvatars);
+            renderVideos(videoItems);
         }
 
-        function renderVideos(items, channelAvatars) {
+        function formatSubscriberCount(count) {
+            if (!count) return '100 B abonesi';
+            if (count >= 1000000) return (count / 1000000).toFixed(1) + ' Mn abonesi';
+            if (count >= 1000) return (count / 1000).toFixed(0) + ' B abonesi';
+            return count + ' abone';
+        }
+
+        function renderVideos(items) {
             const grid = document.getElementById('video-grid');
             grid.innerHTML = items.map(item => {
                 const videoId = item.id.videoId;
@@ -367,13 +432,13 @@
                 const publishTime = new Date(item.snippet.publishedAt).toLocaleDateString();
                 const thumbnail = item.snippet.thumbnails.high.url;
                 
-                // Eğer kanal fotoğrafı varsa direkt resim göster, yoksa gri arka planda harf göster (KIRMIZI YOK)
-                const avatarImg = channelAvatars[channelId] 
-                    ? `<img src="${channelAvatars[channelId]}" alt="${channelTitle}" class="w-full h-full object-cover">` 
+                const chInfo = channelAvatarsCache[channelId];
+                const avatarImg = chInfo && chInfo.avatar 
+                    ? `<img src="${chInfo.avatar}" alt="${channelTitle}" class="w-full h-full object-cover">` 
                     : `<span class="font-bold text-sm text-gray-300">${channelTitle.charAt(0).toUpperCase()}</span>`;
 
                 return `
-                    <div class="flex flex-col group cursor-pointer" onclick="openVideoModal('${videoId}', '${title.replace(/'/g, "")}', '${channelTitle.replace(/'/g, "")}')">
+                    <div class="flex flex-col group cursor-pointer" onclick="openVideoModal('${videoId}')">
                         <div class="relative w-full aspect-video bg-yt-card rounded-2xl overflow-hidden border border-yt-border group-hover:border-gray-500 transition shadow-md">
                             <img src="${thumbnail}" alt="${title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                         </div>
@@ -391,21 +456,85 @@
         }
 
         let activeId = '';
-        function openVideoModal(id, title, channel) {
+        function openVideoModal(id) {
             activeId = id;
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-channel').innerText = channel;
+            const video = globalVideosData.find(v => v.id.videoId === id) || globalVideosData[0];
+            if(!video) return;
+
+            document.getElementById('modal-title').innerText = video.snippet.title;
+            document.getElementById('modal-channel').innerText = video.snippet.channelTitle;
             document.getElementById('modal-iframe').src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1`;
+            document.getElementById('modal-views').innerText = new Date(video.snippet.publishedAt).toLocaleDateString() + ' tarihinde yayınlandı';
+
+            const chInfo = channelAvatarsCache[video.snippet.channelId];
+            const avatarContainer = document.getElementById('modal-avatar-container');
+            if (chInfo && chInfo.avatar) {
+                avatarContainer.innerHTML = `<img src="${chInfo.avatar}" class="w-full h-full object-cover">`;
+                document.getElementById('modal-subs').innerText = chInfo.subscribers;
+            } else {
+                avatarContainer.innerHTML = `<span class="font-bold text-white">${video.snippet.channelTitle.charAt(0)}</span>`;
+                document.getElementById('modal-subs').innerText = '125 B abonesi';
+            }
+
+            // Sağ paneldeki önerilen diğer videoları doldur
+            renderSidebarRecommendations(id);
+
             document.getElementById('video-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function renderSidebarRecommendations(currentId) {
+            const sidebar = document.getElementById('sidebar-recommendations');
+            const filtered = globalVideosData.filter(v => v.id.videoId !== currentId);
+
+            sidebar.innerHTML = filtered.map(v => {
+                const vId = v.id.videoId;
+                const title = v.snippet.title;
+                const channel = v.snippet.channelTitle;
+                const thumb = v.snippet.thumbnails.medium.url;
+
+                return `
+                    <div class="flex space-x-2 group cursor-pointer p-1.5 hover:bg-yt-hover rounded-xl transition" onclick="openVideoModal('${vId}')">
+                        <div class="w-36 aspect-video bg-yt-card rounded-lg overflow-hidden flex-shrink-0 border border-yt-border">
+                            <img src="${thumb}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <h4 class="font-semibold text-xs text-white line-clamp-2 group-hover:text-blue-400 transition">${title}</h4>
+                            <p class="text-[11px] text-gray-400 mt-1">${channel}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function closeVideoModal() {
             document.getElementById('modal-iframe').src = '';
             document.getElementById('video-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
         }
 
         function openExternalPlayer() {
             if(activeId) window.open(`https://www.youtube.com/watch?v=${activeId}`, '_blank');
+        }
+
+        function toggleSubscribe(btn) {
+            if(btn.innerText === 'Abone Ol') {
+                btn.innerText = 'Abone Olundu';
+                btn.className = 'ml-4 bg-neutral-700 text-white font-semibold text-xs px-4 py-2 rounded-full transition';
+            } else {
+                btn.innerText = 'Abone Ol';
+                btn.className = 'ml-4 bg-white hover:bg-gray-200 text-black font-semibold text-xs px-4 py-2 rounded-full transition';
+            }
+        }
+
+        function likeVideo(btn) {
+            const countSpan = document.getElementById('like-count');
+            countSpan.innerText = '1.5 B';
+            btn.classList.add('text-blue-500');
+        }
+
+        function dislikeVideo(btn) {
+            btn.classList.add('text-red-500');
         }
 
         function openSettingsModal() { document.getElementById('settings-modal').classList.remove('hidden'); }
