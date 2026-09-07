@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="tr" class="dark">
+<html lang="tr" class="dark" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SelTube Premium - Dinamik</title>
+    <title>SelTube Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -29,17 +29,16 @@
     <style>
         body { font-family: 'Roboto', sans-serif; }
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #0f0f0f; }
+        ::-webkit-scrollbar-track { background: inherit; }
         ::-webkit-scrollbar-thumb { background: #3f3f3f; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-yt-black text-white min-h-screen flex flex-col justify-between selection:bg-red-600 selection:text-white">
+<body class="bg-yt-black text-white min-h-screen flex flex-col justify-between selection:bg-red-600 selection:text-white transition-colors duration-300" id="body-theme">
 
     <!-- HEADER -->
-    <header class="fixed top-0 left-0 right-0 h-14 bg-yt-black/95 backdrop-blur-md border-b border-yt-border px-4 flex items-center justify-between z-50">
+    <header class="fixed top-0 left-0 right-0 h-14 bg-inherit/95 backdrop-blur-md border-b border-yt-border px-4 flex items-center justify-between z-50">
         <div class="flex items-center space-x-4">
             <button id="menu-toggle" class="p-2 hover:bg-yt-hover rounded-full transition text-gray-300">
                 <i class="fa-solid fa-bars text-lg"></i>
@@ -55,7 +54,7 @@
         <div class="flex items-center flex-1 max-w-2xl mx-4">
             <div class="flex items-center w-full bg-[#121212] border border-yt-border rounded-l-full px-4 py-2 focus-within:border-blue-500 transition">
                 <i class="fa-solid fa-magnifying-glass text-gray-400 mr-3 text-sm"></i>
-                <input type="text" id="search-input" placeholder="YouTube'da ara..." class="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-500">
+                <input type="text" id="search-input" data-i18n-placeholder="search_placeholder" placeholder="YouTube'da ara..." class="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-500">
             </div>
             <button id="search-btn" class="bg-yt-card border border-l-0 border-yt-border px-6 py-2 rounded-r-full hover:bg-yt-hover transition text-gray-300">
                 <i class="fa-solid fa-magnifying-glass text-sm"></i>
@@ -63,10 +62,17 @@
         </div>
 
         <div class="flex items-center space-x-3">
+            <a href="SelTube-1.0.apk" download class="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 text-white text-xs font-bold px-3.5 py-2 rounded-full transition shadow-md">
+                <i class="fa-solid fa-download"></i>
+                <span data-i18n="download_apk">APK İndir</span>
+            </a>
+            <button onclick="openSettingsModal()" class="p-2 hover:bg-yt-hover rounded-full transition text-gray-300" title="Ayarlar">
+                <i class="fa-solid fa-gear text-lg"></i>
+            </button>
             <div id="auth-container">
                 <button onclick="openAuthModal()" class="border border-yt-border hover:border-gray-500 text-blue-400 font-semibold px-4 py-1.5 rounded-full text-sm transition flex items-center space-x-2">
                     <i class="fa-regular fa-circle-user text-base"></i>
-                    <span>Oturum Aç</span>
+                    <span data-i18n="login">Oturum Aç</span>
                 </button>
             </div>
         </div>
@@ -79,24 +85,35 @@
             <div class="space-y-1">
                 <button onclick="searchVideos('Trending')" class="w-full flex items-center space-x-6 px-3 py-2.5 rounded-xl bg-yt-hover text-white font-medium text-sm transition text-left">
                     <i class="fa-solid fa-house w-5 text-center"></i>
-                    <span>Ana Sayfa</span>
+                    <span data-i18n="home">Ana Sayfa</span>
                 </button>
                 <button onclick="searchVideos('Trendler Popüler')" class="w-full flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
                     <i class="fa-solid fa-fire w-5 text-center text-orange-500"></i>
-                    <span>Trendler</span>
+                    <span data-i18n="trending">Trendler</span>
                 </button>
                 <button onclick="searchVideos('Music 2026')" class="w-full flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
                     <i class="fa-solid fa-music w-5 text-center text-blue-400"></i>
-                    <span>Müzik</span>
+                    <span data-i18n="music">Müzik</span>
                 </button>
                 <button onclick="searchVideos('Gaming Gameplay')" class="w-full flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
                     <i class="fa-solid fa-gamepad w-5 text-center text-green-400"></i>
-                    <span>Oyun</span>
+                    <span data-i18n="gaming">Oyun</span>
                 </button>
                 <button onclick="searchVideos('Technology Tech')" class="w-full flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
                     <i class="fa-solid fa-laptop-code w-5 text-center text-purple-400"></i>
-                    <span>Teknoloji</span>
+                    <span data-i18n="tech">Teknoloji</span>
                 </button>
+            </div>
+            
+            <hr class="border-yt-border my-3">
+            
+            <div class="p-3.5 bg-gradient-to-br from-neutral-900 to-neutral-800 border border-red-500/30 rounded-2xl text-center shadow-lg">
+                <div class="text-red-500 mb-1.5 text-xl"><i class="fa-brands fa-android"></i></div>
+                <h4 class="text-xs font-bold text-white mb-1">SelTube Android App</h4>
+                <p class="text-[10px] text-gray-400 mb-3" data-i18n="apk_desc">Cep telefonunuza hemen kurun.</p>
+                <a href="SelTube-1.0.apk" download class="block w-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 rounded-xl transition shadow-md">
+                    <span data-i18n="download_btn">İndir (APK)</span>
+                </a>
             </div>
         </aside>
 
@@ -104,19 +121,55 @@
         <main class="flex-1 ml-64 p-6 transition-all duration-300">
             <!-- Kategoriler Şeridi -->
             <div class="flex items-center space-x-2.5 overflow-x-auto hide-scrollbar pb-4 mb-6" id="chips-bar">
-                <button onclick="searchVideos('Popüler')" class="chip bg-white text-black px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition shadow">Tümü</button>
-                <button onclick="searchVideos('Live Stream Canlı')" class="chip bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">Canlı Yayın</button>
+                <button onclick="searchVideos('Popüler')" class="chip bg-white text-black px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition shadow" data-i18n="all">Tümü</button>
+                <button onclick="searchVideos('Live Stream Canlı')" class="chip bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition" data-i18n="live">Canlı Yayın</button>
                 <button onclick="searchVideos('Podcast')" class="chip bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">Podcast</button>
-                <button onclick="searchVideos('Football Futbol')" class="chip bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">Futbol</button>
-                <button onclick="searchVideos('Movie Trailer Sinema')" class="chip bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">Sinema</button>
-                <button onclick="searchVideos('Belgesel Documentary')" class="chip bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">Belgesel</button>
+                <button onclick="searchVideos('Football Futbol')" class="chip bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition" data-i18n="football">Futbol</button>
+                <button onclick="searchVideos('Movie Trailer Sinema')" class="chip bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition" data-i18n="cinema">Sinema</button>
+                <button onclick="searchVideos('Belgesel Documentary')" class="chip bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition" data-i18n="documentary">Belgesel</button>
             </div>
 
             <!-- Video Grid -->
             <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                <!-- Dinamik olarak YouTube API'den yüklenecek -->
+                <!-- Videolar API ile yüklenecek -->
             </div>
         </main>
+    </div>
+
+    <!-- AYARLAR MODALI -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-yt-card border border-yt-border w-full max-w-md rounded-2xl overflow-hidden shadow-2xl p-6 relative">
+            <button onclick="closeSettingsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h2 class="text-xl font-bold mb-6 flex items-center space-x-2"><i class="fa-solid fa-gear text-red-600"></i> <span data-i18n="settings_title">Ayarlar</span></h2>
+            
+            <div class="space-y-5">
+                <!-- Tema Seçimi -->
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider" data-i18n="theme_label">Tema Modu</label>
+                    <select id="theme-select" onchange="changeTheme(this.value)" class="w-full bg-[#121212] border border-yt-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-600">
+                        <option value="dark">Karanlık Mod (Dark)</option>
+                        <option value="light">Aydınlık Mod (Light)</option>
+                    </select>
+                </div>
+
+                <!-- Dil Seçimi -->
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider" data-i18n="lang_label">Dil Seçimi</label>
+                    <select id="lang-select" onchange="changeLanguage(this.value)" class="w-full bg-[#121212] border border-yt-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-600">
+                        <option value="tr">Türkçe</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+
+                <!-- APK İndirme Kısayolu -->
+                <div class="pt-2 border-t border-yt-border">
+                    <a href="SelTube-1.0.apk" download class="flex items-center justify-center space-x-2 w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl text-sm transition shadow-lg">
+                        <i class="fa-solid fa-download"></i>
+                        <span data-i18n="download_apk">SelTube APK İndir</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- VİDEO MODALI -->
@@ -133,14 +186,14 @@
             </div>
             <div class="p-4 flex items-center justify-between border-t border-yt-border bg-[#181818]">
                 <div class="flex items-center space-x-3">
-                    <div id="modal-avatar" class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold text-white shadow">S</div>
+                    <div id="modal-avatar" class="w-10 h-10 rounded-full overflow-hidden bg-neutral-800 flex items-center justify-center font-bold text-white shadow">S</div>
                     <div>
                         <h4 id="modal-channel" class="font-bold text-sm text-white">Kanal Adı</h4>
                         <span class="text-xs text-gray-400">SelTube Premium</span>
                     </div>
                 </div>
                 <button onclick="openExternalPlayer()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-lg">
-                    <i class="fa-solid fa-external-link-alt"></i> YouTube'da Aç
+                    <i class="fa-solid fa-external-link-alt"></i> <span data-i18n="open_yt">YouTube'da Aç</span>
                 </button>
             </div>
         </div>
@@ -152,26 +205,74 @@
             <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
             <div class="text-center mb-6">
                 <div class="bg-red-600 text-white w-12 h-12 rounded-2xl mx-auto flex items-center justify-center text-xl shadow-lg mb-2"><i class="fa-solid fa-play"></i></div>
-                <h2 class="text-xl font-bold">Giriş Yap</h2>
+                <h2 class="text-xl font-bold" data-i18n="login">Giriş Yap</h2>
             </div>
             <div class="space-y-4">
                 <input type="email" id="auth-email" placeholder="E-posta adresi" class="w-full bg-[#121212] border border-yt-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-600">
                 <input type="password" id="auth-password" placeholder="Şifre" class="w-full bg-[#121212] border border-yt-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-600">
-                <button onclick="handleLogin()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl text-sm transition">Giriş Yap</button>
+                <button onclick="handleLogin()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl text-sm transition" data-i18n="login">Giriş Yap</button>
             </div>
         </div>
     </div>
 
-    <footer class="border-t border-yt-border py-4 px-6 text-center text-xs text-gray-500 bg-yt-black ml-0 sm:ml-64">
-        <p>&copy; 2026 SelTube Premium - Tüm hakları saklıdır. Gelişmiş YouTube Deneyimi.</p>
+    <footer class="border-t border-yt-border py-4 px-6 text-center text-xs text-gray-500 bg-inherit ml-0 sm:ml-64">
+        <p>&copy; 2026 SelTube Premium - Tüm hakları saklıdır.</p>
     </footer>
 
-    <!-- JAVASCRIPT & YOUTUBE API -->
+    <!-- JAVASCRIPT -->
     <script>
         const API_KEY = 'AIzaSyCGByshlekmVd_A3f_8DDd9_CJ8gdA75Mw';
 
+        // Dil Sözlüğü
+        const translations = {
+            tr: {
+                search_placeholder: "YouTube'da ara...",
+                download_apk: "APK İndir",
+                login: "Oturum Aç",
+                home: "Ana Sayfa",
+                trending: "Trendler",
+                music: "Müzik",
+                gaming: "Oyun",
+                tech: "Teknoloji",
+                apk_desc: "Cep telefonunuza hemen kurun.",
+                download_btn: "İndir (APK)",
+                all: "Tümü",
+                live: "Canlı Yayın",
+                football: "Futbol",
+                cinema: "Sinema",
+                documentary: "Belgesel",
+                settings_title: "Ayarlar",
+                theme_label: "Tema Modu",
+                lang_label: "Dil Seçimi",
+                open_yt: "YouTube'da Aç"
+            },
+            en: {
+                search_placeholder: "Search on YouTube...",
+                download_apk: "Download APK",
+                login: "Sign In",
+                home: "Home",
+                trending: "Trending",
+                music: "Music",
+                gaming: "Gaming",
+                tech: "Technology",
+                apk_desc: "Install directly to your phone.",
+                download_btn: "Download (APK)",
+                all: "All",
+                live: "Live Stream",
+                football: "Football",
+                cinema: "Cinema",
+                documentary: "Documentary",
+                settings_title: "Settings",
+                theme_label: "Theme Mode",
+                lang_label: "Language",
+                open_yt: "Open on YouTube"
+            }
+        };
+
+        let currentLang = 'tr';
+
         window.addEventListener('DOMContentLoaded', () => {
-            searchVideos('Popüler'); // Sayfa açılınca API'den popüler videoları getir
+            searchVideos('Popüler');
 
             document.getElementById('menu-toggle').addEventListener('click', () => {
                 document.getElementById('sidebar').classList.toggle('-translate-x-full');
@@ -187,6 +288,32 @@
             });
         });
 
+        // Tema Değiştirme
+        function changeTheme(theme) {
+            const html = document.getElementById('html-root');
+            const body = document.getElementById('body-theme');
+            if(theme === 'light') {
+                html.classList.remove('dark');
+                body.className = "bg-gray-100 text-gray-900 min-h-screen flex flex-col justify-between selection:bg-red-600 selection:text-white transition-colors duration-300";
+            } else {
+                html.classList.add('dark');
+                body.className = "bg-yt-black text-white min-h-screen flex flex-col justify-between selection:bg-red-600 selection:text-white transition-colors duration-300";
+            }
+        }
+
+        // Dil Değiştirme
+        function changeLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(translations[lang][key]) el.innerText = translations[lang][key];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if(translations[lang][key]) el.placeholder = translations[lang][key];
+            });
+        }
+
         async function searchVideos(query) {
             const grid = document.getElementById('video-grid');
             grid.innerHTML = `<div class="col-span-full text-center py-24 text-gray-400 text-sm">Yükleniyor...</div>`;
@@ -198,25 +325,52 @@
                 const data = await response.json();
 
                 if (data.items && data.items.length > 0) {
-                    renderVideos(data.items);
+                    // Kanal detaylarından profil resimlerini çekmek için kanal ID'lerini topla
+                    const channelIds = [...new Set(data.items.map(item => item.snippet.channelId))].join(',');
+                    fetchChannelAvatars(data.items, channelIds);
                 } else {
-                    grid.innerHTML = `<div class="col-span-full text-center py-24 text-gray-400 text-sm">Video bulunamadı veya API kotası doldu.</div>`;
+                    grid.innerHTML = `<div class="col-span-full text-center py-24 text-gray-400 text-sm">Video bulunamadı.</div>`;
                 }
             } catch (error) {
                 console.error('API Hatası:', error);
-                grid.innerHTML = `<div class="col-span-full text-center py-24 text-red-500 text-sm">Videolar yüklenirken bir hata oluştu.</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-24 text-red-500 text-sm">Videolar yüklenirken hata oluştu.</div>`;
             }
         }
 
-        function renderVideos(items) {
+        // Kanalın gerçek profil fotoğrafını çekme (Kırmızı arka plan olmadan direkt görsel)
+        async function fetchChannelAvatars(videoItems, channelIds) {
+            const channelUrl = `https://www.googleapis.com/youtube/v3/channels?part=snippet&id=${channelIds}&key=${API_KEY}`;
+            let channelAvatars = {};
+
+            try {
+                const res = await fetch(channelUrl);
+                const chData = await res.json();
+                if(chData.items) {
+                    chData.items.forEach(ch => {
+                        channelAvatars[ch.id] = ch.snippet.thumbnails.default.url;
+                    });
+                }
+            } catch(e) {
+                console.error('Kanal resmi alınamadı', e);
+            }
+
+            renderVideos(videoItems, channelAvatars);
+        }
+
+        function renderVideos(items, channelAvatars) {
             const grid = document.getElementById('video-grid');
             grid.innerHTML = items.map(item => {
                 const videoId = item.id.videoId;
                 const title = item.snippet.title;
                 const channelTitle = item.snippet.channelTitle;
+                const channelId = item.snippet.channelId;
                 const publishTime = new Date(item.snippet.publishedAt).toLocaleDateString();
                 const thumbnail = item.snippet.thumbnails.high.url;
-                const avatarLetter = channelTitle.charAt(0).toUpperCase();
+                
+                // Eğer kanal fotoğrafı varsa direkt resim göster, yoksa gri arka planda harf göster (KIRMIZI YOK)
+                const avatarImg = channelAvatars[channelId] 
+                    ? `<img src="${channelAvatars[channelId]}" alt="${channelTitle}" class="w-full h-full object-cover">` 
+                    : `<span class="font-bold text-sm text-gray-300">${channelTitle.charAt(0).toUpperCase()}</span>`;
 
                 return `
                     <div class="flex flex-col group cursor-pointer" onclick="openVideoModal('${videoId}', '${title.replace(/'/g, "")}', '${channelTitle.replace(/'/g, "")}')">
@@ -224,9 +378,9 @@
                             <img src="${thumbnail}" alt="${title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                         </div>
                         <div class="flex space-x-3 mt-3">
-                            <div class="w-9 h-9 rounded-full bg-red-600 flex-shrink-0 flex items-center justify-center font-bold text-sm text-white shadow">${avatarLetter}</div>
+                            <div class="w-9 h-9 rounded-full overflow-hidden bg-neutral-800 flex-shrink-0 flex items-center justify-center shadow">${avatarImg}</div>
                             <div class="flex-1 overflow-hidden">
-                                <h3 class="font-semibold text-sm text-white line-clamp-2 group-hover:text-blue-400 transition">${title}</h3>
+                                <h3 class="font-semibold text-sm line-clamp-2 group-hover:text-blue-400 transition">${title}</h3>
                                 <p class="text-xs text-gray-400 mt-1">${channelTitle}</p>
                                 <p class="text-xs text-gray-500">${publishTime}</p>
                             </div>
@@ -254,6 +408,8 @@
             if(activeId) window.open(`https://www.youtube.com/watch?v=${activeId}`, '_blank');
         }
 
+        function openSettingsModal() { document.getElementById('settings-modal').classList.remove('hidden'); }
+        function closeSettingsModal() { document.getElementById('settings-modal').classList.add('hidden'); }
         function openAuthModal() { document.getElementById('auth-modal').classList.remove('hidden'); }
         function closeAuthModal() { document.getElementById('auth-modal').classList.add('hidden'); }
         function handleLogin() {
