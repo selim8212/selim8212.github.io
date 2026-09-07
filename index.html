@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SelTube Premium</title>
+    <title>SelTube Premium - Dinamik Akış</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -55,7 +55,7 @@
         <div class="flex items-center flex-1 max-w-2xl mx-4">
             <div class="flex items-center w-full bg-[#121212] border border-yt-border rounded-l-full px-4 py-2 focus-within:border-blue-500 transition">
                 <i class="fa-solid fa-magnifying-glass text-gray-400 mr-3 text-sm"></i>
-                <input type="text" id="search-input" placeholder="Ara..." class="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-500">
+                <input type="text" id="search-input" placeholder="Video veya kanal ara..." class="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-500">
             </div>
             <button id="search-btn" class="bg-yt-card border border-l-0 border-yt-border px-6 py-2 rounded-r-full hover:bg-yt-hover transition text-gray-300">
                 <i class="fa-solid fa-magnifying-glass text-sm"></i>
@@ -129,7 +129,7 @@
 
             <!-- Video Grid -->
             <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                <!-- Videolar JavaScript ile yüklenecek -->
+                <!-- Dinamik olarak doldurulacak -->
             </div>
         </main>
     </div>
@@ -178,22 +178,33 @@
     </div>
 
     <footer class="border-t border-yt-border py-4 px-6 text-center text-xs text-gray-500 bg-yt-black ml-0 sm:ml-64">
-        <p>&copy; 2026 SelTube Premium - Tüm hakları saklıdır. Gelişmiş YouTube Deneyimi.</p>
+        <p>&copy; 2026 SelTube Premium - Dinamik İçerik Akışı.</p>
     </footer>
 
-    <!-- JAVASCRIPT -->
+    <!-- JAVASCRIPT: RASTGELE VE ÇEŞİTLİ VİDEO HAVUZU -->
     <script>
-        const allVideos = [
-            { id: 'dQw4w9WgXcQ', title: 'SelTube Premium Sürüm 1.0 Çıktı! - Yeni Nesil Deneyimli Oynatıcı', channel: 'Selim Tașin', views: '125 B görüntülenme', time: '2 gün önce', duration: '14:20', category: 'Teknoloji', avatar: 'S' },
-            { id: '3JZ_D3ELwOQ', title: 'En Popüler Sinematik Müzikler & Rahatlatıcı Arka Plan Melodileri...', channel: 'Müzik Dünyası', views: '4.2 Mn görüntülenme', time: '1 ay önce', duration: '3:45:10', category: 'Müzik', avatar: 'M' },
+        const masterVideoPool = [
+            { id: 'dQw4w9WgXcQ', title: 'SelTube Premium Sürüm 1.0 Çıktı! - Yeni Nesil Oynatıcı', channel: 'Selim Tașin', views: '125 B görüntülenme', time: '2 gün önce', duration: '14:20', category: 'Teknoloji', avatar: 'S' },
+            { id: '3JZ_D3ELwOQ', title: 'En Popüler Sinematik Müzikler & Rahatlatıcı Arka Plan Melodileri', channel: 'Müzik Dünyası', views: '4.2 Mn görüntülenme', time: '1 ay önce', duration: '3:45:10', category: 'Müzik', avatar: 'M' },
             { id: 'jfKfPfyJRdk', title: 'Lofi Hip Hop Radio - Beats to Study / Relax to 24/7', channel: 'Lofi Girl', views: '1.1 M görüntülenme', time: 'Şimdi Canlı', duration: 'CANLI', category: 'Canlı Yayın', avatar: 'L' },
             { id: '5qap5aO4i9A', title: 'Supercell Oyunları İçin En İyi Taktikler ve Özel İpuçları', channel: 'Oyun Kulübü', views: '89 B görüntülenme', time: '3 gün önce', duration: '22:15', category: 'Oyun', avatar: 'O' },
             { id: '9bZkp7q19f0', title: 'Geleceğin Teknolojileri ve Yapay Zeka Devrimi Röportajı', channel: 'Tech Insider', views: '540 B görüntülenme', time: '1 hafta önce', duration: '45:00', category: 'Teknoloji', avatar: 'T' },
-            { id: 'L_LUpnjgPso', title: 'Derin Uzay Belgeseli - Evrenin Bilinmeyen Sırları HD', channel: 'Bilim Evreni', views: '980 B görüntülenme', time: '2 ay önce', duration: '1:12:00', category: 'Belgesel', avatar: 'B' }
+            { id: 'L_LUpnjgPso', title: 'Derin Uzay Belgeseli - Evrenin Bilinmeyen Sırları HD', channel: 'Bilim Evreni', views: '980 B görüntülenme', time: '2 ay önce', duration: '1:12:00', category: 'Belgesel', avatar: 'B' },
+            { id: 'kJQP7kiw5Fk', title: 'Luis Fonsi - Despacito ft. Daddy Yankee', channel: 'LuisFonsiVEVO', views: '8.3 Mil görüntülenme', time: '6 yıl önce', duration: '4:42', category: 'Müzik', avatar: 'LF' },
+            { id: 'RgKAFK5djSk', title: 'Wiz Khalifa - See You Again ft. Charlie Puth [Official Video]', channel: 'Wiz Khalifa', views: '6.1 Mil görüntülenme', time: '8 yıl önce', duration: '3:57', category: 'Müzik', avatar: 'WK' },
+            { id: 'OPf0YbXqDm0', title: 'Mark Ronson - Uptown Funk ft. Bruno Mars', channel: 'MarkRonsonVEVO', views: '5.0 Mil görüntülenme', time: '9 yıl önce', duration: '4:30', category: 'Müzik', avatar: 'MR' },
+            { id: 'JGwWNGJdvx8', title: 'Ed Sheeran - Shape of You (Official Music Video)', channel: 'Ed Sheeran', views: '6.2 Mil görüntülenme', time: '7 yıl önce', duration: '4:24', category: 'Müzik', avatar: 'ES' },
+            { id: 'YQHsXMglC9A', title: 'Adele - Hello (Official Music Video)', channel: 'AdeleVEVO', views: '3.1 Mil görüntülenme', time: '8 yıl önce', duration: '6:07', category: 'Müzik', avatar: 'A' },
+            { id: 'CevxZvSJLk8', title: 'Katy Perry - Roar (Official)', channel: 'KatyPerryVEVO', views: '3.9 Mil görüntülenme', time: '10 yıl önce', duration: '4:30', category: 'Müzik', avatar: 'KP' },
+            { id: '2Vv-BfVoq4g', title: 'Ed Sheeran - Perfect (Official Music Video)', channel: 'Ed Sheeran', views: '3.5 Mil görüntülenme', time: '6 yıl önce', duration: '4:39', category: 'Müzik', avatar: 'ES' },
+            { id: 'fJ9rUzIMcZQ', title: 'Queen - Bohemian Rhapsody (Official Video Remastered)', channel: 'Queen Official', views: '1.8 Mil görüntülenme', time: '15 yıl önce', duration: '6:00', category: 'Sinema', avatar: 'Q' },
+            { id: 'hTWKbfoikeg', title: 'Nefes Kesen Süper Lig Maç Özetleri ve Goller', channel: 'Futbol Arena', views: '420 B görüntülenme', time: '5 saat önce', duration: '10:15', category: 'Futbol', avatar: 'FA' },
+            { id: '9ix7TUGVYIo', title: 'Teknoloji Dünyasında Son Gelişmeler ve Yapay Zeka Sohbetleri', channel: 'Podcast Kulübü', views: '75 B görüntülenme', time: '2 gün önce', duration: '1:05:00', category: 'Podcast', avatar: 'PK' }
         ];
 
         window.addEventListener('DOMContentLoaded', () => {
-            renderVideos(allVideos);
+            // Sayfa ilk açıldığında havuzdan rastgele 8 video seçip göster
+            loadRandomHomeFeed();
 
             document.getElementById('menu-toggle').addEventListener('click', () => {
                 document.getElementById('sidebar').classList.toggle('-translate-x-full');
@@ -208,6 +219,12 @@
                 if(e.key === 'Enter' && e.target.value.trim()) searchVideos(e.target.value.trim());
             });
         });
+
+        function loadRandomHomeFeed() {
+            // Her yenilemede farklı sıralansın diye rastgele karıştırıyoruz
+            const shuffled = [...masterVideoPool].sort(() => 0.5 - Math.random());
+            renderVideos(shuffled.slice(0, 8)); // İlk 8 tanesini göster
+        }
 
         function renderVideos(videos) {
             const grid = document.getElementById('video-grid');
@@ -244,15 +261,17 @@
             });
 
             if(cat === 'Tümü') {
-                renderVideos(allVideos);
+                loadRandomHomeFeed();
             } else {
-                const filtered = allVideos.filter(v => v.category === cat);
-                renderVideos(filtered);
+                const filtered = masterVideoPool.filter(v => v.category === cat);
+                // Kategori içindekileri de rastgele sıralayalım ki her tıklandığında farklı gelsin
+                const randomizedFiltered = [...filtered].sort(() => 0.5 - Math.random());
+                renderVideos(randomizedFiltered);
             }
         }
 
         function searchVideos(query) {
-            const filtered = allVideos.filter(v => v.title.toLowerCase().includes(query.toLowerCase()) || v.channel.toLowerCase().includes(query.toLowerCase()));
+            const filtered = masterVideoPool.filter(v => v.title.toLowerCase().includes(query.toLowerCase()) || v.channel.toLowerCase().includes(query.toLowerCase()));
             renderVideos(filtered);
         }
 
