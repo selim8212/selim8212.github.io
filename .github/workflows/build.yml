@@ -12,8 +12,18 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Check Environment
+      - name: Create IPA Package Structure
         run: |
-          echo "Mac bulut sunucusu başarıyla çalışıyor!"
-          xcodebuild -version
+          mkdir -p Payload
+          # index.html dosyanı ve web dosyalarını Payload içine kopyalıyoruz
+          cp index.html Payload/
+          
+          # Zip haline getirip uzantısını .ipa yapıyoruz
+          zip -r SelTube-1.0.ipa Payload
           ls -la
+
+      - name: Save IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SelTube-IPA
+          path: SelTube-1.0.ipa
