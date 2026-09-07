@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SelTube Premium - Keşfet</title>
+    <title>SelTube Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -85,10 +85,6 @@
                     <i class="fa-solid fa-house w-5 text-center"></i>
                     <span>Ana Sayfa</span>
                 </button>
-                <button onclick="filterCategory('Keşfet')" class="w-full flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
-                    <i class="fa-solid fa-compass w-5 text-center text-red-500"></i>
-                    <span>Keşfet</span>
-                </button>
                 <button onclick="filterCategory('Trendler')" class="w-full flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
                     <i class="fa-solid fa-fire w-5 text-center text-orange-500"></i>
                     <span>Trendler</span>
@@ -119,27 +115,21 @@
             </div>
         </aside>
 
-        <!-- MAIN CONTENT (KEŞFET & AKIŞ) -->
+        <!-- MAIN CONTENT -->
         <main class="flex-1 ml-64 p-6 transition-all duration-300">
-            <!-- YouTube Tarzı Gelişmiş Keşfet / Kategori Çubuğu -->
-            <div class="flex items-center space-x-2.5 overflow-x-auto hide-scrollbar pb-4 mb-6" id="explore-chips">
-                <button onclick="filterCategory('Tümü')" class="chip-btn bg-white text-black px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition shadow">Tümü</button>
-                <button onclick="filterCategory('Keşfet')" class="chip-btn bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">🔥 Keşfet</button>
-                <button onclick="filterCategory('Canlı Yayın')" class="chip-btn bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">🔴 Canlı</button>
-                <button onclick="filterCategory('Podcast')" class="chip-btn bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">🎙️ Podcast</button>
-                <button onclick="filterCategory('Futbol')" class="chip-btn bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">⚽ Futbol</button>
-                <button onclick="filterCategory('Sinema')" class="chip-btn bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">🎬 Sinema</button>
-                <button onclick="filterCategory('Oyun')" class="chip-btn bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">🎮 Oyun</button>
-                <button onclick="filterCategory('Teknoloji')" class="chip-btn bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">💻 Teknoloji</button>
-                <button onclick="filterCategory('Belgesel')" class="chip-btn bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">🌍 Belgesel</button>
+            <!-- Kategoriler Şeridi -->
+            <div class="flex items-center space-x-2.5 overflow-x-auto hide-scrollbar pb-4 mb-6" id="chips-bar">
+                <button onclick="filterCategory('Tümü')" class="chip bg-white text-black px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition shadow">Tümü</button>
+                <button onclick="filterCategory('Canlı Yayın')" class="chip bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">Canlı Yayın</button>
+                <button onclick="filterCategory('Podcast')" class="chip bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">Podcast</button>
+                <button onclick="filterCategory('Futbol')" class="chip bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">Futbol</button>
+                <button onclick="filterCategory('Sinema')" class="chip bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">Sinema</button>
+                <button onclick="filterCategory('Belgesel')" class="chip bg-yt-card hover:bg-yt-hover text-white px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition">Belgesel</button>
             </div>
 
             <!-- Video Grid -->
             <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                <div class="col-span-full text-center py-24 text-gray-400">
-                    <i class="fa-solid fa-circle-notch fa-spin text-4xl mb-3 text-red-600"></i>
-                    <p class="text-sm font-medium">Keşfet akışı yükleniyor...</p>
-                </div>
+                <!-- Videolar JavaScript ile yüklenecek -->
             </div>
         </main>
     </div>
@@ -188,31 +178,32 @@
     </div>
 
     <footer class="border-t border-yt-border py-4 px-6 text-center text-xs text-gray-500 bg-yt-black ml-0 sm:ml-64">
-        <p>&copy; 2026 SelTube Premium - Gelişmiş YouTube Deneyimi.</p>
+        <p>&copy; 2026 SelTube Premium - Tüm hakları saklıdır. Gelişmiş YouTube Deneyimi.</p>
     </footer>
 
+    <!-- JAVASCRIPT -->
     <script>
-        let currentUser = JSON.parse(localStorage.getItem('seltume_user')) || null;
-        let allVideos = [
-            { id: 'dQw4w9WgXcQ', title: 'SelTube Premium Sürüm 1.0 Yayınlandı! - Yeni Nesil Video Oynatıcı Deneyimi', channel: 'Selim Tașin', views: '145 B', time: '1 gün önce', duration: '14:20', category: 'Teknoloji', avatar: 'S' },
-            { id: '3JZ_D3ELwOQ', title: 'En Popüler Sinematik Müzikler & Rahatlatıcı Arka Plan Melodileri 2026', channel: 'Müzik Dünyası', views: '4.8 Mn', time: '2 hafta önce', duration: '3:45:10', category: 'Müzik', avatar: 'M' },
-            { id: 'jfKfPfyJRdk', title: 'Lofi Hip Hop Radio - Beats to Study / Relax to 24/7 (Live Stream)', channel: 'Lofi Girl', views: '1.2 M', time: 'Şimdi Canlı', duration: 'CANLI', category: 'Canlı Yayın', avatar: 'L' },
-            { id: '5qap5aO4i9A', title: 'Supercell Oyunları İçin En İyi Taktikler ve Özel İpuçları (2026)', channel: 'Oyun Kulübü', views: '92 B', time: '3 gün önce', duration: '22:15', category: 'Oyun', avatar: 'O' },
-            { id: '9bZkp7q19f0', title: 'Geleceğin Teknolojileri ve Yapay Zeka Devrimi Özel Belgeseli', channel: 'Tech Insider', views: '610 B', time: '5 gün önce', duration: '45:00', category: 'Teknoloji', avatar: 'T' },
-            { id: 'L_LUpnjgPso', title: 'Derin Uzay Belgeseli - Evrenin Bilinmeyen Sırları HD', channel: 'Bilim Evreni', views: '1.1 Mn', time: '1 ay önce', duration: '1:12:00', category: 'Belgesel', avatar: 'B' },
-            { id: '3JZ_D3ELwOQ', title: 'Özel Keşfet Şampiyonlar Ligi Maç Analizleri ve Taktik İncelemeleri', channel: 'Futbol Arena', views: '320 B', time: '4 saat önce', duration: '12:40', category: 'Futbol', avatar: 'F' },
-            { id: 'dQw4w9WgXcQ', title: 'Sinema Tarihinin En Unutulmaz 10 Sahnesi ve Arkasındaki Sırlar', channel: 'Sinema Kulübü', views: '850 B', time: '6 gün önce', duration: '28:10', category: 'Sinema', avatar: 'C' }
+        const allVideos = [
+            { id: 'dQw4w9WgXcQ', title: 'SelTube Premium Sürüm 1.0 Çıktı! - Yeni Nesil Deneyimli Oynatıcı', channel: 'Selim Tașin', views: '125 B görüntülenme', time: '2 gün önce', duration: '14:20', category: 'Teknoloji', avatar: 'S' },
+            { id: '3JZ_D3ELwOQ', title: 'En Popüler Sinematik Müzikler & Rahatlatıcı Arka Plan Melodileri...', channel: 'Müzik Dünyası', views: '4.2 Mn görüntülenme', time: '1 ay önce', duration: '3:45:10', category: 'Müzik', avatar: 'M' },
+            { id: 'jfKfPfyJRdk', title: 'Lofi Hip Hop Radio - Beats to Study / Relax to 24/7', channel: 'Lofi Girl', views: '1.1 M görüntülenme', time: 'Şimdi Canlı', duration: 'CANLI', category: 'Canlı Yayın', avatar: 'L' },
+            { id: '5qap5aO4i9A', title: 'Supercell Oyunları İçin En İyi Taktikler ve Özel İpuçları', channel: 'Oyun Kulübü', views: '89 B görüntülenme', time: '3 gün önce', duration: '22:15', category: 'Oyun', avatar: 'O' },
+            { id: '9bZkp7q19f0', title: 'Geleceğin Teknolojileri ve Yapay Zeka Devrimi Röportajı', channel: 'Tech Insider', views: '540 B görüntülenme', time: '1 hafta önce', duration: '45:00', category: 'Teknoloji', avatar: 'T' },
+            { id: 'L_LUpnjgPso', title: 'Derin Uzay Belgeseli - Evrenin Bilinmeyen Sırları HD', channel: 'Bilim Evreni', views: '980 B görüntülenme', time: '2 ay önce', duration: '1:12:00', category: 'Belgesel', avatar: 'B' }
         ];
 
         window.addEventListener('DOMContentLoaded', () => {
             renderVideos(allVideos);
+
             document.getElementById('menu-toggle').addEventListener('click', () => {
                 document.getElementById('sidebar').classList.toggle('-translate-x-full');
             });
+
             document.getElementById('search-btn').addEventListener('click', () => {
                 const q = document.getElementById('search-input').value.trim();
                 if(q) searchVideos(q);
             });
+
             document.getElementById('search-input').addEventListener('keypress', (e) => {
                 if(e.key === 'Enter' && e.target.value.trim()) searchVideos(e.target.value.trim());
             });
@@ -221,7 +212,7 @@
         function renderVideos(videos) {
             const grid = document.getElementById('video-grid');
             if(videos.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-24 text-gray-400 text-sm">Video bulunamadı.</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-24 text-gray-400 text-sm">Aradığınız kriterlere uygun video bulunamadı.</div>`;
                 return;
             }
             grid.innerHTML = videos.map(v => `
@@ -235,7 +226,7 @@
                         <div class="flex-1 overflow-hidden">
                             <h3 class="font-semibold text-sm text-white line-clamp-2 group-hover:text-blue-400 transition">${v.title}</h3>
                             <p class="text-xs text-gray-400 mt-1">${v.channel}</p>
-                            <p class="text-xs text-gray-500">${v.views} görüntülenme • ${v.time}</p>
+                            <p class="text-xs text-gray-500">${v.views} • ${v.time}</p>
                         </div>
                     </div>
                 </div>
@@ -243,16 +234,16 @@
         }
 
         function filterCategory(cat) {
-            document.querySelectorAll('.chip-btn').forEach(btn => {
+            document.querySelectorAll('.chip').forEach(btn => {
                 btn.classList.remove('bg-white', 'text-black');
                 btn.classList.add('bg-yt-card', 'text-white');
-                if(btn.innerText.includes(cat) || (cat === 'Tümü' && btn.innerText === 'Tümü')) {
+                if(btn.innerText.trim() === cat || (cat === 'Tümü' && btn.innerText.trim() === 'Tümü')) {
                     btn.classList.remove('bg-yt-card', 'text-white');
                     btn.classList.add('bg-white', 'text-black');
                 }
             });
 
-            if(cat === 'Tümü' || cat === 'Keşfet') {
+            if(cat === 'Tümü') {
                 renderVideos(allVideos);
             } else {
                 const filtered = allVideos.filter(v => v.category === cat);
