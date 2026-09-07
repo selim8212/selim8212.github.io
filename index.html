@@ -2,7 +2,6 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; URL='https://selim8212.github.io'">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SelTube Premium</title>
     <!-- Tailwind CSS CDN -->
@@ -89,7 +88,6 @@
             </a>
             
             <div id="auth-container">
-                <!-- Dinamik olarak giriş yapılmış veya yapımamış butonlar gelecek -->
                 <button onclick="openAuthModal('login')" class="bg-transparent border border-yt-border hover:border-gray-500 text-blue-400 font-semibold px-4 py-1.5 rounded-full text-sm transition flex items-center space-x-2">
                     <i class="fa-regular fa-circle-user"></i>
                     <span>Oturum Aç</span>
@@ -100,7 +98,7 @@
 
     <!-- ANA İÇERİK DÜZENİ -->
     <div class="flex pt-14 flex-1">
-        <!-- SOL KENAR ÇUCUĞU (SIDEBAR) -->
+        <!-- SOL KENAR ÇUBUĞU (SIDEBAR) -->
         <aside id="sidebar" class="w-64 bg-yt-sidebar h-[calc(100vh-3.5rem)] fixed left-0 top-14 p-3 overflow-y-auto border-r border-yt-border z-40 transition-transform duration-300">
             <div class="space-y-1">
                 <a href="#" onclick="filterCategory('Tümü')" class="flex items-center space-x-6 px-3 py-2.5 rounded-xl bg-yt-hover text-white font-medium text-sm transition">
@@ -129,9 +127,7 @@
             
             <div class="px-3 py-2">
                 <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Hızlı Kanallar</h3>
-                <div id="quick-channels" class="space-y-2">
-                    <!-- Dinamik Kanallar -->
-                </div>
+                <div id="quick-channels" class="space-y-2"></div>
             </div>
 
             <hr class="border-yt-border my-3">
@@ -161,7 +157,6 @@
 
             <!-- Video Grid Alanı -->
             <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                <!-- Videolar JavaScript ile yüklenecek -->
                 <div class="col-span-full text-center py-20 text-gray-400">
                     <i class="fa-solid fa-spinner fa-spin text-3xl mb-2 text-red-600"></i>
                     <p>Videolar yükleniyor...</p>
@@ -170,7 +165,7 @@
         </main>
     </div>
 
-    <!-- VİDEO OYNATMA MODALI (Güvenli Oynatıcı / Gömülü) -->
+    <!-- VİDEO OYNATMA MODALI -->
     <div id="video-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-yt-card border border-yt-border w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
             <div class="flex items-center justify-between px-4 py-3 border-b border-yt-border bg-[#181818]">
@@ -282,12 +277,10 @@
 
     <!-- JAVASCRIPT UYGULAMA MANTIĞI -->
     <script>
-        // Örnek Veri ve Sistem Durumu
-        let currentMode = 'login'; // 'login' veya 'register'
+        let currentMode = 'login';
         let currentUser = JSON.parse(localStorage.getItem('seltume_user')) || null;
         let currentVideos = [];
 
-        // Sayfa Yüklenme Olayı
         window.addEventListener('DOMContentLoaded', () => {
             updateAuthUI();
             loadVideos('Tümü');
@@ -297,7 +290,6 @@
         function setupEventListeners() {
             document.getElementById('menu-btn').addEventListener('click', () => {
                 const sidebar = document.getElementById('sidebar');
-                const mainContent = document.getElementById('main-content');
                 sidebar.classList.toggle('-translate-x-full');
             });
 
@@ -314,7 +306,6 @@
             });
         }
 
-        // Mock / API Video Yükleme Simülasyonu
         function loadVideos(category) {
             const grid = document.getElementById('video-grid');
             grid.innerHTML = `
@@ -324,7 +315,6 @@
                 </div>
             `;
 
-            // Örnek zengin video listesi simülasyonu
             setTimeout(() => {
                 currentVideos = [
                     { id: 'dQw4w9WgXcQ', title: 'SelTube Premium Sürüm 1.0 Çıktı! - Yeni Nesil Deneyimli Oynatıcı', channel: 'Selim Tașin', views: '125 B', time: '2 gün önce', duration: '14:20', category: 'Teknoloji', avatar: 'S' },
@@ -374,12 +364,10 @@
         }
 
         function searchVideos(query) {
-            const grid = document.getElementById('video-grid');
             const filtered = currentVideos.filter(v => v.title.toLowerCase().includes(query.toLowerCase()) || v.channel.toLowerCase().includes(query.toLowerCase()));
             renderVideos(filtered);
         }
 
-        // Video Oynatıcı Modal Kontrolleri
         let activeVideoId = '';
         function openVideoModal(id, title, channel) {
             activeVideoId = id;
@@ -400,7 +388,6 @@
             }
         }
 
-        // Kimlik Doğrulama / Auth Kontrolleri
         function openAuthModal(mode) {
             currentMode = mode;
             const titleElem = document.getElementById('auth-modal-title');
