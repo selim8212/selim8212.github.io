@@ -2,545 +2,520 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; URL='https://selim8212.github.io'">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SelTube Premium</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        yt: {
+                            black: '#0f0f0f',
+                            sidebar: '#0f0f0f',
+                            card: '#212121',
+                            hover: '#3f3f3f',
+                            border: '#303030',
+                            red: '#ff0000'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Roboto', Arial, sans-serif; background-color: #0f0f0f; color: white; margin: 0; padding: 0; }
-        header { background-color: #212121; padding: 15px 30px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        h1 { color: #ff0000; margin: 0; font-size: 24px; cursor: pointer; letter-spacing: -1px; }
-        h1 span { color: white; font-size: 14px; background: #333; padding: 2px 6px; border-radius: 4px; margin-left: 5px; vertical-align: middle;}
-        
-        .search-box { display: flex; width: 40%; }
-        .search-box input { width: 100%; padding: 10px; background: #121212; border: 1px solid #303030; color: white; border-radius: 4px 0 0 4px; outline: none; }
-        .search-box button { padding: 10px 20px; background: #303030; border: none; color: white; cursor: pointer; border-radius: 0 4px 4px 0; }
-
-        .auth-buttons { display: flex; gap: 10px; align-items: center; }
-        .btn-auth { padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
-        .btn-login { background: #ff0000; color: white; }
-        .btn-login:hover { background: #cc0000; }
-        
-        /* Mobil İndirme Butonu Stili */
-        .btn-download-app { background: #e50914; color: white; border: 1px solid #ff3333; }
-        .btn-download-app:hover { background: #b80710; }
-
-        .user-profile { display: none; align-items: center; gap: 12px; }
-        #avatarContainer { cursor: pointer; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; }
-        
-        .user-avatar-img { 
-            width: 38px; 
-            height: 38px; 
-            border-radius: 50%; 
-            object-fit: cover; 
-            cursor: pointer;
-            border: 2px solid #ff0000;
-            transition: transform 0.2s;
+        /* Özel Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
-        .user-avatar-img:hover, .user-avatar-text:hover {
-            transform: scale(1.08);
+        ::-webkit-scrollbar-track {
+            background: #0f0f0f;
         }
-        .user-avatar-text { 
-            width: 38px; 
-            height: 38px; 
-            background: #ff0000; 
-            color: white; 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: bold; 
-            font-size: 16px; 
-            cursor: pointer;
-            user-select: none;
-            transition: transform 0.2s;
+        ::-webkit-scrollbar-thumb {
+            background: #3f3f3f;
+            border-radius: 4px;
         }
-        
-        .profile-banner-container {
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .hide-scroll::-webkit-scrollbar {
             display: none;
-            width: 100%;
-            height: 120px;
-            background-color: #1a1a1a;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            border-bottom: 1px solid #333;
         }
-
-        .categories-bar { background: #212121; padding: 10px 30px; display: flex; gap: 10px; border-top: 1px solid #333; overflow-x: auto; }
-        .category-chip { background: #373737; color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 500; white-space: nowrap; }
-        .category-chip.active { background: white; color: black; }
-
-        .main-layout { display: flex; padding: 20px; gap: 20px; max-width: 1600px; margin: 0 auto; }
-        .sidebar-menu { flex: 1; background: #1f1f1f; padding: 15px; border-radius: 12px; height: fit-content; min-width: 200px; }
-        .menu-list { list-style: none; padding: 0; margin: 0; }
-        .menu-list li { padding: 10px; border-radius: 6px; cursor: pointer; font-size: 14px; }
-        .menu-list li:hover { background: #333; }
-
-        .video-player-section { flex: 3; position: sticky; top: 150px; height: fit-content; }
-        
-        .video-container-box { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 2px solid #333; }
-        .video-container-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-
-        .bypass-trigger-btn { display: block; width: 100%; margin-top: 10px; padding: 12px; background: #ff5500; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-align: center; font-size: 14px; }
-        .bypass-trigger-btn:hover { background: #ff3300; }
-
-        .video-details { background: #212121; padding: 20px; border-radius: 12px; margin-top: 15px; }
-        .video-details h2 { margin-top: 0; font-size: 18px; line-height: 1.4; }
-        
-        .stats-row { display: flex; justify-content: space-between; color: #aaa; font-size: 13px; margin-bottom: 10px; }
-        .description-box { font-size: 12px; color: #ddd; max-height: 100px; overflow-y: auto; background: #141414; padding: 10px; border-radius: 6px; }
-
-        .feed-section { flex: 4; }
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; }
-        .video-card { background: #212121; border-radius: 12px; overflow: hidden; cursor: pointer; }
-        .thumbnail-box { position: relative; padding-bottom: 56.25%; background: #000; }
-        .thumbnail-box img { position: absolute; top:0; left:0; width:100%; height:100%; object-fit: cover; }
-        .card-info { padding: 10px; }
-        .card-title { font-size: 13px; font-weight: bold; margin: 0 0 5px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        
-        .load-more-btn { display: block; width: 180px; margin: 20px auto; padding: 10px; background: #ff0000; color: white; border: none; border-radius: 25px; font-size: 14px; cursor: pointer; font-weight: bold; }
-
-        .bypass-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
-        .modal-content { width: 90%; max-width: 950px; height: 55vh; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid #444; }
-        .close-modal { margin-top: 15px; background: #ff0000; color: white; border: none; padding: 10px 30px; font-weight: bold; border-radius: 20px; cursor: pointer; }
-
-        /* AUTH MODAL & SOSYAL BUTONLAR */
-        .auth-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center; }
-        .auth-box { background: #212121; padding: 25px; border-radius: 12px; width: 100%; max-width: 400px; border: 1px solid #333; position: relative; }
-        
-        .auth-tabs { display: flex; border-bottom: 1px solid #333; margin-bottom: 20px; }
-        .auth-tab { flex: 1; padding: 10px; text-align: center; cursor: pointer; font-weight: bold; color: #aaa; border-bottom: 2px solid transparent; }
-        .auth-tab.active { color: #ff0000; border-bottom-color: #ff0000; }
-
-        .auth-form-group { margin-bottom: 15px; }
-        .auth-form-group label { display: block; font-size: 12px; color: #aaa; margin-bottom: 5px; }
-        .auth-form-group input { width: 100%; padding: 10px; background: #121212; border: 1px solid #333; border-radius: 6px; color: white; box-sizing: border-box; outline: none; }
-        .auth-form-group input[type="file"] { padding: 5px; font-size: 12px; }
-        .btn-submit-auth { width: 100%; padding: 12px; background: #ff0000; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .btn-submit-auth:hover { background: #cc0000; }
-        
-        .social-divider { text-align: center; margin: 15px 0; color: #888; font-size: 12px; border-bottom: 1px solid #333; line-height: 0.1em; }
-        .social-divider span { background: #212121; padding: 0 10px; }
-        
-        .btn-social { width: 100%; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 8px; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-google { background: #ffffff; color: #000; }
-        
-        .close-auth { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #aaa; font-size: 18px; cursor: pointer; }
+        .hide-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
-<body>
+<body class="bg-yt-black text-white min-h-screen font-sans selection:bg-red-600 selection:text-white flex flex-col justify-between">
 
-    <div id="profileBanner" class="profile-banner-container"></div>
-
-    <header>
-        <h1 onclick="changeCategory('Ana Sayfa', this)">SelTube<span>PREMIUM</span></h1>
-        
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="SelTube'da arama yapın...">
-            <button onclick="searchNewQuery()">Ara</button>
+    <!-- ÜST NAVİGASYON (HEADER) -->
+    <header class="fixed top-0 left-0 right-0 h-14 bg-yt-black/95 backdrop-blur border-b border-yt-border px-4 flex items-center justify-between z-50">
+        <!-- Sol: Menü Butonu ve Logo -->
+        <div class="flex items-center space-x-4">
+            <button id="menu-btn" class="p-2 hover:bg-yt-hover rounded-full transition text-gray-300">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+            <a href="#" onclick="location.reload();" class="flex items-center space-x-1 cursor-pointer">
+                <div class="bg-red-600 text-white p-1.5 rounded-xl flex items-center justify-center shadow-lg shadow-red-600/30">
+                    <i class="fa-solid fa-play text-xs"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tighter">SelTube <span class="text-xs bg-red-600/20 text-red-500 border border-red-500/30 px-1.5 py-0.5 rounded ml-0.5 font-semibold">Premium</span></span>
+            </a>
         </div>
 
-        <div class="auth-buttons" id="authButtons">
-            <button class="btn-auth btn-login" onclick="openAuthModal('login')">Giriş Yap / Kayıt Ol</button>
-            <!-- EKLENEN MOBİL SÜRÜM İNDİR BUTONU -->
-            <a href="http://selim8212.github.io/SelTube-1.0.apk" class="btn-auth btn-download-app" target="_blank">📱 SelTube Mobil Sürümü İndir</a>
+        <!-- Orta: Arama Çubuğu -->
+        <div class="flex items-center flex-1 max-w-2xl mx-4">
+            <div class="flex items-center w-full bg-[#121212] border border-yt-border rounded-l-full px-4 py-2 focus-within:border-blue-500 transition">
+                <i class="fa-solid fa-magnifying-glass text-gray-400 mr-3 text-sm"></i>
+                <input type="text" id="search-input" placeholder="Ara..." class="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-500">
+            </div>
+            <button id="search-btn" class="bg-yt-hover border border-l-0 border-yt-border px-6 py-2 rounded-r-full hover:bg-[#303030] transition text-gray-300">
+                <i class="fa-solid fa-magnifying-glass text-sm"></i>
+            </button>
         </div>
 
-        <div class="user-profile" id="userProfile">
-            <div id="avatarContainer" onclick="openProfileDetails()"></div>
-            <!-- Giriş yapıldığında da gözükmesi için eklenen mobil indirme linki -->
-            <a href="http://selim8212.github.io/SelTube-1.0.apk" class="btn-auth btn-download-app" target="_blank" style="font-size: 11px; padding: 6px 12px;">📱 APK İndir</a>
-            <button id="logoutBtn" style="background:#cc0000; color:white; border:none; padding:8px 14px; border-radius:20px; cursor:pointer; font-size:12px; font-weight:bold;">Çıkış Yap</button>
+        <!-- Sağ: Profil / Giriş & APK İndir -->
+        <div class="flex items-center space-x-3">
+            <a href="SelTube-1.0.apk" download class="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-bold px-3 py-2 rounded-full transition shadow-md shadow-red-600/20">
+                <i class="fa-solid fa-download"></i>
+                <span>APK İndir</span>
+            </a>
+            
+            <div id="auth-container">
+                <!-- Dinamik olarak giriş yapılmış veya yapımamış butonlar gelecek -->
+                <button onclick="openAuthModal('login')" class="bg-transparent border border-yt-border hover:border-gray-500 text-blue-400 font-semibold px-4 py-1.5 rounded-full text-sm transition flex items-center space-x-2">
+                    <i class="fa-regular fa-circle-user"></i>
+                    <span>Oturum Aç</span>
+                </button>
+            </div>
         </div>
     </header>
 
-    <div class="categories-bar">
-        <button class="category-chip active" onclick="changeCategory('Ana Sayfa', this)">Ana Sayfa</button>
-        <button class="category-chip" onclick="changeCategory('Trendler', this)">Trendler</button>
-        <button class="category-chip" onclick="changeCategory('futbol shorts', this)">Futbol Shorts</button>
-        <button class="category-chip" onclick="changeCategory('müzik', this)">Müzik</button>
-        <button class="category-chip" onclick="changeCategory('oyun', this)">Oyun</button>
-    </div>
-
-    <div class="main-layout">
-        <div class="sidebar-menu">
-            <h3>Hızlı Kanallar</h3>
-            <ul class="menu-list">
-                <li onclick="searchFromSidebar('Netd Müzik')">Netd Müzik</li>
-                <li onclick="searchFromSidebar('Reynmen')">Reynmen</li>
-            </ul>
-        </div>
-
-        <div class="video-player-section">
-            <div class="video-container-box">
-                <iframe id="mainPlayer" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+    <!-- ANA İÇERİK DÜZENİ -->
+    <div class="flex pt-14 flex-1">
+        <!-- SOL KENAR ÇUCUĞU (SIDEBAR) -->
+        <aside id="sidebar" class="w-64 bg-yt-sidebar h-[calc(100vh-3.5rem)] fixed left-0 top-14 p-3 overflow-y-auto border-r border-yt-border z-40 transition-transform duration-300">
+            <div class="space-y-1">
+                <a href="#" onclick="filterCategory('Tümü')" class="flex items-center space-x-6 px-3 py-2.5 rounded-xl bg-yt-hover text-white font-medium text-sm transition">
+                    <i class="fa-solid fa-house w-5 text-center"></i>
+                    <span>Ana Sayfa</span>
+                </a>
+                <a href="#" onclick="filterCategory('Trendler')" class="flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition">
+                    <i class="fa-solid fa-fire w-5 text-center"></i>
+                    <span>Trendler</span>
+                </a>
+                <a href="#" onclick="filterCategory('Müzik')" class="flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition">
+                    <i class="fa-solid fa-music w-5 text-center"></i>
+                    <span>Müzik</span>
+                </a>
+                <a href="#" onclick="filterCategory('Oyun')" class="flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition">
+                    <i class="fa-solid fa-gamepad w-5 text-center"></i>
+                    <span>Oyun</span>
+                </a>
+                <a href="#" onclick="filterCategory('Teknoloji')" class="flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition">
+                    <i class="fa-solid fa-laptop-code w-5 text-center"></i>
+                    <span>Teknoloji</span>
+                </a>
             </div>
             
-            <button class="bypass-trigger-btn" id="bypassBtn" onclick="triggerBypass()">⚠️ Video Açılmadı mı? Güvenli Modda İçeride Çalıştır</button>
+            <hr class="border-yt-border my-3">
             
-            <div class="video-details">
-                <h2 id="mainTitle">Video Seciliyor...</h2>
-                <div class="stats-row">
-                    <span id="mainViews">0 Izlenme</span>
-                    <span id="mainLikes">0 Begeni</span>
+            <div class="px-3 py-2">
+                <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Hızlı Kanallar</h3>
+                <div id="quick-channels" class="space-y-2">
+                    <!-- Dinamik Kanallar -->
                 </div>
-                <div class="description-box" id="mainDesc">Aciklama yukleniyor...</div>
             </div>
-        </div>
 
-        <div class="feed-section">
-            <div class="grid-container" id="videoGrid"></div>
-            <button class="load-more-btn" id="loadMoreBtn" onclick="fetchVideos()">Daha Fazla Yukle</button>
+            <hr class="border-yt-border my-3">
+            
+            <!-- Mobil Uygulama Tanıtım Kartı -->
+            <div class="p-3 bg-gradient-to-br from-neutral-900 to-neutral-800 border border-red-500/30 rounded-xl text-center">
+                <div class="text-red-500 mb-1 text-lg"><i class="fa-brands fa-android"></i></div>
+                <h4 class="text-xs font-bold text-white mb-1">SelTube Android App</h4>
+                <p class="text-[10px] text-gray-400 mb-2">Uygulamayı cep telefonunuza kurun.</p>
+                <a href="SelTube-1.0.apk" download class="block w-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-1.5 rounded-lg transition">
+                    İndir (APK)
+                </a>
+            </div>
+        </aside>
+
+        <!-- ANA AKIŞ ALANI -->
+        <main id="main-content" class="flex-1 ml-64 p-6 transition-all duration-300">
+            <!-- Kategoriler Şeridi -->
+            <div class="flex items-center space-x-2 overflow-x-auto hide-scroll pb-4 mb-4" id="categories-bar">
+                <button onclick="filterCategory('Tümü')" class="cat-btn bg-white text-black px-3.5 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition">Tümü</button>
+                <button onclick="filterCategory('Canlı Yayın')" class="cat-btn bg-yt-card hover:bg-yt-hover text-white px-3.5 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition">Canlı Yayın</button>
+                <button onclick="filterCategory('Podcast')" class="cat-btn bg-yt-card hover:bg-yt-hover text-white px-3.5 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition">Podcast</button>
+                <button onclick="filterCategory('Futbol')" class="cat-btn bg-yt-card hover:bg-yt-hover text-white px-3.5 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition">Futbol</button>
+                <button onclick="filterCategory('Sinema')" class="cat-btn bg-yt-card hover:bg-yt-hover text-white px-3.5 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition">Sinema</button>
+                <button onclick="filterCategory('Belgesel')" class="cat-btn bg-yt-card hover:bg-yt-hover text-white px-3.5 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition">Belgesel</button>
+            </div>
+
+            <!-- Video Grid Alanı -->
+            <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <!-- Videolar JavaScript ile yüklenecek -->
+                <div class="col-span-full text-center py-20 text-gray-400">
+                    <i class="fa-solid fa-spinner fa-spin text-3xl mb-2 text-red-600"></i>
+                    <p>Videolar yükleniyor...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- VİDEO OYNATMA MODALI (Güvenli Oynatıcı / Gömülü) -->
+    <div id="video-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-yt-card border border-yt-border w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-yt-border bg-[#181818]">
+                <h3 id="modal-title" class="font-bold text-base truncate text-white">Video Oynatıcı</h3>
+                <button onclick="closeVideoModal()" class="text-gray-400 hover:text-white p-1 rounded-full hover:bg-yt-hover transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="relative w-full aspect-video bg-black flex items-center justify-center">
+                <iframe id="modal-iframe" class="w-full h-full" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <div class="p-4 flex items-center justify-between border-t border-yt-border bg-[#181818]">
+                <div class="flex items-center space-x-3">
+                    <div id="modal-channel-avatar" class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold text-white">S</div>
+                    <div>
+                        <h4 id="modal-channel-name" class="font-bold text-sm text-white">Kanal Adı</h4>
+                        <span class="text-xs text-gray-400">SelTube Verified Creator</span>
+                    </div>
+                </div>
+                <button onclick="openExternalPlayer()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition flex items-center space-x-2">
+                    <i class="fa-solid fa-external-link-alt"></i>
+                    <span>Harici Oynatıcıda Aç</span>
+                </button>
+            </div>
         </div>
     </div>
 
-    <div id="bypassLayer" class="bypass-modal">
-        <div class="modal-content">
-            <iframe id="bypassPlayer" width="100%" height="100%" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        </div>
-        <button class="close-modal" onclick="closeBypassVideo()">❌ Oynatıcıyı Kapat (Geri Dön)</button>
-    </div>
-
-    <!-- MODAL -->
-    <div id="authModal" class="auth-modal">
-        <div class="auth-box">
-            <button class="close-auth" onclick="closeAuthModal()">✕</button>
-
-            <div class="auth-tabs">
-                <div class="auth-tab active" id="tabLoginBtn">Giriş Yap</div>
-                <div class="auth-tab" id="tabRegisterBtn">Kayıt Ol</div>
-            </div>
-
-            <!-- GİRİŞ FORMU -->
-            <form id="loginForm" style="display: block;">
-                <div class="auth-form-group">
-                    <label>E-Posta Adresi</label>
-                    <input type="email" id="loginEmail" required placeholder="ornek@mail.com">
-                </div>
-                <div class="auth-form-group">
-                    <label>Şifre</label>
-                    <input type="password" id="loginPassword" required placeholder="******">
-                </div>
-                <button type="submit" class="btn-submit-auth">Giriş Yap</button>
-            </form>
-
-            <!-- KAYIT FORMU -->
-            <form id="registerForm" style="display: none;">
-                <div class="auth-form-group">
-                    <label>E-Posta Adresi</label>
-                    <input type="email" id="regEmail" required placeholder="ornek@mail.com">
-                </div>
-                <div class="auth-form-group">
-                    <label>Şifre Oluştur</label>
-                    <input type="password" id="regPassword" required placeholder="******">
-                </div>
-                <div class="auth-form-group">
-                    <label>Profil Fotoğrafı Seç (İsteğe Bağlı)</label>
-                    <input type="file" id="avatarFileInput" accept="image/*">
-                </div>
-                <div class="auth-form-group">
-                    <label>Kanal Banner Resmi Seç (İsteğe Bağlı)</label>
-                    <input type="file" id="bannerFileInput" accept="image/*">
-                </div>
-                <button type="submit" class="btn-submit-auth">Kayıt Ol ve Başla</button>
-            </form>
-
-            <div class="social-divider"><span>VEYA</span></div>
-
-            <button type="button" class="btn-social btn-google" id="googleAuthBtn">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> Google ile Devam Et
+    <!-- OTURUM AÇ / KAYIT OL MODALI -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-yt-card border border-yt-border w-full max-w-md rounded-2xl overflow-hidden shadow-2xl p-6 relative">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
             </button>
+            
+            <div class="text-center mb-6">
+                <div class="bg-red-600 text-white w-12 h-12 rounded-2xl mx-auto flex items-center justify-center text-xl shadow-lg shadow-red-600/30 mb-2">
+                    <i class="fa-solid fa-play"></i>
+                </div>
+                <h2 id="auth-modal-title" class="text-xl font-bold">SelTube'a Giriş Yap</h2>
+                <p class="text-xs text-gray-400 mt-1">Premium özelliklere ve kişiselleştirmeye erişin</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1">E-posta Adresi</label>
+                    <input type="email" id="auth-email" placeholder="ornek@mail.com" class="w-full bg-[#121212] border border-yt-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-600 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1">Şifre</label>
+                    <input type="password" id="auth-password" placeholder="••••••••" class="w-full bg-[#121212] border border-yt-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-600 transition">
+                </div>
+
+                <button id="auth-submit-btn" onclick="handleAuthSubmit()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl transition shadow-lg shadow-red-600/20 text-sm">
+                    Giriş Yap
+                </button>
+
+                <div class="relative flex py-2 items-center">
+                    <div class="flex-grow border-t border-yt-border"></div>
+                    <span class="flex-shrink mx-4 text-gray-500 text-xs">veya</span>
+                    <div class="flex-grow border-t border-yt-border"></div>
+                </div>
+
+                <button onclick="handleGoogleLogin()" class="w-full bg-[#121212] hover:bg-yt-hover border border-yt-border text-white font-medium py-2.5 rounded-xl transition flex items-center justify-center space-x-2 text-sm">
+                    <i class="fa-brands fa-google text-red-500"></i>
+                    <span>Google ile Devam Et</span>
+                </button>
+
+                <div class="text-center mt-4">
+                    <p id="auth-switch-text" class="text-xs text-gray-400">
+                        Hesabınız yok mu? <a href="#" onclick="toggleAuthMode()" class="text-blue-400 font-semibold">Kayıt Ol</a>
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- FIREBASE SDK ENTEGRASYONU -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { 
-            getAuth, 
-            createUserWithEmailAndPassword, 
-            signInWithEmailAndPassword, 
-            signInWithPopup, 
-            GoogleAuthProvider,
-            signOut,
-            onAuthStateChanged,
-            sendEmailVerification
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDf9QjqmVtMjyjzscx4yhikL0pzL2myEak",
-            authDomain: "selim8212github.firebaseapp.com",
-            projectId: "selim8212github",
-            storageBucket: "selim8212github.firebasestorage.app",
-            messagingSenderId: "606637585033",
-            appId: "1:606637585033:web:de6bb0349c9e7a3c5e4c58",
-            measurementId: "G-F5VNYJB28C"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const googleProvider = new GoogleAuthProvider();
-
-        window.currentUserData = null;
-
-        // Oturum Durumu Takibi
-        onAuthStateChanged(auth, (user) => {
-            const authBtnGroup = document.getElementById('authButtons');
-            const userProfileGroup = document.getElementById('userProfile');
-            const avatarContainer = document.getElementById('avatarContainer');
-            const bannerEl = document.getElementById('profileBanner');
-
-            if (user) {
-                window.currentUserData = user;
-                authBtnGroup.style.display = "none";
-                userProfileGroup.style.display = "flex";
-                
-                const userCustomData = JSON.parse(localStorage.getItem(`selTubeUserData_${user.uid}`) || '{}');
-                const avatarSrc = userCustomData.avatar || user.photoURL;
-
-                if(avatarSrc) {
-                    avatarContainer.innerHTML = `<img src="${avatarSrc}" class="user-avatar-img" title="${user.email}">`;
-                } else {
-                    const firstLetter = (user.email || 'U').charAt(0).toUpperCase();
-                    avatarContainer.innerHTML = `<div class="user-avatar-text" title="${user.email}">${firstLetter}</div>`;
-                }
-
-                if(userCustomData.banner) {
-                    bannerEl.style.backgroundImage = `url('${userCustomData.banner}')`;
-                    bannerEl.style.display = "block";
-                } else {
-                    bannerEl.style.display = "none";
-                }
-            } else {
-                window.currentUserData = null;
-                authBtnGroup.style.display = "flex";
-                userProfileGroup.style.display = "none";
-                bannerEl.style.display = "none";
-            }
-        });
-
-        // E-Posta Kayıt
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            const avatarFile = document.getElementById('avatarFileInput').files[0];
-            const bannerFile = document.getElementById('bannerFileInput').files[0];
-
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-
-                await sendEmailVerification(user);
-                alert("Kayıt başarılı! Doğrulama e-postası gönderildi.");
-
-                let avatarBase64 = avatarFile ? await fileToBase64(avatarFile) : null;
-                let bannerBase64 = bannerFile ? await fileToBase64(bannerFile) : null;
-
-                localStorage.setItem(`selTubeUserData_${user.uid}`, JSON.stringify({
-                    avatar: avatarBase64,
-                    banner: bannerBase64
-                }));
-
-                closeAuthModal();
-            } catch (error) {
-                alert("Kayıt Hatası: " + error.message);
-            }
-        });
-
-        // E-Posta Giriş
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                closeAuthModal();
-            } catch (error) {
-                alert("Giriş Hatası: " + error.message);
-            }
-        });
-
-        // Google Giriş
-        document.getElementById('googleAuthBtn').addEventListener('click', async () => {
-            try {
-                await signInWithPopup(auth, googleProvider);
-                closeAuthModal();
-            } catch (error) {
-                alert("Google Giriş Hatası: " + error.message);
-            }
-        });
-
-        // Çıkış Yap
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            signOut(auth);
-        });
-
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                if(!file) return resolve(null);
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        }
-    </script>
-
-    <script>
-        const API_KEY = 'AIzaSyAYFZLylTE_k-hpYU_MAFvZ_sNZ3Jx9kBY'; 
-        let nextPageToken = '';
-        let currentMode = 'Ana Sayfa'; 
-        let currentQuery = '';
-        let activeVideoId = '';
-
-        document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById('tabLoginBtn').addEventListener('click', () => switchAuthTab('login'));
-            document.getElementById('tabRegisterBtn').addEventListener('click', () => switchAuthTab('register'));
-        });
-
-        function openProfileDetails() {
-            if (window.currentUserData) {
-                alert("Giriş Yapılan E-Posta: " + window.currentUserData.email);
-            }
-        }
-
-        async function fetchVideos() {
-            const loadBtn = document.getElementById('loadMoreBtn');
-            loadBtn.innerText = 'Yukleniyor...';
-
-            let url = '';
-            if (currentMode === 'Ana Sayfa') {
-                url = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=snippet&chart=mostPopular&regionCode=TR&maxResults=20`;
-            } else if (currentMode === 'Trendler') {
-                url = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=snippet&chart=mostPopular&regionCode=TR&maxResults=20&videoCategoryId=17`; 
-            } else {
-                url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&q=${encodeURIComponent(currentQuery)}&part=snippet&type=video&maxResults=20`;
-            }
-
-            if (nextPageToken) url += `&pageToken=${nextPageToken}`;
-
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-
-                if(data.items && data.items.length > 0) {
-                    nextPageToken = data.nextPageToken || '';
-                    const grid = document.getElementById('videoGrid');
-                    
-                    if(grid.children.length === 0) {
-                        const firstId = (currentMode === 'Ana Sayfa' || currentMode === 'Trendler') ? data.items[0].id : data.items[0].id.videoId;
-                        loadVideoDetails(firstId);
-                    }
-
-                    data.items.forEach(item => {
-                        const vId = (currentMode === 'Ana Sayfa' || currentMode === 'Trendler') ? item.id : item.id.videoId;
-                        if(!vId) return;
-                        
-                        const title = item.snippet.title;
-                        const thumb = item.snippet.thumbnails.high ? item.snippet.thumbnails.high.url : item.snippet.thumbnails.medium.url;
-
-                        const card = document.createElement('div');
-                        card.className = 'video-card';
-                        card.onclick = () => loadVideoDetails(vId);
-                        card.innerHTML = `
-                            <div class="thumbnail-box"><img src="${thumb}"></div>
-                            <div class="card-info">
-                                <p class="card-title">${title}</p>
-                            </div>
-                        `;
-                        grid.appendChild(card);
-                    });
-                    loadBtn.innerText = 'Daha Fazla Yukle';
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        function loadVideoDetails(videoId) {
-            activeVideoId = videoId;
-            document.getElementById('mainPlayer').src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+    <!-- PROFİL DÜZENLEME MODALI -->
+    <div id="profile-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-yt-card border border-yt-border w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl p-6 relative">
+            <button onclick="closeProfileModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h2 class="text-lg font-bold mb-4">Profil Ayarları & Kanal Özelleştirme</h2>
             
-            const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${videoId}&part=snippet,statistics`;
-            fetch(detailsUrl).then(res => res.json()).then(data => {
-                if(data.items && data.items.length > 0) {
-                    const videoData = data.items[0];
-                    document.getElementById('mainTitle').innerText = videoData.snippet.title;
-                    document.getElementById('mainViews').innerText = `${parseInt(videoData.statistics.viewCount || 0).toLocaleString('tr-TR')} Izlenme`;
-                    document.getElementById('mainLikes').innerText = `${parseInt(videoData.statistics.likeCount || 0).toLocaleString('tr-TR')} Begeni`;
-                    document.getElementById('mainDesc').innerText = videoData.snippet.description || 'Aciklama yok.';
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1">Kanal / Kullanıcı Adı</label>
+                    <input type="text" id="profile-name-input" class="w-full bg-[#121212] border border-yt-border rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-red-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1">Profil Fotoğrafı Seç (Dosya)</label>
+                    <input type="file" id="profile-avatar-file" accept="image/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1">Kanal Banner Görseli (Dosya)</label>
+                    <input type="file" id="profile-banner-file" accept="image/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700">
+                </div>
+                <button onclick="saveProfileChanges()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-xl transition text-sm">
+                    Değişiklikleri Kaydet
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ALT BİLGİ (FOOTER) -->
+    <footer class="border-t border-yt-border py-4 px-6 text-center text-xs text-gray-500 bg-yt-black ml-0 sm:ml-64 transition-all">
+        <p>&copy; 2026 SelTube Premium - Tüm hakları saklıdır. Gelişmiş YouTube Deneyimi.</p>
+    </footer>
+
+    <!-- JAVASCRIPT UYGULAMA MANTIĞI -->
+    <script>
+        // Örnek Veri ve Sistem Durumu
+        let currentMode = 'login'; // 'login' veya 'register'
+        let currentUser = JSON.parse(localStorage.getItem('seltume_user')) || null;
+        let currentVideos = [];
+
+        // Sayfa Yüklenme Olayı
+        window.addEventListener('DOMContentLoaded', () => {
+            updateAuthUI();
+            loadVideos('Tümü');
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('menu-btn').addEventListener('click', () => {
+                const sidebar = document.getElementById('sidebar');
+                const mainContent = document.getElementById('main-content');
+                sidebar.classList.toggle('-translate-x-full');
+            });
+
+            document.getElementById('search-btn').addEventListener('click', () => {
+                const query = document.getElementById('search-input').value.trim();
+                if(query) searchVideos(query);
+            });
+
+            document.getElementById('search-input').addEventListener('keypress', (e) => {
+                if(e.key === 'Enter') {
+                    const query = e.target.value.trim();
+                    if(query) searchVideos(query);
                 }
             });
         }
 
-        function triggerBypass() {
-            if(!activeVideoId) return;
-            const modal = document.getElementById('bypassLayer');
-            const iframe = document.getElementById('bypassPlayer');
-            iframe.src = `https://www.youtube.com/embed/${activeVideoId}?autoplay=1&modestbranding=1&rel=0&origin=${window.location.origin}`;
-            modal.style.display = "flex";
+        // Mock / API Video Yükleme Simülasyonu
+        function loadVideos(category) {
+            const grid = document.getElementById('video-grid');
+            grid.innerHTML = `
+                <div class="col-span-full text-center py-20 text-gray-400">
+                    <i class="fa-solid fa-spinner fa-spin text-3xl mb-2 text-red-600"></i>
+                    <p>${category} kategorisindeki videolar getiriliyor...</p>
+                </div>
+            `;
+
+            // Örnek zengin video listesi simülasyonu
+            setTimeout(() => {
+                currentVideos = [
+                    { id: 'dQw4w9WgXcQ', title: 'SelTube Premium Sürüm 1.0 Çıktı! - Yeni Nesil Deneyimli Oynatıcı', channel: 'Selim Tașin', views: '125 B', time: '2 gün önce', duration: '14:20', category: 'Teknoloji', avatar: 'S' },
+                    { id: '3JZ_D3ELwOQ', title: 'En Popüler Sinematik Müzikler & Rahatlatıcı Arka Plan Melodileri 2026', channel: 'Müzik Dünyası', views: '4.2 Mn', time: '1 ay önce', duration: '3:45:10', category: 'Müzik', avatar: 'M' },
+                    { id: 'jfKfPfyJRdk', title: 'Lofi Hip Hop Radio - Beats to Study / Relax to 24/7', channel: 'Lofi Girl', views: '1.1 M', time: 'Şimdi Canlı', duration: 'CANLI', category: 'Canlı Yayın', avatar: 'L' },
+                    { id: '5qap5aO4i9A', title: 'Supercell Oyunları İçin En İyi Taktikler ve Özel İpuçları', channel: 'Oyun Kulübü', views: '89 B', time: '3 gün önce', duration: '22:15', category: 'Oyun', avatar: 'O' },
+                    { id: '9bZkp7q19f0', title: 'Geleceğin Teknolojileri ve Yapay Zeka Devrimi Röportajı', channel: 'Tech Insider', views: '540 B', time: '1 hafta önce', duration: '45:00', category: 'Teknoloji', avatar: 'T' },
+                    { id: 'L_LUpnjgPso', title: 'Derin Uzay Belgeseli - Evrenin Bilinmeyen Sırları HD', channel: 'Bilim Evreni', views: '980 B', time: '2 ay önce', duration: '1:12:00', category: 'Belgesel', avatar: 'B' }
+                ];
+
+                renderVideos(currentVideos);
+            }, 500);
         }
 
-        function closeBypassVideo() {
-            document.getElementById('bypassLayer').style.display = "none";
-            document.getElementById('bypassPlayer').src = "";
+        function renderVideos(videos) {
+            const grid = document.getElementById('video-grid');
+            if(videos.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-400">Hiç video bulunamadı.</div>`;
+                return;
+            }
+
+            grid.innerHTML = videos.map(v => `
+                <div class="flex flex-col group cursor-pointer" onclick="openVideoModal('${v.id}', '${escapeHtml(v.title)}', '${escapeHtml(v.channel)}')">
+                    <div class="relative w-full aspect-video bg-yt-card rounded-2xl overflow-hidden border border-yt-border group-hover:border-gray-500 transition shadow-md">
+                        <img src="https://img.youtube.com/vi/${v.id}/hqdefault.jpg" alt="${v.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        <span class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded">${v.duration}</span>
+                    </div>
+                    <div class="flex space-x-3 mt-3">
+                        <div class="w-9 h-9 rounded-full bg-red-600 flex-shrink-0 flex items-center justify-center font-bold text-sm text-white shadow">${v.avatar}</div>
+                        <div class="flex-1 overflow-hidden">
+                            <h3 class="font-semibold text-sm text-white line-clamp-2 group-hover:text-blue-400 transition">${v.title}</h3>
+                            <p class="text-xs text-gray-400 mt-1 hover:text-white transition">${v.channel}</p>
+                            <p class="text-xs text-gray-500">${v.views} görüntülenme • ${v.time}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function changeCategory(category, element) {
-            document.querySelectorAll('.category-chip').forEach(btn => btn.classList.remove('active'));
-            if(element) element.classList.add('active');
-            document.getElementById('videoGrid').innerHTML = '';
-            nextPageToken = '';
-            currentMode = (category === 'Ana Sayfa' || category === 'Trendler') ? category : 'Search';
-            currentQuery = category;
-            fetchVideos();
-        }
-
-        function searchNewQuery() {
-            const query = document.getElementById('searchInput').value;
-            if(query.trim() !== "") {
-                currentMode = 'Search'; currentQuery = query;
-                nextPageToken = ''; document.getElementById('videoGrid').innerHTML = '';
-                fetchVideos();
+        function filterCategory(category) {
+            if(category === 'Tümü' || category === 'Trendler') {
+                loadVideos(category);
+            } else {
+                const filtered = currentVideos.filter(v => v.category === category);
+                renderVideos(filtered.length ? filtered : currentVideos);
             }
         }
 
-        function searchFromSidebar(channelName) {
-            currentMode = 'Search'; currentQuery = channelName;
-            nextPageToken = ''; document.getElementById('videoGrid').innerHTML = '';
-            fetchVideos();
+        function searchVideos(query) {
+            const grid = document.getElementById('video-grid');
+            const filtered = currentVideos.filter(v => v.title.toLowerCase().includes(query.toLowerCase()) || v.channel.toLowerCase().includes(query.toLowerCase()));
+            renderVideos(filtered);
         }
 
-        function openAuthModal(defaultTab = 'login') {
-            document.getElementById('authModal').style.display = "flex";
-            switchAuthTab(defaultTab);
+        // Video Oynatıcı Modal Kontrolleri
+        let activeVideoId = '';
+        function openVideoModal(id, title, channel) {
+            activeVideoId = id;
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-channel-name').innerText = channel;
+            document.getElementById('modal-iframe').src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1`;
+            document.getElementById('video-modal').classList.remove('hidden');
+        }
+
+        function closeVideoModal() {
+            document.getElementById('modal-iframe').src = '';
+            document.getElementById('video-modal').classList.add('hidden');
+        }
+
+        function openExternalPlayer() {
+            if(activeVideoId) {
+                window.open(`https://www.youtube.com/watch?v=${activeVideoId}`, '_blank');
+            }
+        }
+
+        // Kimlik Doğrulama / Auth Kontrolleri
+        function openAuthModal(mode) {
+            currentMode = mode;
+            const titleElem = document.getElementById('auth-modal-title');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const switchText = document.getElementById('auth-switch-text');
+
+            if(mode === 'login') {
+                titleElem.innerText = "SelTube'a Giriş Yap";
+                submitBtn.innerText = "Giriş Yap";
+                switchText.innerHTML = `Hesabınız yok mu? <a href="#" onclick="toggleAuthMode()" class="text-blue-400 font-semibold">Kayıt Ol</a>`;
+            } else {
+                titleElem.innerText = "SelTube'a Kayıt Ol";
+                submitBtn.innerText = "Kayıt Ol";
+                switchText.innerHTML = `Zaten hesabınız var mı? <a href="#" onclick="toggleAuthMode()" class="text-blue-400 font-semibold">Giriş Yap</a>`;
+            }
+
+            document.getElementById('auth-modal').classList.remove('hidden');
         }
 
         function closeAuthModal() {
-            document.getElementById('authModal').style.display = "none";
+            document.getElementById('auth-modal').classList.add('hidden');
         }
 
-        function switchAuthTab(tab) {
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
-            const tabLoginBtn = document.getElementById('tabLoginBtn');
-            const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+        function toggleAuthMode() {
+            openAuthModal(currentMode === 'login' ? 'register' : 'login');
+        }
 
-            if(tab === 'login') {
-                loginForm.style.display = 'block';
-                registerForm.style.display = 'none';
-                tabLoginBtn.classList.add('active');
-                tabRegisterBtn.classList.remove('active');
+        function handleAuthSubmit() {
+            const email = document.getElementById('auth-email').value.trim();
+            if(!email) {
+                alert('Lütfen geçerli bir e-posta adresi girin.');
+                return;
+            }
+
+            currentUser = {
+                name: email.split('@')[0],
+                email: email,
+                avatar: email.charAt(0).toUpperCase()
+            };
+
+            localStorage.setItem('seltume_user', JSON.stringify(currentUser));
+            closeAuthModal();
+            updateAuthUI();
+            alert('Başarıyla oturum açıldı!');
+        }
+
+        function handleGoogleLogin() {
+            currentUser = {
+                name: 'Selim Tașin',
+                email: 'selim@gmail.com',
+                avatar: 'S'
+            };
+            localStorage.setItem('seltume_user', JSON.stringify(currentUser));
+            closeAuthModal();
+            updateAuthUI();
+            alert('Google ile başarılı giriş yapıldı!');
+        }
+
+        function updateAuthUI() {
+            const container = document.getElementById('auth-container');
+            if(currentUser) {
+                container.innerHTML = `
+                    <div class="flex items-center space-x-2 cursor-pointer" onclick="openProfileModal()">
+                        <div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center font-bold text-white shadow">${currentUser.avatar || 'S'}</div>
+                        <span class="hidden md:inline text-xs font-semibold text-white">${currentUser.name}</span>
+                    </div>
+                `;
             } else {
-                loginForm.style.display = 'none';
-                registerForm.style.display = 'block';
-                tabRegisterBtn.classList.add('active');
-                tabLoginBtn.classList.remove('active');
+                container.innerHTML = `
+                    <button onclick="openAuthModal('login')" class="bg-transparent border border-yt-border hover:border-gray-500 text-blue-400 font-semibold px-4 py-1.5 rounded-full text-sm transition flex items-center space-x-2">
+                        <i class="fa-regular fa-circle-user"></i>
+                        <span>Oturum Aç</span>
+                    </button>
+                `;
             }
         }
 
-        fetchVideos();
+        function openProfileModal() {
+            if(!currentUser) {
+                openAuthModal('login');
+                return;
+            }
+            document.getElementById('profile-name-input').value = currentUser.name;
+            document.getElementById('profile-modal').classList.remove('hidden');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profile-modal').classList.add('hidden');
+        }
+
+        function saveProfileChanges() {
+            const newName = document.getElementById('profile-name-input').value.trim();
+            if(newName) currentUser.name = newName;
+
+            const avatarFile = document.getElementById('profile-avatar-file').files[0];
+            if(avatarFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentUser.avatarImg = e.target.result;
+                    localStorage.setItem('seltume_user', JSON.stringify(currentUser));
+                    updateAuthUI();
+                }
+                reader.readAsDataURL(avatarFile);
+            } else {
+                localStorage.setItem('seltume_user', JSON.stringify(currentUser));
+                updateAuthUI();
+            }
+
+            closeProfileModal();
+            alert('Profil başarıyla güncellendi!');
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+        }
     </script>
 </body>
 </html>
