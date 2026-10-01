@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[SelimMC] SelCraft Ekran Kontrolcüsü</title>
+    <style>
+        body {
+            background-color: #121218;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        h1 {
+            margin-bottom: 10px;
+            font-size: 22px;
+            color: #e74c3c;
+        }
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            background: #2d3436;
+            color: white;
+            border: 1px solid #636e72;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        button:hover {
+            background: #e74c3c;
+            border-color: #e74c3c;
+        }
+        .frame-container {
+            width: 100%;
+            max-width: 1000px;
+            height: 600px;
+            background: #1e1e28;
+            border: 2px solid #333344;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        /* Küçük ekran (Mobil önizleme) modu */
+        .frame-container.small-screen {
+            width: 380px;
+            height: 650px;
+            border-radius: 30px;
+            border: 8px solid #2f3640;
+        }
+        /* Tam ekran modu */
+        .frame-container.fullscreen-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            max-width: none;
+            border: none;
+            border-radius: 0;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>⚡ SelCraft Görünüm Kontrolcüsü</h1>
+    <div class="controls">
+        <button onclick="setMode('small')">📱 Küçük Ekran (Mobil)</button>
+        <button onclick="setMode('normal')">💻 Normal Ekran</button>
+        <button onclick="setMode('fullscreen')">⛶ Tam Ekran Yap</button>
+    </div>
+
+    <div class="frame-container" id="frameContainer">
+        <!-- Doğrudan GitHub Pages adresinden çeker -->
+        <iframe src="https://selim8212.github.io/SelCraft.html" id="selcraftFrame"></iframe>
+    </div>
+
+    <script>
+        function setMode(mode) {
+            const container = document.getElementById('frameContainer');
+            
+            // Önce tüm özel mod sınıflarını temizle
+            container.classList.remove('small-screen', 'fullscreen-mode');
+            
+            if (mode === 'small') {
+                container.classList.add('small-screen');
+            } else if (mode === 'fullscreen') {
+                container.classList.add('fullscreen-mode');
+            }
+        }
+    </script>
+
+</body>
+</html>
