@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Skin Viewer</title>
+    <!-- Tailwind CSS Tasarım Kütüphanesi -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome İkonları -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SkinView3D Kütüphanesi -->
+    <script src="https://unpkg.com/skinview3d@3.0.0/bundles/skinview3d.bundle.js"></script>
+    <style>
+        canvas { touch-action: none; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 space-y-6">
+        
+        <!-- Başlık -->
+        <div class="text-center">
+            <h1 class="text-xl font-bold text-blue-400 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-cube"></i> Minecraft Skin Viewer
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">Skin dosyanı seç, basılı tutarak çevir ve 3D görüntüle</p>
+        </div>
+
+        <!-- Dosya Seçme Alanı -->
+        <div class="space-y-3">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Skin PNG Dosyası</label>
+            <input type="file" id="skinInput" accept="image/png" 
+                class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 cursor-pointer">
+        </div>
+
+        <!-- Model Seçenekleri ve Animasyon -->
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Model Tipi</label>
+                <select id="modelSelect" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    <option value="default">Normal (Classic)</option>
+                    <option value="slim">İnce Kol (Slim / Alex)</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Animasyon</label>
+                <button id="animToggleBtn" onclick="toggleAnimation()" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl py-2 text-sm font-semibold transition text-emerald-400">
+                    <i class="fa-solid fa-person-running"></i> <span id="animStatus">Yürüyor</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 3D Görüntüleme Alanı (Canvas) -->
+        <div class="relative w-full h-80 bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex items-center justify-center">
+            <canvas id="skinContainer" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+        </div>
+
+    </div>
+
+    <!-- JavaScript Kodları -->
+    <script>
+        let skinViewer = null;
+        let isAnimating = true;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('skinContainer');
+            
+            // Otomatik olarak Steve skini ile başlatıyoruz
+            skinViewer = new skinview3d.SkinViewer({
+                canvas: canvas,
+                width: canvas.clientWidth,
+                height: canvas.clientHeight,
+                skin: "https://raw.githubusercontent.com/SkinView3D/skinview3d/master/examples/img/steve.png"
+            });
+
+            // Fare ile basılı tutup sağ sola döndürmeyi aktif etme
+            skinViewer.control.enableRotate = true;
+            skinViewer.control.enableZoom = true;
+
+            // Varsayılan yürüme animasyonunu düzgün şekilde başlatıyoruz
+            skinViewer.animation = new skinview3d.WalkingAnimation();
+            skinViewer.animation.speed = 1.0;
+
+            // Model tipi değiştiğinde (Classic / Slim)
+            document.getElementById('modelSelect').addEventListener('change', (e) => {
+                skinViewer.loadSkin(skinViewer.skinUrl, e.target.value);
+            });
+        });
+
+        // Yeni bir skin dosyası (.png) yüklendiğinde
+        document.getElementById('skinInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const imageUrl = URL.createObjectURL(file);
+                const modelType = document.getElementById('modelSelect').value;
+                
+                skinViewer.loadSkin(imageUrl, modelType);
+            }
+        });
+
+        // Animasyonu açma / kapatma butonu
+        function toggleAnimation() {
+            const btnText = document.getElementById('animStatus');
+            const btn = document.getElementById('animToggleBtn');
+
+            if (isAnimating) {
+                skinViewer.animation = null; // Animasyonu durdurur (durgun/flat görünüm)
+                isAnimating = false;
+                btnText.innerText = "Durgun";
+                btn.classList.remove('text-emerald-400');
+                btn.classList.add('text-amber-400');
+            } else {
+                skinViewer.animation = new skinview3d.WalkingAnimation(); // Yürüme animasyonunu tekrar başlatır
+                isAnimating = true;
+                btnText.innerText = "Yürüyor";
+                btn.classList.remove('text-amber-400');
+                btn.classList.add('text-emerald-400');
+            }
+        }
+
+        // Ekran boyutu değiştiğinde 3D alanı güncelle
+        window.addEventListener('resize', () => {
+            const canvas = document.getElementById('skinContainer');
+            if (skinViewer) {
+                skinViewer.width = canvas.clientWidth;
+                skinViewer.height = canvas.clientHeight;
+            }
+        });
+    </script>
+</body>
+</html>
