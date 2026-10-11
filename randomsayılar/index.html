@@ -2,44 +2,141 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Yönlendiriliyor...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Kısaltıcı</title>
     <style>
         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #121212;
             color: #ffffff;
-            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 450px;
             text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #00bcd4;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background-color: #2b2b2b;
+            color: #fff;
+            box-sizing: border-box;
+            font-size: 14px;
+            outline: none;
+        }
+        input[type="text"]:focus {
+            border-color: #00bcd4;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00bcd4;
+            border: none;
+            border-radius: 6px;
+            color: #121212;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover {
+            background-color: #008c9e;
+        }
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #2b2b2b;
+            border-radius: 6px;
+            word-break: break-all;
+            display: none;
+            text-align: left;
+        }
+        .result-box p {
+            margin: 0 0 8px 0;
+            color: #aaa;
+            font-size: 13px;
+        }
+        .link-output {
+            color: #00bcd4;
+            font-weight: bold;
+            font-size: 14px;
+            word-break: break-all;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .copy-btn {
+            background-color: #333;
+            color: #fff;
+            padding: 8px;
+            font-size: 13px;
+        }
+        .copy-btn:hover {
+            background-color: #444;
         }
     </style>
 </head>
 <body>
-    <div>
-        <h3>Yönlendiriliyorsunuz, lütfen bekleyin...</h3>
-        <p id="targetText" style="color: #aaa; font-size: 14px;"></p>
+
+<div class="container">
+    <h2>Link Kısaltıcı</h2>
+    
+    <input type="text" id="targetUrl" placeholder="Kısaltmak istediğin linki yaz (Örn: google.com)">
+    <button onclick="kisayolOlustur()">Oluştur</button>
+
+    <div class="result-box" id="resultBox">
+        <p>Oluşturulan Kısayol Linki:</p>
+        <a id="generatedLinkText" class="link-output" href="#" target="_blank"></a>
+        <button class="copy-btn" onclick="linkKopyala()">Linki Kopyala</button>
     </div>
+</div>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const encodedTo = urlParams.get('to');
+<script>
+    function kisayolOlustur() {
+        var inputVal = document.getElementById("targetUrl").value.trim();
+        var resultBox = document.getElementById("resultBox");
+        var generatedLinkText = document.getElementById("generatedLinkText");
 
-        if (encodedTo) {
-            try {
-                const decodedUrl = decodeURIComponent(atob(encodedTo));
-                document.getElementById('targetText').innerText = decodedUrl;
-                setTimeout(function() {
-                    window.location.href = decodedUrl;
-                }, 300);
-            } catch (e) {
-                document.body.innerHTML = "<h3>Geçersiz veya bozuk kısayol linki!</h3>";
-            }
-        } else {
-            document.body.innerHTML = "<h3>Hedef adres bulunamadı.</h3>";
+        if (inputVal === "") {
+            alert("Lütfen kutuya bir link yaz!");
+            return;
         }
-    </script>
+
+        if (!inputVal.startsWith("http://") && !inputVal.startsWith("https://")) {
+            inputVal = "https://" + inputVal;
+        }
+
+        // Linki şifreleyerek /randomsayılar/?to= parametresine ekliyoruz
+        var encodedUrl = btoa(encodeURIComponent(inputVal));
+        var finalUrl = "https://selim8212.github.io/randomsayılar/?to=" + encodedUrl;
+
+        generatedLinkText.href = finalUrl;
+        generatedLinkText.innerText = finalUrl;
+        resultBox.style.display = "block";
+    }
+
+    function linkKopyala() {
+        var linkText = document.getElementById("generatedLinkText").innerText;
+        navigator.clipboard.writeText(linkText).then(function() {
+            alert("Link panoya kopyalandı!");
+        });
+    }
+</script>
+
 </body>
 </html>
