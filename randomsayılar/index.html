@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Yönlendiriliyor...</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h3>Yönlendiriliyorsunuz, lütfen bekleyin...</h3>
+        <p id="targetText" style="color: #aaa; font-size: 14px;"></p>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const encodedTo = urlParams.get('to');
+
+        if (encodedTo) {
+            try {
+                const decodedUrl = decodeURIComponent(atob(encodedTo));
+                document.getElementById('targetText').innerText = decodedUrl;
+                setTimeout(function() {
+                    window.location.href = decodedUrl;
+                }, 300);
+            } catch (e) {
+                document.body.innerHTML = "<h3>Geçersiz veya bozuk kısayol linki!</h3>";
+            }
+        } else {
+            document.body.innerHTML = "<h3>Hedef adres bulunamadı.</h3>";
+        }
+    </script>
+</body>
+</html>
