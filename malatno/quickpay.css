@@ -1,0 +1,211 @@
+#QrisModal .modal-dialog,
+#vaModal .modal-dialog {
+    max-width: 400px!important;
+}
+
+#QrisModal .modal-content,
+#vaModal .modal-content {
+    border-radius: 15px;
+    position: relative;
+    padding: 0px;
+    max-width: 400px;
+}
+
+#QrisModal .mb-5px,
+#vaModal .mb-5px {
+    margin-bottom: 5px !important;
+}
+
+#QrisModal .mb-1px,
+#vaModal .mb-1px {
+    margin-bottom: 1px !important;
+}
+
+#QrisModal .mb-10px,
+#vaModal .mb-10px {
+    margin-bottom: 10px;
+}
+
+#QrisModal .line-h-15,
+#vaModal .line-h-15 {
+    line-height: 1.5;
+}
+
+#QrisModal .font-s-20,
+#vaModal .font-s-20 {
+    font-size: 1.25rem;
+}
+
+#QrisModal .font-s-12,
+#vaModal .font-s-12 {
+    font-size: 0.75rem;
+}
+
+#QrisModal .font-s-14,
+#vaModal .font-s-14 {
+    font-size: 0.875rem;
+}
+
+#QrisModal .gray-text,
+#vaModal .gray-text {
+    color: rgb(127, 127, 127);
+}
+
+#QrisModal .modal-body,
+#vaModal .modal-body {
+    padding: 0 36px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-top: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 37px;
+}
+
+#QrisModal .close,
+#vaModal .close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    z-index: 999;
+}
+
+#QrisModal .btn-2,
+#vaModal .btn-2 {
+    color: #76cc11 !important;
+    border: 1px solid #76cc11;
+    border-radius: 25px;
+    font-weight: 800;
+    padding: 11px 16px;
+    background: none;
+    background-color: rgba(0, 0, 0, 0);
+    width: 100%;
+    text-decoration: none;
+}
+
+#QrisModal .btn-2:hover,
+#vaModal .btn-2:hover {
+    background-color: #76cc11;
+    color: white !important;
+}
+
+#QrisModal .modal .gray-bg,
+#vaModal .modal .gray-bg {
+    padding: 12px 16px;
+    padding-top: 12px;
+    border-radius: 15px;
+    padding-top: 8px;
+}
+
+#QrisModal .gray-bg,
+#vaModal .gray-bg {
+    background-color: #ececec;
+}
+
+#QrisModal .mb-30px,
+#vaModal .mb-30px {
+    margin-bottom: 30px;
+}
+
+#QrisModal .warn,
+#vaModal .warn {
+    border: 1px solid #ff0000;
+    border-radius: 15px;
+    padding: 12px 16px;
+    padding-top: 12px;
+    padding-top: 8px;
+    color: #ff0000;
+}
+
+#QrisModal .mb-21px,
+#vaModal .mb-21px {
+    margin-bottom: 21px;
+}
+
+#QrisModal .qr-modal-dialog,
+#vaModal .qr-modal-dialog {
+    margin: 1.1rem auto !important;
+}
+
+#QrisModal .modal-dialog,
+#vaModal .modal-dialog {
+    max-width: 400px;
+    margin: 1.6rem auto !important;
+}
+
+#QrisModal .qr-code,
+#vaModal .qr-code {
+    padding: 10px;
+    height: 200px;
+}
+
+#vaModal .bank-logo {
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#vaModal .mb-19px {
+    margin-bottom: 19px;
+}
+
+#vaModal .font-weight-x-bold {
+    font-weight: 800;
+}
+
+#vaModal .line-h-13 {
+    line-height: 1.3;
+}
+
+#vaModal .font-s-26 {
+    font-size: 1.625rem;
+}
+
+#vaModal .btn-1 {
+    border-radius: 15px;
+    border: 1px solid black;
+    color: black;
+    cursor: pointer;
+    font-weight: 400;
+    padding: 6px 12px;
+    background: none;
+    text-decoration: none;
+}
+
+
+#vaModal .font-s-10 {
+    font-size: 0.625rem;
+}
+
+#vaModal .border-red {
+    padding: 12px 16px;
+    padding-top: 12px;
+    padding-top: 8px;
+    border: 1px solid #ff0000;
+    color: #ff0000 !important;
+    border-radius: 15px;
+}
+
+#vaModal .flex-column {
+    -ms-flex-direction: column !important;
+    flex-direction: column !important;
+}
+
+#vaModal .modal .gray-bg {
+    padding: 12px 16px;
+    border-radius: 15px;
+    padding-top: 8px;
+}
+
+#vaModal .bank-logo img {
+    height: 100%;
+}
+
+#vaModal .gray-bg {
+    padding: 12px 16px;
+    padding-top: 12px;
+    border-radius: 15px;
+    padding-top: 8px;
+}

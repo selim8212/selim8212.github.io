@@ -1,0 +1,807 @@
+$(function() {
+  $(document).ready(function () {
+    $(".youtube-section").hide();
+    $(".gif-section").hide();
+    $("input[type=radio][name=radio-media]").change(function () {
+      if (this.value === "youtube") {
+        $(".youtube-section").show();
+        $(".gif-section").hide();
+      } else {
+        $(".youtube-section").hide();
+        $(".gif-section").show();
+      }
+    });
+  });
+  
+  $('[data-toggle="tooltip"]').tooltip({ trigger: "click" });
+  
+  $("textarea")
+    .each(function () {
+      this.setAttribute(
+        "style",
+        "height:" + this.scrollHeight + "px;overflow-y:hidden;"
+      );
+    })
+    .on("input", function () {
+      this.style.height = "auto";
+      this.style.height = this.scrollHeight + "px";
+      if (this.id === "yt-link") {
+        $("#yt-preview").attr(
+          "src",
+          "https://www.youtube.com/embed/" + ytIdParser(this.value)
+        );
+      }
+    });
+  
+    /**
+     * deprecated 28 Jan 2024
+     * penambahan quick amount
+     */
+  // $(".money-list button").click(function (e) {
+  //   $("#money-input").val($(e.currentTarget).attr("data-amount"));
+  //   $(".select2.currency").val($(e.currentTarget).attr("data-currency"));
+  //   $(".select2.currency").trigger({
+  //     type: "select2:select",
+  //     params: {
+  //       data: { text: $(".select2.currency option:selected").text() },
+  //     },
+  //   });
+  // });
+  
+  $(document).ready(function () {
+    $(window).trigger("resize");
+    $(".abrev-currency").html($(".select2.currency").val());
+    $(".select2.currency").trigger({
+      type: "select2:select",
+      params: {
+        data: { text: $(".select2.currency option:selected").text() },
+      },
+    });
+  });
+  $(".select2.currency").select2({
+    dropdownParent: $("#donate-modal__GiveSupport"),
+  });
+  $(".select2.currency").on("select2:select", function (e) {
+    $(".abrev-currency").html($(".select2.currency").val());
+    $("#currency-tooltip")
+      .attr("data-original-title", e.params.data.text)
+      .attr("data-original-title", e.params.data.text)
+      .tooltip("update")
+      .tooltip("hide");
+  });
+  
+  $(".clear-icon-search").click(function () {
+    $("#search_input").val("");
+  });
+  // select2 dropdown
+  $(".select2.currency").on("select2:opening", function (e) {
+    // what you would like to happen
+    $(".arrowCustom").toggleClass("fa-chevron-up");
+  });
+  // when click delete classs rotate
+  $(".select2.currency").on("select2:selecting", function (e) {
+    // what you would like to happen
+    $(".arrowCustom").removeClass("fa-chevron-up");
+    $(".arrowCustom").addClass("fa-chevron-down");
+  });
+  $(".select2.currency").on("select2:closing", function (e) {
+    // what you would like to happen
+    $(".arrowCustom").removeClass("fa-chevron-up");
+    $(".arrowCustom").addClass("fa-chevron-down");
+  });
+  $(".select2.currency").on("select2:close", function (e) {
+    // what you would like to happen
+    $(".arrowCustom").removeClass("fa-chevron-up");
+    $(".arrowCustom").addClass("fa-chevron-down");
+  });
+  
+  function ytIdParser(url) {
+    var regExp =
+      /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    var match = url.match(regExp);
+    return match && match[7].length == 11 ? match[7] : false;
+  }
+  
+  // record audio
+  const recordAudio = () => {
+    return new Promise((resolve) => {
+      navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+        const mediaRecorder = new MediaRecorder(stream);
+        const audioChunks = [];
+  
+        mediaRecorder.addEventListener("dataavailable", (event) => {
+          audioChunks.push(event.data);
+        });
+  
+        const start = () => {
+          mediaRecorder.start();
+        };
+  
+        const stop = () => {
+          return new Promise((resolve) => {
+            mediaRecorder.addEventListener("stop", () => {
+              const audioBlob = new Blob(audioChunks);
+              const audioUrl = URL.createObjectURL(audioBlob);
+              const audio = new Audio(audioUrl);
+              const play = () => {
+                audio.play();
+              };
+  
+              resolve({ audioBlob, audioUrl, play });
+            });
+  
+            mediaRecorder.stop();
+          });
+        };
+  
+        resolve({ start, stop });
+      });
+    });
+  };
+  // audio
+  let recorder = null;
+  let audioData = null;
+  let recordBtn = $("#record-btn");
+  let recordText = $("#record-text");
+  let listenBtn = $("#listen-btn");
+  let deleteAudioBtn = $("#deleteAudio-btn");
+  let rerecordBtn = $("#rerecord-btn");
+  let audioDom = $("#audioDOM");
+  
+  // 2
+  let recordBtn2 = $("#record-btn2");
+  let recordText2 = $("#record-text2");
+  let listenBtn2 = $("#listen-btn2");
+  let deleteAudioBtn2 = $("#deleteAudio-btn2");
+  let rerecordBtn2 = $("#rerecord-btn2");
+  let audioDom2 = $("#audioDOM2");
+  
+  // 3
+  let recordBtn3 = $("#record-btn3");
+  let recordText3 = $("#record-text3");
+  let listenBtn3 = $("#listen-btn3");
+  let deleteAudioBtn3 = $("#deleteAudio-btn3");
+  let rerecordBtn3 = $("#rerecord-btn3");
+  let audioDom3 = $("#audioDOM3");
+  
+  let interval = null;
+  async function waitUntil(recorder) {
+    return await new Promise((resolve) => {
+      let times = 6;
+      interval = setInterval(() => {
+        times = times - 1;
+        recordText.text("Now recording... (00:0" + times + ")");
+        recordBtn.addClass("active");
+        recordText2.text("Now recording... (00:0" + times + ")");
+        recordBtn2.addClass("active");
+        recordText3.text("Now recording... (00:0" + times + ")");
+        recordBtn3.addClass("active");
+        if (times === 0) {
+          resolve("foo");
+          clearInterval(interval);
+          recorder
+            .stop()
+            .then((audio) => {
+              stop(audio);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      }, 1000);
+    });
+  }
+  
+  async function audio() {
+    console.log("hei");
+    recorder = await recordAudio();
+    recorder.start();
+    await waitUntil(recorder);
+  }
+  
+  audioDom.on("ended", function () {
+    listenBtn.html('<i class="fa-solid fa-play"></i>');
+    console.log("finish");
+    listenBtn.removeClass("active");
+  });
+  audioDom2.on("ended", function () {
+    listenBtn2.html('<i class="fa-solid fa-play"></i>');
+    console.log("finish");
+    listenBtn2.removeClass("active");
+  });
+  audioDom3.on("ended", function () {
+    listenBtn3.html('<i class="fa-solid fa-play"></i>');
+    console.log("finish");
+    listenBtn3.removeClass("active");
+  });
+  deleteAudioBtn.click(function () {
+    audioDom.attr("src", audio.audioUrl);
+    recordText.text("Record your voice");
+    listenBtn.parent().addClass("hide");
+    deleteAudioBtn.parent().addClass("hide");
+  });
+  deleteAudioBtn2.click(function () {
+    audioDom2.attr("src", audio.audioUrl);
+    recordText2.text("Record your voice");
+    listenBtn2.parent().addClass("hide");
+    deleteAudioBtn2.parent().addClass("hide");
+  });
+  deleteAudioBtn3.click(function () {
+    audioDom3.attr("src", audio.audioUrl);
+    recordText3.text("Record your voice");
+    listenBtn3.parent().addClass("hide");
+    deleteAudioBtn3.parent().addClass("hide");
+  });
+  
+  listenBtn.click(() => {
+    if (listenBtn.hasClass("active")) {
+      listenBtn.removeClass("active");
+      listenBtn.html('<i class="fa-solid fa-play"></i>');
+      document.getElementById("audioDOM").pause();
+    } else {
+      listenBtn.addClass("active");
+      listenBtn.html('<i class="fa-solid fa-pause"></i>');
+      document.getElementById("audioDOM").play();
+    }
+  });
+  listenBtn2.click(() => {
+    if (listenBtn2.hasClass("active")) {
+      listenBtn2.removeClass("active");
+      listenBtn2.html('<i class="fa-solid fa-play"></i>');
+      document.getElementById("audioDOM2").pause();
+    } else {
+      listenBtn2.addClass("active");
+      listenBtn2.html('<i class="fa-solid fa-pause"></i>');
+      document.getElementById("audioDOM2").play();
+    }
+  });
+  listenBtn3.click(() => {
+    if (listenBtn3.hasClass("active")) {
+      listenBtn3.removeClass("active");
+      listenBtn3.html('<i class="fa-solid fa-play"></i>');
+      document.getElementById("audioDOM3").pause();
+    } else {
+      listenBtn3.addClass("active");
+      listenBtn3.html('<i class="fa-solid fa-pause"></i>');
+      document.getElementById("audioDOM3").play();
+    }
+  });
+  
+  function stop(audio) {
+    recordBtn.prop("disabled", false);
+    listenBtn.parent().removeClass("hide");
+    rerecordBtn.parent().removeClass("hide");
+    deleteAudioBtn.parent().removeClass("hide");
+    recordBtn.removeClass("active");
+    recordText.text("Re-record voice");
+    audioData = audio;
+    audioDom.attr("src", audio.audioUrl);
+    // 2
+    recordBtn2.prop("disabled", false);
+    listenBtn2.parent().removeClass("hide");
+    rerecordBtn2.parent().removeClass("hide");
+    deleteAudioBtn2.parent().removeClass("hide");
+    recordBtn2.removeClass("active");
+    recordText2.text("Re-record voice");
+    audioData2 = audio;
+    audioDom2.attr("src", audio.audioUrl);
+    // 3
+    recordBtn3.prop("disabled", false);
+    listenBtn3.parent().removeClass("hide");
+    rerecordBtn3.parent().removeClass("hide");
+    deleteAudioBtn3.parent().removeClass("hide");
+    recordBtn3.removeClass("active");
+    recordText3.text("Re-record voice");
+    audioData3 = audio;
+    audioDom3.attr("src", audio.audioUrl);
+  }
+  
+  recordBtn.click((e) => {
+    e.preventDefault();
+    if (recordBtn.hasClass("active")) {
+      clearInterval(interval);
+      recorder
+        .stop()
+        .then((audio) => {
+          stop(audio);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      listenBtn.parent().addClass("hide");
+      rerecordBtn.parent().addClass("hide");
+      deleteAudioBtn.parent().addClass("hide");
+      recordBtn.addClass("active");
+      audio();
+    }
+  });
+  
+  // 2
+  
+  recordBtn2.click((e) => {
+    e.preventDefault();
+    if (recordBtn.hasClass("active")) {
+      clearInterval(interval);
+      recorder
+        .stop()
+        .then((audio) => {
+          stop(audio);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      listenBtn2.parent().addClass("hide");
+      rerecordBtn2.parent().addClass("hide");
+      deleteAudioBtn2.parent().addClass("hide");
+      recordBtn2.addClass("active");
+      audio();
+    }
+  });
+  
+  // 3
+  recordBtn3.click((e) => {
+    e.preventDefault();
+    if (recordBtn3.hasClass("active")) {
+      clearInterval(interval);
+      recorder
+        .stop()
+        .then((audio) => {
+          stop(audio);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      listenBtn3.parent().addClass("hide");
+      rerecordBtn3.parent().addClass("hide");
+      deleteAudioBtn3.parent().addClass("hide");
+      recordBtn3.addClass("active");
+      audio();
+    }
+  });
+  // end audio
+  // // aspect ratio
+  // var aspect_ratio2 = 4 / 14;
+  // // Store the jQuery object for future reference
+  // var $box2 = jQuery(".cover-img");
+  
+  // // Initial resize of .box2
+  // jQuery(document).ready(function ($) {
+  //   $box2.height($box2.width() * aspect_ratio2);
+  // });
+  // // Resize .box2 on browser resize
+  // jQuery(window).resize(function () {
+  //   $box2.height($box2.width() * aspect_ratio2);
+  // });
+  
+  // show details event collapse
+  function showDetailCard() {
+    $(".show-details").on("click", function (e) {
+      e.preventDefault();
+  
+      // if target click delete class ellipsis-text, if click lagi akan menambah class  ellipsis-text lagi
+      $(this).parent().find("div").toggleClass("ellipsis-text");
+  
+      // trim hapus space pada text
+      var currentText = $.trim($(this).text());
+  
+      if (currentText === "Show details") {
+        $(this).text("Hide details");
+      } else {
+        $(this).text("Show details");
+      }
+      // change height card masonry when click see details
+      $("#masonry-content").masonry({
+        itemSelector: ".grid-item",
+  
+        // percentPosition: true,
+        isFitWidth: true,
+        horizontalOrder: true,
+        gutter: 40,
+      });
+    });
+  }
+  showDetailCard();
+  
+  var showDetails = document.querySelectorAll(".card-description");
+  
+  showDetails.forEach((element) => {
+    if ($(element).height() > 42) {
+      $(element).parent().find("a").addClass("d-inline-block");
+      $(element).parent().find("a").removeClass("d-none");
+    } else {
+      $(element).parent().find("a").addClass("d-none");
+      $(element).parent().find("a").removeClass("d-inline-block");
+    }
+  });
+  
+  // console.log(tes);
+  // function checkTwoLines(item, index, arr) {
+  //   // if (arr[index].height() > 18) {
+  //   //   return true;
+  //   // }
+  //   console.log(item);
+  // }
+  // checkTwoLines();
+  // Set aspect ratio of box
+  var aspect_ratio = 1;
+  // Store the jQuery object for future reference
+  var $box = jQuery(".figure-content");
+  
+  // Initial resize of .box
+  jQuery(document).ready(function ($) {
+    $box.height($box.width() * aspect_ratio);
+  });
+  // Resize .box on browser resize
+  jQuery(window).resize(function () {
+    $box.height($box.width() * aspect_ratio);
+  });
+  
+  // pin img
+  var aspect_ratio2 = 2 / 4;
+  // Store the jQuery object for future reference
+  var $box2 = jQuery(".figure-content-pin");
+  
+  // Initial resize of .box2
+  jQuery(document).ready(function ($) {
+    $box2.height($box2.width() * aspect_ratio2);
+  });
+  // Resize .box2 on browser resize
+  jQuery(window).resize(function () {
+    $box2.height($box2.width() * aspect_ratio2);
+  });
+  // tooltips
+  
+  // event icon borkmark
+  
+  $(function () {
+    $(".borkmark").click(function (e) {
+      e.preventDefault();
+      $(this).toggleClass("fas fa-bookmark iconBorkmarkClick");
+      $(this).toggleClass("fa-regular fa-bookmark color-custom");
+    });
+  });
+  
+  function Borkmark(targetAction) {
+    $(targetAction).click(function (e) {
+      e.preventDefault();
+      $(e.target.children[0]).toggleClass("fas fa-bookmark iconBorkmarkClick");
+      $(e.target.children[0]).toggleClass("fa-regular fa-bookmark color-custom");
+    });
+  }
+  
+  Borkmark(".bg-rounded-borkmark");
+  Borkmark(".wrapper-borkmark");
+  
+  // icon love
+  function iconHeart(targetAction) {
+    $(targetAction).click(function (e) {
+      e.preventDefault();
+      if (targetAction !== ".text-iconHeart") {
+        $(e.target.children[0].children[0]).toggleClass(
+          "fa-solid fa-heart iconHeartClick"
+        );
+        $(e.target.children[0].children[0]).toggleClass(
+          "far fa-heart  text-gray-custom  font-size-i"
+        );
+      }
+      if (targetAction == ".text-iconHeart") {
+        $(".iconHeart").toggleClass("fa-solid fa-heart iconHeartClick");
+        $(".iconHeart").toggleClass(
+          "far fa-heart  text-gray-custom  font-size-i"
+        );
+      }
+    });
+  }
+  iconHeart(".wrapper-iconsHeart");
+  iconHeart(".text-iconHeart");
+  
+  $(function () {
+    $(".fa-heart ").click(function (e) {
+      e.preventDefault();
+      $(this).toggleClass("fa-solid fa-heart iconHeartClick");
+      $(this).toggleClass("far fa-heart  text-gray-custom  font-size-i");
+    });
+  });
+  $(function () {
+    $(".icon-love").click(function (e) {
+      e.preventDefault();
+      let span = $(this).closest(".icon-love").children("span")[0];
+  
+      let getCountLove = $(this).closest(".icon-love").children("span").text();
+      let add = parseInt(getCountLove) + 1;
+      let heart = $(this).children(".fa-heart")[0];
+      let kurang = parseInt(getCountLove) - 1;
+    });
+  });
+  
+  // supporter
+  
+  // selectSupporter
+  function selectSupporter() {
+    $(document).ready(function () {
+      $(".select-container__supporter").select2({
+        minimumResultsForSearch: -1,
+        placeholder: "Last 30 days",
+        dropdownCssClass: "myFont",
+      });
+    });
+    // select2 dropdown
+    $(".select-container__supporter").on("select2:opening", function (e) {
+      // what you would like to happen
+      $(".selection").toggleClass("rotate");
+    });
+    // when click delete classs rotate
+    $(".select-container__supporter").on("select2:selecting", function (e) {
+      // what you would like to happen
+      $(".selection").removeClass("rotate");
+    });
+    $(".select-container__supporter").on("select2:closing", function (e) {
+      // what you would like to happen
+      $(".selection").removeClass("rotate");
+    });
+    $(".select-container__supporter").on("select2:close", function (e) {
+      // what you would like to happen
+      $(".selection").removeClass("rotate");
+    });
+  
+    $(document).on("select2:open", () => {
+      document.querySelector(".select2-search__field").focus();
+    });
+    //
+  }
+  selectSupporter();
+  // masonry
+  jQuery(function ($) {
+    //lazyload
+    $("img.lazy").lazyload({
+      effect: "fadeIn",
+      effectspeed: 1000,
+      threshold: 400,
+    });
+  
+    function masonry_update() {
+      var $container = $("#masonry-content");
+  
+      $container.imagesLoaded(function () {
+        $container.masonry({
+          itemSelector: ".grid-item",
+  
+          // percentPosition: true,
+          isFitWidth: true,
+          horizontalOrder: true,
+          gutter: 40,
+        });
+      });
+    }
+  
+    masonry_update();
+    var timer = false;
+    $(window).resize(function () {
+      if (timer !== false) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(function () {
+        masonry_update();
+      }, 200);
+    });
+  });
+  
+  $(window).on("orientationchange", function (event) {
+    var x = event.beta, // -180 to 180
+      y = event.gamma, // -90 to 90
+      z = event.alpha; // 0 to 360
+  
+    // initialize Masonry after all images have loaded
+    jQuery(document).ready(function ($) {
+      $("img.lazy").lazyload({
+        effect: "fadeIn",
+        effectspeed: 1000,
+        threshold: 400,
+      });
+  
+      // var min_width = 480;
+  
+      // $("img.lazy").load("http://127.0.0.1:5500/", function () {
+      //   masonry_update();
+      // });
+  
+      function masonry_update() {
+        var $container = $("#masonry-content");
+  
+        $container.imagesLoaded(function () {
+          $container.masonry({
+            itemSelector: ".grid-item",
+  
+            // percentPosition: true,
+            isFitWidth: true,
+            horizontalOrder: true,
+            gutter: 40,
+          });
+        });
+      }
+  
+      masonry_update();
+      var timer = false;
+      $(window).resize(function () {
+        if (timer !== false) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(function () {
+          masonry_update();
+        }, 200);
+      });
+  
+      //then also call it after ajax event
+    });
+  });
+  
+  // reply handler
+  function replyHandler() {
+    $(".reply").on("click", function (e) {
+      // var showDropdown = e.currentTarget.children[0];
+  
+      var getComment = $(this).parent("div").next();
+      var modalReply = $(this);
+  
+      if (modalReply.attr("data-target") === "#replyModal") {
+      } else {
+        getComment.toggleClass("show");
+  
+        // $(".wrapper-message__supporter").html(comment);
+        // let txtArea = $(".custom__text-area");
+        let txtArea = getComment.children().children("textarea");
+        let realCount = getComment.children().children("p").children("span");
+  
+        txtArea.on("input", updateHeight);
+  
+        function updateHeight() {
+          let t = txtArea;
+          if (t.val().trim() == "") {
+            t.css("height", "40px");
+          } else {
+            t.css("height", "40px");
+            t.css("height", t[0].scrollHeight);
+          }
+        }
+        updateHeight();
+        txtArea.keyup(function (e) {
+          var tes = $(this).val();
+          realCount.html(tes.length);
+        });
+  
+        return false;
+      }
+    });
+  
+    // btn close reply
+    $(document).ready(function () {
+      let btnClose = $(".btn-close");
+      btnClose.on("click", btnCloseHandler);
+  
+      function btnCloseHandler() {
+        var wrapperComment = $(this).parent("div").parent("div").parent("div");
+        wrapperComment.toggleClass("show");
+      }
+      btnCloseHandler();
+    });
+  }
+  
+  replyHandler();
+  
+  
+  // countryFlag();
+  function addCountryFlag(opt) {
+    if (!opt.id) {
+      return opt.text;
+    }
+    var optimage = $(opt.element).data("countrycode");
+    if (!optimage) {
+      return opt.text;
+    } else {
+      let node = document.createElement("span");
+      let node2 = document.createElement("span");
+      let node3 = document.createElement("p");
+      node3.innerText = $(opt.element)
+        .text()
+        .replace(/(\r\n|\n|\r)/gm, "");
+      node2.id = "country-flag";
+      node.appendChild(node2);
+      node3.style.marginLeft = "10px";
+      node.appendChild(node3);
+      let parentElement = node2;
+      let flag = new CountryFlag(parentElement);
+      flag.selectByAlpha2(optimage);
+      node.style.display = "flex";
+      node.style.alignItems = "center";
+      return node;
+    }
+  }
+  
+  // $("#targetMoney").ready(function test(event) {
+  //   var heightOfDiv = $("#targetMoney").height();
+  //   var heightOfDivSupporter = $("#targetSupporter").height();
+  
+  //   if (heightOfDiv > 50) {
+  //     jQuery("#targetMoney").fitText(1.2, {
+  //       minFontSize: "26px",
+  //       maxFontSize: "36px",
+  //     });
+  //   }
+  //   if (heightOfDivSupporter > 50) {
+  //     jQuery("#targetSupporter").fitText(1.2, {
+  //       minFontSize: "26px",
+  //       maxFontSize: "36px",
+  //     });
+  //   }
+  // });
+  // jQuery(window).resize(function () {
+  //   $("#targetMoney").ready(function test(event) {
+  //     var heightOfDiv = $("#targetMoney").height();
+  //     var heightOfDivSupporter = $("#targetSupporter").height();
+  
+  //     if (heightOfDiv > 50) {
+  //       jQuery("#targetMoney").fitText(1.2, {
+  //         minFontSize: "26px",
+  //         maxFontSize: "36px",
+  //       });
+  //     }
+  //     if (heightOfDivSupporter > 50) {
+  //       jQuery("#targetSupporter").fitText(1.2, {
+  //         minFontSize: "26px",
+  //         maxFontSize: "36px",
+  //       });
+  //     }
+  //   });
+  // });
+  
+  function resize(parent, children, children2) {
+    var parentOfWord = $(parent);
+    var word = $(children);
+    var word2 = $(children2);
+  
+    var size = 36;
+    word.css("font-size", size);
+    word2.css("font-size", size);
+  
+    while (word.width() >= parentOfWord.width()) {
+      word.css("font-size", --size);
+      word2.css("font-size", --size);
+  
+      // }
+      // while (word.width() <= parentOfWord.width()) {
+      //   word.css("font-size", size);
+      // }
+    }
+  }
+  resize(".wrapper-voting__element", "#targetMoney", "#targetSupporter");
+  
+  jQuery(window).resize(function () {
+    function resize(parent, children, children2) {
+      var parentOfWord = $(parent);
+      var word = $(children);
+      var word2 = $(children2);
+  
+      var size = 36;
+      word.css("font-size", size);
+      word2.css("font-size", size);
+  
+      while (word.width() >= parentOfWord.width()) {
+        word.css("font-size", --size);
+        word2.css("font-size", --size);
+  
+        // }
+        // while (word.width() <= parentOfWord.width()) {
+        //   word.css("font-size", size);
+        // }
+      }
+      word.css("font-size", size);
+      word2.css("font-size", size);
+    }
+    resize(".wrapper-voting__element", "#targetMoney", "#targetSupporter");
+  });
+  
+  
+})
