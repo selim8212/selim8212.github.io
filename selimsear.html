@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SelimSearch</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        googleBg: '#202124',
+                        googleCard: '#303134',
+                        googleHover: '#3c4043',
+                        googleBorder: '#5f6368',
+                        googleBlue: '#8ab4f8',
+                        googleText: '#bdc1c6',
+                        googleTitle: '#e8eaed',
+                        googleSubtext: '#9aa0a6'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #202124;
+            color: #bdc1c6;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #202124;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3c4043;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5f6368;
+        }
+
+        /* Google CSE Overrides for seamless look when script is active */
+        .gsc-control-cse {
+            background-color: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+        .gsc-search-box {
+            margin-bottom: 0 !important;
+        }
+        .gsc-input-box {
+            background-color: #303134 !important;
+            border: 1px solid #5f6368 !important;
+            border-radius: 24px !important;
+            padding: 4px 12px !important;
+        }
+        input.gsc-input {
+            color: #ffffff !important;
+            background: transparent !important;
+        }
+        .gsc-search-button-v2 {
+            background-color: #8ab4f8 !important;
+            border-radius: 20px !important;
+        }
+        .gsc-results-wrapper-overlay, .gsc-results-wrapper-nooverlay {
+            background-color: #202124 !important;
+            color: #bdc1c6 !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- MAIN APP WRAPPER -->
+    <div id="app" class="flex-grow flex flex-col">
+
+        <!-- HEADER SECTION -->
+        <header class="border-b border-[#3c4043] sticky top-0 bg-[#202124] z-40 transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-2 flex flex-col sm:flex-row items-center gap-4">
+                
+                <!-- Logo & Mobile Profile -->
+                <div class="flex items-center justify-between w-full sm:w-auto">
+                    <a href="#" onclick="resetSearch()" class="cursor-pointer select-none text-2xl font-bold tracking-tight flex items-center gap-0.5">
+                        <span class="text-[#4285f4]">S</span><span class="text-[#ea4335]">e</span><span class="text-[#fbbc05]">l</span><span class="text-[#4285f4]">i</span><span class="text-[#34a853]">m</span><span class="text-white ml-1 font-semibold text-xl">Search</span>
+                    </a>
+                    
+                    <div class="flex items-center gap-3 sm:hidden">
+                        <button onclick="toggleCseMode()" class="p-2 text-googleSubtext hover:text-white rounded-full">
+                            <i class="fa-solid fa-gear"></i>
+                        </button>
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">S</div>
+                    </div>
+                </div>
+
+                <!-- Search Input Box -->
+                <div class="relative w-full sm:max-w-2xl flex-grow">
+                    <div class="relative flex items-center">
+                        <input type="text" id="searchInput" 
+                            class="w-full bg-[#303134] text-white pl-12 pr-24 py-3 rounded-full border border-transparent hover:border-[#5f6368] focus:border-[#8ab4f8] focus:outline-none focus:bg-[#303134] text-sm sm:text-base shadow-md transition-all"
+                            placeholder="SelimSearch'te veya Web'de arayın..."
+                            autocomplete="off"
+                            oninput="handleInput(this.value)"
+                            onkeydown="handleKeyDown(event)">
+                        
+                        <div class="absolute left-4 text-googleSubtext">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+
+                        <div class="absolute right-4 flex items-center gap-3 text-googleSubtext">
+                            <button id="clearBtn" onclick="clearSearch()" class="hidden hover:text-white transition">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                            <span class="h-4 w-[1px] bg-[#5f6368]"></span>
+                            <button onclick="triggerVoiceSearch()" class="hover:text-googleBlue transition" title="Sesli Arama">
+                                <i class="fa-solid fa-microphone"></i>
+                            </button>
+                            <button onclick="executeSearch()" class="hover:text-googleBlue transition text-googleBlue font-medium text-sm hidden sm:block">
+                                Ara
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Auto Suggestions Dropdown -->
+                    <div id="suggestionsBox" class="hidden absolute left-0 right-0 top-full mt-1 bg-[#303134] border border-[#5f6368] rounded-2xl shadow-2xl overflow-hidden z-50">
+                        <ul id="suggestionsList" class="py-2 text-sm text-googleTitle">
+                            <!-- Populated dynamically -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Right Desktop Actions -->
+                <div class="hidden sm:flex items-center gap-4 ml-auto">
+                    <button onclick="toggleCseMode()" id="cseToggleBtn" class="px-3 py-1.5 text-xs bg-[#303134] border border-[#5f6368] rounded-full hover:bg-[#3c4043] text-googleText transition flex items-center gap-2">
+                        <i class="fa-solid fa-code"></i> <span id="cseModeLabel">Canlı CSE: Kapalı</span>
+                    </button>
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow">S</div>
+                </div>
+
+            </div>
+
+            <!-- TAB BAR NAVIGATION -->
+            <div id="tabBar" class="max-w-7xl mx-auto px-4 sm:px-6 flex gap-1 sm:gap-6 text-xs sm:text-sm font-medium overflow-x-auto no-scrollbar pt-2 border-t sm:border-t-0 border-[#3c4043]">
+                <button onclick="switchTab('all')" id="tab-all" class="tab-btn py-2.5 px-3 border-b-2 border-googleBlue text-googleBlue flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-magnifying-glass text-xs"></i> Tümü
+                </button>
+                <button onclick="switchTab('images')" id="tab-images" class="tab-btn py-2.5 px-3 border-b-2 border-transparent text-googleSubtext hover:text-googleTitle flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-image text-xs"></i> Görseller
+                </button>
+                <button onclick="switchTab('videos')" id="tab-videos" class="tab-btn py-2.5 px-3 border-b-2 border-transparent text-googleSubtext hover:text-googleTitle flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-circle-play text-xs"></i> Videolar
+                </button>
+                <button onclick="switchTab('news')" id="tab-news" class="tab-btn py-2.5 px-3 border-b-2 border-transparent text-googleSubtext hover:text-googleTitle flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-regular fa-newspaper text-xs"></i> Haberler
+                </button>
+                <button onclick="switchTab('maps')" id="tab-maps" class="tab-btn py-2.5 px-3 border-b-2 border-transparent text-googleSubtext hover:text-googleTitle flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-location-dot text-xs"></i> Haritalar
+                </button>
+            </div>
+        </header>
+
+        <!-- GOOGLE OFFICIAL CSE INTEGRATION CONTAINER (Hidden by default, can be toggled) -->
+        <div id="cseContainer" class="hidden max-w-5xl mx-auto w-full p-4 sm:p-6">
+            <div class="bg-[#303134] p-4 rounded-xl mb-4 text-xs text-googleSubtext flex items-center justify-between">
+                <span><i class="fa-solid fa-circle-info text-googleBlue mr-1"></i> Google Custom Search Engine (CSE) modundasınız.</span>
+                <button onclick="toggleCseMode()" class="text-googleBlue underline hover:text-white">Simülasyona Dön</button>
+            </div>
+            <!-- Embedded Official CSE Script Tag -->
+            <script async src="https://cse.google.com/cse.js?cx=63c7ce6a686aa42c8"></script>
+            <div class="gcse-search"></div>
+        </div>
+
+        <!-- DYNAMIC SIMULATED RESULTS CONTAINER -->
+        <main id="mainResults" class="max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-grow">
+            
+            <!-- Result Stats -->
+            <div id="resultsMeta" class="text-xs text-googleSubtext mb-4 hidden">
+                Yaklaşık <span id="resCount">0</span> sonuç bulundu (<span id="resTime">0.24</span> saniye)
+            </div>
+
+            <!-- TAB 1: ALL RESULTS -->
+            <div id="content-all" class="space-y-6 max-w-3xl">
+                <!-- Rich Answer Card (if applicable) -->
+                <div id="richCard" class="hidden bg-[#303134] border border-[#5f6368] rounded-xl p-5 mb-6 shadow-md">
+                    <!-- Dynamic -->
+                </div>
+
+                <!-- Organic Web Results -->
+                <div id="organicResults" class="space-y-6">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- TAB 2: IMAGES GRID (Kaydırılabilir Görsel Galeri) -->
+            <div id="content-images" class="hidden">
+                <!-- Image Filter Chips -->
+                <div class="flex gap-2 mb-6 overflow-x-auto pb-2 text-xs font-medium no-scrollbar">
+                    <button onclick="filterImages('all')" class="img-chip bg-[#303134] hover:bg-[#3c4043] text-white px-4 py-1.5 rounded-full border border-[#5f6368] whitespace-nowrap active-chip">
+                        Tümü
+                    </button>
+                    <button onclick="filterImages('hd')" class="img-chip bg-[#303134] hover:bg-[#3c4043] text-googleText px-4 py-1.5 rounded-full border border-[#5f6368] whitespace-nowrap">
+                        HD Kalite
+                    </button>
+                    <button onclick="filterImages('minecraft')" class="img-chip bg-[#303134] hover:bg-[#3c4043] text-googleText px-4 py-1.5 rounded-full border border-[#5f6368] whitespace-nowrap">
+                        Minecraft & Sunucu
+                    </button>
+                    <button onclick="filterImages('nature')" class="img-chip bg-[#303134] hover:bg-[#3c4043] text-googleText px-4 py-1.5 rounded-full border border-[#5f6368] whitespace-nowrap">
+                        Doğa & Manzara
+                    </button>
+                    <button onclick="filterImages('code')" class="img-chip bg-[#303134] hover:bg-[#3c4043] text-googleText px-4 py-1.5 rounded-full border border-[#5f6368] whitespace-nowrap">
+                        Yazılım & Kod
+                    </button>
+                </div>
+
+                <!-- Images Responsive Grid -->
+                <div id="imageGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                    <!-- Dynamically Populated Images -->
+                </div>
+            </div>
+
+            <!-- TAB 3: VIDEOS -->
+            <div id="content-videos" class="hidden space-y-4 max-w-3xl">
+                <div id="videoResults" class="space-y-4">
+                    <!-- Dynamic Videos -->
+                </div>
+            </div>
+
+            <!-- TAB 4: NEWS -->
+            <div id="content-news" class="hidden space-y-4 max-w-3xl">
+                <div id="newsResults" class="space-y-4">
+                    <!-- Dynamic News -->
+                </div>
+            </div>
+
+            <!-- TAB 5: MAPS -->
+            <div id="content-maps" class="hidden">
+                <div class="bg-[#303134] rounded-2xl overflow-hidden border border-[#5f6368] grid grid-cols-1 md:grid-cols-3 min-h-[450px]">
+                    <div class="p-4 space-y-4 border-b md:border-b-0 md:border-r border-[#5f6368] overflow-y-auto max-h-[500px]">
+                        <h3 class="text-sm font-semibold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot text-red-500"></i> Yakındaki Konumlar
+                        </h3>
+                        <div class="space-y-3" id="mapLocationsList">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                    <div class="md:col-span-2 relative bg-[#202124] flex items-center justify-center p-6 text-center">
+                        <div class="space-y-3">
+                            <div class="w-16 h-16 rounded-full bg-[#3c4043] mx-auto flex items-center justify-center text-googleBlue text-2xl">
+                                <i class="fa-solid fa-map-location-dot"></i>
+                            </div>
+                            <h4 class="text-googleTitle font-medium">SelimSearch Harita Görünümü</h4>
+                            <p class="text-xs text-googleSubtext max-w-xs mx-auto">İnteraktif harita yükleniyor. Yakınlardaki Minecraft sunucu lokasyonları ve Türkiye genel merkezleri görüntüleniyor.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="bg-[#171717] border-t border-[#3c4043] text-xs text-googleSubtext mt-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 border-b border-[#2d2e30] flex items-center gap-4">
+                <span>Türkiye</span>
+                <span class="h-3 w-[1px] bg-[#3c4043]"></span>
+                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span> İstanbul - İnternet Protokolünüzden</span>
+            </div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap justify-between items-center gap-4">
+                <div class="flex gap-4 sm:gap-6 flex-wrap">
+                    <a href="#" class="hover:underline">Hakkında</a>
+                    <a href="#" class="hover:underline">Reklam</a>
+                    <a href="#" class="hover:underline">İşletme</a>
+                    <a href="#" class="hover:underline">Arama Nasıl Çalışır?</a>
+                </div>
+                <div class="flex gap-4 sm:gap-6">
+                    <a href="#" class="hover:underline">Gizlilik</a>
+                    <a href="#" class="hover:underline">Şartlar</a>
+                    <a href="#" class="hover:underline">Ayarlar</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- LIGHTBOX PREVIEW MODAL FOR IMAGES -->
+    <div id="imageModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-[#303134] rounded-2xl max-w-4xl w-full overflow-hidden border border-[#5f6368] shadow-2xl relative flex flex-col md:flex-row max-h-[90vh]">
+            <!-- Close Button -->
+            <button onclick="closeModal()" class="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <!-- Image Area -->
+            <div class="md:w-2/3 bg-black flex items-center justify-center p-2 min-h-[300px]">
+                <img id="modalImg" src="" alt="Görsel Önizleme" class="max-h-[70vh] w-auto object-contain rounded-lg">
+            </div>
+
+            <!-- Details Area -->
+            <div class="md:w-1/3 p-6 flex flex-col justify-between space-y-4">
+                <div class="space-y-3">
+                    <span id="modalCategory" class="text-[10px] uppercase tracking-wider font-bold bg-googleBlue/20 text-googleBlue px-2.5 py-1 rounded-full">Kategori</span>
+                    <h3 id="modalTitle" class="text-base font-semibold text-white leading-snug">Görsel Başlığı</h3>
+                    <p id="modalDesc" class="text-xs text-googleSubtext">Görsel detayları ve açıklaması burada yer alacaktır.</p>
+                </div>
+
+                <div class="space-y-3 pt-4 border-t border-[#5f6368]">
+                    <a id="modalLink" href="#" target="_blank" class="w-full bg-googleBlue text-black font-semibold text-xs py-2.5 rounded-full flex items-center justify-center gap-2 hover:opacity-90 transition">
+                        Sayfayı Ziyaret Et <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    </a>
+                    <button onclick="closeModal()" class="w-full bg-[#3c4043] text-white text-xs py-2.5 rounded-full hover:bg-[#5f6368] transition">
+                        Kapat
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // DATA SOURCES & MOCK SEARCH DATABASE
+        const MOCK_DATABASE = [
+            {
+                keywords: ['selim', 'selim8212', 'selimmc', 'minecraft', 'sunucu'],
+                title: "SelimMC Official Minecraft Sunucusu | En İyi Survival Deneyimi",
+                url: "https://www.selimmc.com",
+                snippet: "SelimMC Minecraft sunucusu resmi web sitesidir. Özel eklentiler, Gsit eğilme modları, kırılabilir katman kayaları ve özel BuildPaste yapılarıyla kesintisiz oyun keyfi sunar.",
+                sitelinks: [
+                    { title: "Sunucu Mağazası", url: "https://www.selimmc.com/store" },
+                    { title: "Kurallar & Rehber", url: "https://www.selimmc.com/rules" },
+                    { title: "Discord Topluluğu", url: "https://www.selimmc.com/discord" },
+                    { title: "Harita Kadrosu", url: "https://www.selimmc.com/staff" }
+                ],
+                category: "minecraft"
+            },
+            {
+                keywords: ['selim8212', 'github', 'selim', 'yazılım'],
+                title: "selim8212 (Selim) · GitHub",
+                url: "https://github.com/selim8212",
+                snippet: "selim8212 GitHub profil sayfası. HTML, JavaScript, Minecraft eklentileri, Skript kodları ve özel web arama motoru projeleri yayınlanmaktadır.",
+                category: "code"
+            },
+            {
+                keywords: ['gsit', 'minecraft', 'eğilme', 'crawl', 'emekleme'],
+                title: "GSit Modern Sit & Crawl Plugin - SpigotMC",
+                url: "https://www.spigotmc.org/resources/gsit",
+                snippet: "Minecraft sunucunuzda tuzak kapısı gerektirmeden tek tuşla eğilmenizi, oturmanızı ve yatmanızı sağlayan en gelişmiş GSit eklentisi. /crawl komut desteği mevcut.",
+                category: "minecraft"
+            },
+            {
+                keywords: ['buildpaste', 'worldedit', 'yapı', 'schematic'],
+                title: "BuildPaste - Minecraft Yapı Yapıştırma ve Yönetim Eklentisi",
+                url: "https://buildpaste.net",
+                snippet: "Minecraft sunucunuzda kod yazarak yapıları anında yapıştırın ve //undo komutlarıyla yönetin. Yanlışlıkla silinen yapıları kurtarma rehberi içerir.",
+                category: "minecraft"
+            },
+            {
+                keywords: ['katman kayası', 'bedrock', 'kırma', 'skript'],
+                title: "Minecraft Katman Kayası (Bedrock) Kırma Skripti",
+                url: "https://forum.gamer.com.tr/bedrock-kirma-skript",
+                snippet: "Paper ve Spigot 1.20.1 sunucularınızda katman kayasını kırılabilir hale getiren en pratik Skript kodları ve izin yapılandırmaları.",
+                category: "code"
+            },
+            {
+                keywords: ['javascript', 'html', 'kod', 'yazılım', 'web'],
+                title: "Modern Web Geliştirme ve JavaScript Rehberi",
+                url: "https://developer.mozilla.org/tr/docs/Web/JavaScript",
+                snippet: "JavaScript, web sayfalarını etkileşimli hale getiren güçlü bir programlama dilidir. Özel arama motorları ve dinamik web uygulamaları geliştirmek için kullanılır.",
+                category: "code"
+            }
+        ];
+
+        // MOCK IMAGES DATABASE
+        const MOCK_IMAGES = [
+            {
+                title: "Minecraft SelimMC Sunucu Görünümü",
+                url: "https://images.unsplash.com/photo-1627856013091-fed6e4e30025?w=600&auto=format&fit=crop&q=80",
+                desc: "SelimMC sunucusunda özel mimariler ve oyun içi görüntüler.",
+                category: "minecraft",
+                site: "selimmc.com"
+            },
+            {
+                title: "Minecraft Koyu Gece ve Fener Mimarisi",
+                url: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=600&auto=format&fit=crop&q=80",
+                desc: "Minecraft dünyasında gece inşa edilen ışıklı yapılar.",
+                category: "minecraft",
+                site: "spigotmc.org"
+            },
+            {
+                title: "Yazılım Kodlama ve Programlama Ekranı",
+                url: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80",
+                desc: "JavaScript ve HTML5 ile modern web uygulaması geliştirme.",
+                category: "code",
+                site: "github.com"
+            },
+            {
+                title: "Koyu Tema Matrix Kod Akışı",
+                url: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=80",
+                desc: "Siber güvenlik ve arka plan kod geliştirme tasvirleri.",
+                category: "code",
+                site: "selim8212.github.io"
+            },
+            {
+                title: "Muhteşem Doğa ve Orman Manzarası HD",
+                url: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&auto=format&fit=crop&q=80",
+                desc: "Yüksek çözünürlüklü yeşil orman ve sisli dağ manzaraları.",
+                category: "nature",
+                site: "unsplash.com"
+            },
+            {
+                title: "Gece Gökyüzü ve Yıldızlar",
+                url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&auto=format&fit=crop&q=80",
+                desc: "Derin uzay ve gece doğa manzarası.",
+                category: "nature",
+                site: "nature.org"
+            },
+            {
+                title: "Modern Teknoloji ve Yapay Zeka Arayüzü",
+                url: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80",
+                desc: "Geleceğin teknolojileri ve mikroçip mimarileri.",
+                category: "hd",
+                site: "techcrunch.com"
+            },
+            {
+                title: "Karanlık Şehir Işıkları ve Binalar",
+                url: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=600&auto=format&fit=crop&q=80",
+                desc: "Gece estetiğinde metropol binaları ve sokak lambaları.",
+                category: "hd",
+                site: "cityscapes.io"
+            }
+        ];
+
+        // MOCK VIDEOS
+        const MOCK_VIDEOS = [
+            {
+                title: "Minecraft GSit İle Eğilme ve Emekleme Nasıl Yapılır? (Rehber)",
+                url: "https://youtube.com/watch?v=mock1",
+                channel: "Selim Gaming TR",
+                views: "15 B görüntüleme · 2 hafta önce",
+                snippet: "Minecraft sunucularında GSit eklentisi kullanarak tuzak kapısı olmadan emekleme ve yatma rehberi.",
+                duration: "08:42"
+            },
+            {
+                title: "BuildPaste Hatalı Yapı Silme ve //undo Kullanımı",
+                url: "https://youtube.com/watch?v=mock2",
+                channel: "Minecraft Sunucu Kurulumları",
+                views: "8.4 B görüntüleme · 1 ay önce",
+                snippet: "WorldEdit ve BuildPaste kullanarak patlayan veya hatalı yerleşen yapıları geri alma teknikleri.",
+                duration: "05:15"
+            }
+        ];
+
+        // MOCK NEWS
+        const MOCK_NEWS = [
+            {
+                title: "Minecraft 1.20.1 Sunucuları İçin Yeni Güncelleme Yayınlandı",
+                source: "Oyuncuların Dünyası",
+                time: "3 saat önce",
+                snippet: "Paper ve Spigot sunucularında performans iyileştirmeleri sağlayan yeni eklenti paketleri duyuruldu."
+            },
+            {
+                title: "SelimSearch Web Arama Motoru Projesi Erişime Açıldı",
+                source: "Teknoloji Haber",
+                time: "1 gün önce",
+                snippet: "Özel koyu temalı arayüzü ve hızlı indeksleme algoritması ile SelimSearch kullanıcılarla buluştu."
+            }
+        ];
+
+        // APP STATE
+        let currentTab = 'all';
+        let currentQuery = '';
+        let cseModeActive = false;
+        let activeImageFilter = 'all';
+
+        // INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            // Read URL params if any
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryParam = urlParams.get('q');
+            if (queryParam) {
+                document.getElementById('searchInput').value = queryParam;
+                executeSearch(queryParam);
+            } else {
+                // Default Showcase Search
+                executeSearch('selim');
+            }
+        });
+
+        // SEARCH EXECUTION
+        function executeSearch(forcedQuery = null) {
+            const query = forcedQuery !== null ? forcedQuery : document.getElementById('searchInput').value.trim();
+            currentQuery = query;
+
+            if (!query) {
+                document.getElementById('resultsMeta').classList.add('hidden');
+                return;
+            }
+
+            // Sync input value if passed programmatically
+            document.getElementById('searchInput').value = query;
+            document.getElementById('clearBtn').classList.remove('hidden');
+
+            // Hide Suggestions
+            hideSuggestions();
+
+            // Render Results for Active Tab
+            renderResults();
+        }
+
+        function renderResults() {
+            const query = currentQuery.toLowerCase();
+
+            // Show Stats
+            const meta = document.getElementById('resultsMeta');
+            meta.classList.remove('hidden');
+            document.getElementById('resCount').textContent = Math.floor(Math.random() * 800 + 120);
+
+            // Filter Web Results
+            const matchedWeb = MOCK_DATABASE.filter(item => 
+                item.keywords.some(k => query.includes(k)) || 
+                item.title.toLowerCase().includes(query) || 
+                item.snippet.toLowerCase().includes(query)
+            );
+
+            // If empty, fall back to all items so view is never empty
+            const finalWebResults = matchedWeb.length > 0 ? matchedWeb : MOCK_DATABASE;
+
+            // Render Tab 1: All
+            const organicContainer = document.getElementById('organicResults');
+            organicContainer.innerHTML = '';
+
+            // Rich Card Trigger
+            const richCard = document.getElementById('richCard');
+            if (query.includes('selim') || query.includes('mc')) {
+                richCard.classList.remove('hidden');
+                richCard.innerHTML = `
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <span class="text-xs text-googleBlue font-medium">Öne Çıkan Sunucu</span>
+                            <h2 class="text-xl font-bold text-white">SelimMC Minecraft Sunucusu</h2>
+                            <p class="text-xs text-googleSubtext">Sürüm: 1.20.1 · IP: play.selimmc.com · Durum: <span class="text-green-400 font-semibold">Aktif</span></p>
+                        </div>
+                        <a href="https://www.selimmc.com" target="_blank" class="bg-googleBlue text-black px-4 py-2 rounded-full text-xs font-bold hover:opacity-90 transition">
+                            Sunucuya Katıl
+                        </a>
+                    </div>
+                `;
+            } else {
+                richCard.classList.add('hidden');
+            }
+
+            finalWebResults.forEach(res => {
+                const itemEl = document.createElement('div');
+                itemEl.className = "space-y-1 group";
+
+                let sitelinksHTML = '';
+                if (res.sitelinks) {
+                    sitelinksHTML = `
+                        <div class="grid grid-cols-2 gap-2 pt-2 mt-2 border-t border-[#3c4043]/50">
+                            ${res.sitelinks.map(s => `
+                                <a href="${s.url}" target="_blank" class="text-xs text-googleBlue hover:underline flex items-center gap-1">
+                                    <i class="fa-solid fa-angle-right text-[10px] text-googleSubtext"></i> ${s.title}
+                                </a>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                itemEl.innerHTML = `
+                    <div class="text-xs text-googleSubtext flex items-center gap-2 truncate">
+                        <span class="w-4 h-4 rounded-full bg-[#3c4043] inline-flex items-center justify-center text-[9px] text-googleBlue font-bold">S</span>
+                        <span class="truncate">${res.url}</span>
+                    </div>
+                    <a href="${res.url}" target="_blank" class="text-lg sm:text-xl text-googleBlue hover:underline font-medium block leading-snug">
+                        ${res.title}
+                    </a>
+                    <p class="text-xs sm:text-sm text-googleText leading-relaxed">
+                        ${res.snippet}
+                    </p>
+                    ${sitelinksHTML}
+                `;
+                organicContainer.appendChild(itemEl);
+            });
+
+            // Render Tab 2: Images
+            renderImagesGrid();
+
+            // Render Tab 3: Videos
+            const videoContainer = document.getElementById('videoResults');
+            videoContainer.innerHTML = MOCK_VIDEOS.map(v => `
+                <div class="bg-[#303134] border border-[#5f6368] rounded-xl p-4 flex flex-col sm:flex-row gap-4 hover:border-googleBlue transition">
+                    <div class="sm:w-48 h-28 bg-[#202124] rounded-lg flex-shrink-0 relative flex items-center justify-center overflow-hidden">
+                        <i class="fa-brands fa-youtube text-red-500 text-3xl"></i>
+                        <span class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-1.5 py-0.5 rounded">${v.duration}</span>
+                    </div>
+                    <div class="space-y-1 flex-grow">
+                        <span class="text-xs text-googleSubtext">${v.channel} · ${v.views}</span>
+                        <h3 class="text-base font-medium text-googleBlue hover:underline cursor-pointer">${v.title}</h3>
+                        <p class="text-xs text-googleText">${v.snippet}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Tab 4: News
+            const newsContainer = document.getElementById('newsResults');
+            newsContainer.innerHTML = MOCK_NEWS.map(n => `
+                <div class="bg-[#303134] border border-[#5f6368] rounded-xl p-4 hover:border-googleBlue transition space-y-1">
+                    <div class="text-xs text-googleSubtext flex items-center gap-2">
+                        <span class="font-semibold text-googleBlue">${n.source}</span> · <span>${n.time}</span>
+                    </div>
+                    <h3 class="text-base font-medium text-googleTitle hover:underline cursor-pointer">${n.title}</h3>
+                    <p class="text-xs text-googleText">${n.snippet}</p>
+                </div>
+            `).join('');
+
+            // Render Tab 5: Maps
+            const mapList = document.getElementById('mapLocationsList');
+            mapList.innerHTML = `
+                <div class="p-3 bg-[#3c4043] rounded-lg space-y-1 cursor-pointer hover:bg-[#5f6368] transition">
+                    <h5 class="text-xs font-bold text-white">SelimMC Sunucu Veri Merkezi</h5>
+                    <p class="text-[11px] text-googleSubtext">İstanbul, Türkiye · Yüksek Hızlı Fiber</p>
+                </div>
+                <div class="p-3 bg-[#3c4043] rounded-lg space-y-1 cursor-pointer hover:bg-[#5f6368] transition">
+                    <h5 class="text-xs font-bold text-white">GitHub Pages Hosting Düğümü</h5>
+                    <p class="text-[11px] text-googleSubtext">selim8212.github.io</p>
+                </div>
+            `;
+        }
+
+        // RENDER IMAGES GRID WITH FILTERING
+        function renderImagesGrid() {
+            const grid = document.getElementById('imageGrid');
+            grid.innerHTML = '';
+
+            const filtered = activeImageFilter === 'all' 
+                ? MOCK_IMAGES 
+                : MOCK_IMAGES.filter(img => img.category === activeImageFilter);
+
+            filtered.forEach((img, idx) => {
+                const card = document.createElement('div');
+                card.className = "group relative bg-[#303134] border border-[#5f6368] rounded-xl overflow-hidden cursor-pointer hover:shadow-xl hover:border-googleBlue transition duration-200 flex flex-col";
+                card.onclick = () => openModal(img);
+
+                card.innerHTML = `
+                    <div class="w-full h-36 bg-[#202124] overflow-hidden relative">
+                        <img src="${img.url}" alt="${img.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy" onerror="this.src='https://placehold.co/400x300/303134/ffffff?text=Görsel'">
+                        <span class="absolute top-2 right-2 bg-black/60 text-white text-[9px] px-2 py-0.5 rounded-full backdrop-blur-sm uppercase font-semibold">${img.category}</span>
+                    </div>
+                    <div class="p-2.5 space-y-1 flex-grow flex flex-col justify-between">
+                        <h4 class="text-xs font-medium text-googleTitle truncate group-hover:text-googleBlue">${img.title}</h4>
+                        <span class="text-[10px] text-googleSubtext block truncate">${img.site}</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterImages(cat) {
+            activeImageFilter = cat;
+            document.querySelectorAll('.img-chip').forEach(btn => {
+                btn.classList.remove('bg-googleBlue', 'text-black', 'font-bold');
+                btn.classList.add('bg-[#303134]', 'text-googleText');
+            });
+            event.target.classList.remove('bg-[#303134]', 'text-googleText');
+            event.target.classList.add('bg-googleBlue', 'text-black', 'font-bold');
+            renderImagesGrid();
+        }
+
+        // TAB SWITCHING LOGIC
+        function switchTab(tabName) {
+            currentTab = tabName;
+
+            // Update Tab Button Styles
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-googleBlue', 'text-googleBlue');
+                btn.classList.add('border-transparent', 'text-googleSubtext');
+            });
+
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('border-transparent', 'text-googleSubtext');
+                activeBtn.classList.add('border-googleBlue', 'text-googleBlue');
+            }
+
+            // Hide all tab contents
+            ['all', 'images', 'videos', 'news', 'maps'].forEach(t => {
+                const el = document.getElementById(`content-${t}`);
+                if (el) el.classList.add('hidden');
+            });
+
+            // Show current
+            const targetEl = document.getElementById(`content-${tabName}`);
+            if (targetEl) targetEl.classList.remove('hidden');
+
+            renderResults();
+        }
+
+        // AUTO-SUGGESTIONS DROPDOWN LOGIC
+        function handleInput(val) {
+            const clearBtn = document.getElementById('clearBtn');
+            const suggestionsBox = document.getElementById('suggestionsBox');
+            const suggestionsList = document.getElementById('suggestionsList');
+
+            if (val.trim().length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+                suggestionsBox.classList.add('hidden');
+                return;
+            }
+
+            const query = val.toLowerCase();
+            const suggestionsListItems = [
+                'selim',
+                'selim8212 github',
+                'selimmc minecraft sunucusu',
+                'gsit 1.20.1 eğilme eklentisi',
+                'buildpaste hatalı yapı silme',
+                'katman kayası kırma skripti',
+                'selimsearch web arama motoru'
+            ].filter(s => s.toLowerCase().includes(query));
+
+            if (suggestionsListItems.length > 0) {
+                suggestionsList.innerHTML = suggestionsListItems.map(s => `
+                    <li onclick="selectSuggestion('${s}')" class="px-4 py-2 hover:bg-[#3c4043] cursor-pointer flex items-center gap-3">
+                        <i class="fa-solid fa-clock-rotate-left text-googleSubtext text-xs"></i>
+                        <span>${highlightMatch(s, val)}</span>
+                    </li>
+                `).join('');
+                suggestionsBox.classList.remove('hidden');
+            } else {
+                suggestionsBox.classList.add('hidden');
+            }
+        }
+
+        function highlightMatch(text, query) {
+            const reg = new RegExp(`(${query})`, 'gi');
+            return text.replace(reg, '<strong class="text-white">$1</strong>');
+        }
+
+        function selectSuggestion(val) {
+            document.getElementById('searchInput').value = val;
+            hideSuggestions();
+            executeSearch(val);
+        }
+
+        function hideSuggestions() {
+            document.getElementById('suggestionsBox').classList.add('hidden');
+        }
+
+        function handleKeyDown(e) {
+            if (e.key === 'Enter') {
+                executeSearch();
+            }
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearBtn').classList.add('hidden');
+            hideSuggestions();
+            document.getElementById('searchInput').focus();
+        }
+
+        function resetSearch() {
+            document.getElementById('searchInput').value = '';
+            clearSearch();
+            executeSearch('selim');
+        }
+
+        // TOGGLE OFFICIAL GOOGLE CSE INTEGRATION
+        function toggleCseMode() {
+            cseModeActive = !cseModeActive;
+            const cseContainer = document.getElementById('cseContainer');
+            const mainResults = document.getElementById('mainResults');
+            const label = document.getElementById('cseModeLabel');
+
+            if (cseModeActive) {
+                cseContainer.classList.remove('hidden');
+                mainResults.classList.add('hidden');
+                label.textContent = "Canlı CSE: Açık";
+            } else {
+                cseContainer.classList.add('hidden');
+                mainResults.classList.remove('hidden');
+                label.textContent = "Canlı CSE: Kapalı";
+            }
+        }
+
+        // LIGHTBOX MODAL LOGIC
+        function openModal(img) {
+            document.getElementById('modalImg').src = img.url;
+            document.getElementById('modalTitle').textContent = img.title;
+            document.getElementById('modalDesc').textContent = img.desc;
+            document.getElementById('modalCategory').textContent = img.category;
+            document.getElementById('modalLink').href = "https://" + img.site;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function triggerVoiceSearch() {
+            alert("Sesli arama dinleniyor... Lütfen konuşun.");
+        }
+
+        // Close suggestions on outside click
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#searchInput') && !e.target.closest('#suggestionsBox')) {
+                hideSuggestions();
+            }
+        });
+    </script>
+</body>
+</html>
