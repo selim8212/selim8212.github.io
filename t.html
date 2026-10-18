@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gelişmiş API İstek ve Durum Analizcisi</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #1e1e1e;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #4da6ff;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #aaa;
+        }
+        .request-bar {
+            display: flex;
+            gap: 10px;
+        }
+        select {
+            background-color: #2a2a2a;
+            color: #4da6ff;
+            border: 1px solid #444;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            background-color: #2a2a2a;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus {
+            border-color: #4da6ff;
+        }
+        textarea {
+            resize: vertical;
+            height: 90px;
+            font-family: monospace;
+        }
+        button {
+            background-color: #007acc;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: #005999;
+        }
+        .response-box {
+            margin-top: 25px;
+            background-color: #141414;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 15px;
+        }
+        .status {
+            font-size: 15px;
+            margin-bottom: 12px;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 4px;
+            background-color: #252525;
+            border-left: 5px solid #666;
+        }
+        .status.success { border-left-color: #4caf50; color: #4caf50; }
+        .status.warning { border-left-color: #ff9800; color: #ff9800; }
+        .status.error { border-left-color: #f44336; color: #f44336; }
+        pre {
+            background-color: #0d0d0d;
+            padding: 12px;
+            border-radius: 4px;
+            overflow-x: auto;
+            color: #00ff66;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            font-size: 13px;
+            max-height: 350px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🔍 API İstek ve Durum Analizcisi</h2>
+
+    <div class="form-group">
+        <label>İstek Yöntemi ve Hedef URL:</label>
+        <div class="request-bar">
+            <select id="method">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+                <option value="PATCH">PATCH</option>
+            </select>
+            <input type="text" id="apiUrl" placeholder="https://api.example.com/data" value="https://jsonplaceholder.typicode.com/posts/1">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Header / Başlıklar (JSON):</label>
+        <textarea id="headers" placeholder='{"Content-Type": "application/json"}'></textarea>
+    </div>
+
+    <div class="form-group">
+        <label>İstek Gövdesi / Body (JSON):</label>
+        <textarea id="body" placeholder='{"key": "value"}'></textarea>
+    </div>
+
+    <button onclick="sendApiRequest()">İsteği Gönder ve Analiz Et</button>
+
+    <div class="response-box">
+        <div id="status" class="status">Durum: İstek bekleniyor...</div>
+        <label>Sunucudan Dönen Yanıt:</label>
+        <pre id="responseOutput">// Sonuçlar burada görünecek</pre>
+    </div>
+</div>
+
+<script>
+async function sendApiRequest() {
+    const method = document.getElementById('method').value;
+    const url = document.getElementById('apiUrl').value.trim();
+    const headersRaw = document.getElementById('headers').value.trim();
+    const bodyRaw = document.getElementById('body').value.trim();
+    const statusDiv = document.getElementById('status');
+    const responseOutput = document.getElementById('responseOutput');
+
+    if (!url) {
+        alert('Lütfen hedef bir URL girin!');
+        return;
+    }
+
+    statusDiv.className = 'status';
+    statusDiv.innerText = 'Durum: İstek gönderiliyor, yanıt bekleniyor...';
+    responseOutput.innerText = 'Yükleniyor...';
+
+    let headers = {};
+    if (headersRaw) {
+        try {
+            headers = JSON.parse(headersRaw);
+        } catch (e) {
+            statusDiv.className = 'status error';
+            statusDiv.innerText = 'Durum Hatası: Header alanı geçerli bir JSON formatında değil!';
+            responseOutput.innerText = 'Lütfen header kısmındaki süslü parantezleri ve tırnakları kontrol edin.';
+            return;
+        }
+    }
+
+    const options = {
+        method: method,
+        headers: headers
+    };
+
+    if (method !== 'GET' && method !== 'HEAD' && bodyRaw) {
+        options.body = bodyRaw;
+    }
+
+    try {
+        const startTime = performance.now();
+        const response = await fetch(url, options);
+        const endTime = performance.now();
+        const duration = Math.round(endTime - startTime);
+
+        // HTTP Durum Kodlarına Göre Detaylı Analiz
+        let statusDescription = '';
+        let statusClass = 'success';
+
+        switch (response.status) {
+            case 200: statusDescription = '200 OK - İstek başarılı!'; break;
+            case 201: statusDescription = '201 Created - Başarıyla oluşturuldu!'; break;
+            case 204: statusDescription = '204 No Content - Başarılı fakat dönecek veri yok.'; break;
+            case 400: statusDescription = '400 Bad Request - Sunucu isteği anlamadı (Hatalı veri/parametre).'; statusClass = 'error'; break;
+            case 401: statusDescription = '401 Unauthorized - Yetkilendirme gerekiyor (Token/API Key eksik veya yanlış).'; statusClass = 'error'; break;
+            case 403: statusDescription = '403 Forbidden - Yasaklı! Bu kaynağa erişim iznin yok.'; statusClass = 'error'; break;
+            case 404: statusDescription = '404 Not Found - Aradığın sayfa veya API adresi bulunamadı.'; statusClass = 'error'; break;
+            case 405: statusDescription = '405 Method Not Allowed - Bu istek yöntemi (GET/POST vb.) desteklenmiyor.'; statusClass = 'error'; break;
+            case 429: statusDescription = '429 Too Many Requests - Çok fazla istek attın, engellendin (Rate limit).'; statusClass = 'warning'; break;
+            case 500: statusDescription = '500 Internal Server Error - Karşı sunucuda çökmeye sebep olan bir hata oluştu.'; statusClass = 'error'; break;
+            case 502: statusDescription = '502 Bad Gateway - Sunucular arası iletişim hatası.'; statusClass = 'error'; break;
+            case 503: statusDescription = '503 Service Unavailable - Sunucu şu an kullanılamıyor veya bakımda.'; statusClass = 'warning'; break;
+            default:
+                if (response.status >= 200 && response.status < 300) {
+                    statusDescription = `${response.status} - Başarılı işlem.`;
+                } else if (response.status >= 400 && response.status < 500) {
+                    statusDescription = `${response.status} - İstemci (Client) tarafında bir hata oluştu.`;
+                    statusClass = 'error';
+                } else if (response.status >= 500) {
+                    statusDescription = `${response.status} - Sunucu (Server) tarafında hata yaşandı.`;
+                    statusClass = 'error';
+                } else {
+                    statusDescription = `${response.status} ${response.statusText}`;
+                }
+        }
+
+        statusDiv.className = `status ${statusClass}`;
+        statusDiv.innerText = `Durum: ${statusDescription} (${duration} ms)`;
+
+        let data;
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            data = await response.json();
+            responseOutput.innerText = JSON.stringify(data, null, 2);
+        } else {
+            data = await response.text();
+            responseOutput.innerText = data || "(Sunucu boş bir yanıt döndürdü)";
+        }
+
+    } catch (error) {
+        statusDiv.className = 'status error';
+        statusDiv.innerText = 'Durum: İstek Tamamen Başarısız Oldu (
