@@ -59,6 +59,12 @@ Write-Host $msgInstalling -ForegroundColor Yellow
 $url = "https://github.com/selim8212/selim8212.github.io/releases/download/kjjk/SelimAI.exe"
 $outputFile = Join-Path $env:TEMP "SelimAI.exe"
 
+# Terminate any running instance and remove old file to avoid lock errors
+Get-Process -Name "SelimAI" -ErrorAction SilentlyContinue | Stop-Process -Force
+if (Test-Path $outputFile) {
+    Remove-Item $outputFile -Force -ErrorAction SilentlyContinue
+}
+
 $request = [System.Net.HttpWebRequest]::Create($url)
 $request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
 $request.Timeout = 60000
