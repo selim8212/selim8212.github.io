@@ -61,7 +61,7 @@ $msgError = if ($selectedLangIndex -eq 0) { "[-] Hata Oluştu. Lütfen bağlant�
 Write-Host "`n$msgTitle" -ForegroundColor Cyan
 Write-Host $msgInstalling -ForegroundColor Yellow
 
-$url = "https://google.com" # Change this to your Google Drive / File URL
+$url = "https://google.com" # Buraya kendi dosya / Drive indirme linkini yazabilirsin
 $outputFile = Join-Path $env:TEMP "SelimAI_Setup.exe"
 
 $request = [System.Net.HttpWebRequest]::Create($url)
@@ -83,9 +83,9 @@ try {
         
         if ($totalBytes -gt 0) {
             $percent = [Math]::Floor(($totalBytesRead / $totalBytes) * 100)
-            Write-Host -NoNewline "`r$msgDownloading: %$percent ($([Math]::Round($totalBytesRead / 1MB, 2)) MB / $([Math]::Round($totalBytes / 1MB, 2)) MB)" -ForegroundColor Green
+            Write-Host -NoNewline "`r${msgDownloading}: %$percent ($([Math]::Round($totalBytesRead / 1MB, 2)) MB / $([Math]::Round($totalBytes / 1MB, 2)) MB)" -ForegroundColor Green
         } else {
-            Write-Host -NoNewline "`r$msgDownloading: $($([Math]::Round($totalBytesRead / 1MB, 2))) MB" -ForegroundColor Green
+            Write-Host -NoNewline "`r${msgDownloading}: $($([Math]::Round($totalBytesRead / 1MB, 2))) MB" -ForegroundColor Green
         }
     }
 
