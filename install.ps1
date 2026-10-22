@@ -8,7 +8,7 @@ function Show-LanguageMenu {
     $selectedIndex = 0
     $running = $true
 
-    # İmleci gizle (isteğe bağlı, daha temiz görüntü için)
+    # İmleci gizle
     [Console]::CursorVisible = $false
 
     while ($running) {
@@ -19,14 +19,12 @@ function Show-LanguageMenu {
 
         for ($i = 0; $i -lt $options.Length; $i++) {
             if ($i -eq $selectedIndex) {
-                # Seçili olan satırın başına ok işaretini koy ve arka planını renklendir
                 Write-Host " > $($options[$i]) " -ForegroundColor Black -BackgroundColor White
             } else {
                 Write-Host "    $($options[$i]) " -ForegroundColor Gray
             }
         }
 
-        # Kullanıcının tuş basışını yakala
         $key = [Console]::ReadKey($true)
 
         switch ($key.Key) {
@@ -44,7 +42,6 @@ function Show-LanguageMenu {
         }
     }
 
-    # İmleci tekrar görünür yap
     [Console]::CursorVisible = $true
     return $selectedIndex
 }
@@ -53,7 +50,7 @@ function Show-LanguageMenu {
 $selectedLangIndex = Show-LanguageMenu
 Clear-Host
 
-# --- METİN SÖZLÜĞÜ (Dile göre değişen mesajlar) ---
+# --- METİN SÖZLÜĞÜ ---
 $msgTitle = if ($selectedLangIndex -eq 0) { "=== SelimAI Kurulum Sihirbazı ===" } else { "=== SelimAI Installation Wizard ===" }
 $msgInstalling = if ($selectedLangIndex -eq 0) { "SelimAI yükleniyor..." } else { "SelimAI is installing..." }
 $msgDownloading = if ($selectedLangIndex -eq 0) { "Yüklenen" } else { "Downloaded" }
@@ -64,10 +61,9 @@ $msgError = if ($selectedLangIndex -eq 0) { "[-] Hata Oluştu. Lütfen bağlant�
 Write-Host "`n$msgTitle" -ForegroundColor Cyan
 Write-Host $msgInstalling -ForegroundColor Yellow
 
-$url = "https://google.com" # Buraya kendi dosya / Drive indirme linkini yazabilirsin
+$url = "https://google.com" # Change this to your Google Drive / File URL
 $outputFile = Join-Path $env:TEMP "SelimAI_Setup.exe"
 
-# İndirme isteği oluşturma
 $request = [System.Net.HttpWebRequest]::Create($url)
 $request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
 $request.Timeout = 60000
@@ -81,7 +77,6 @@ try {
     $bytesRead = 0
     $totalBytesRead = 0
 
-    # Sayısal İlerleme Döngüsü
     while (($bytesRead = $responseStream.Read($buffer, 0, $buffer.Length)) -gt 0) {
         $fileStream.Write($buffer, 0, $bytesRead)
         $totalBytesRead += $bytesRead
@@ -94,7 +89,6 @@ try {
         }
     }
 
-    # Akışları Kapat
     $fileStream.Close()
     $responseStream.Close()
     $response.Close()
@@ -102,7 +96,6 @@ try {
     Write-Host "`n`n$msgComplete" -ForegroundColor Cyan
     Start-Sleep -Seconds 1
 
-    # EXE dosyasını AYNI pencerede çalıştırma
     Start-Process -FilePath $outputFile -NoNewWindow -Wait
 
 } catch {
