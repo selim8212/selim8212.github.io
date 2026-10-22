@@ -1,21 +1,19 @@
-# UTF-8 Desteğini Etkinleştir (Türkçe karakterlerin düzgün görünmesi için)
 $OutputEncoding = [System.Text.Encoding]::UTF8
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-# --- DİL MENÜSÜ FONKSİYONU ---
 function Show-LanguageMenu {
-    $options = @("1. Türkçe (Turkish)", "2. English (İngilizce)")
+    $options = @("1. Turkce", "2. English")
     $selectedIndex = 0
     $running = $true
 
-    # İmleci gizle
     [Console]::CursorVisible = $false
 
     while ($running) {
         Clear-Host
-        Write-Host "`n=== SelimAI Installer - Dil Seçimi / Language Selection ===" -ForegroundColor Cyan
-        Write-Host "Lütfen yön tuşlarını (↑ ↓) kullanarak dili seçin ve Enter'a basın." -ForegroundColor Gray
-        Write-Host "Please use arrow keys (↑ ↓) to select language and press Enter.`n" -ForegroundColor Gray
+        Write-Host ""
+        Write-Host "=== SelimAI Installer - Dil Secimi / Language Selection ===" -ForegroundColor Cyan
+        Write-Host "Lutfen yon tuslarini kullanarak dili secin ve Enter tusuna basin." -ForegroundColor Gray
+        Write-Host "Please use arrow keys to select language and press Enter.`n" -ForegroundColor Gray
 
         for ($i = 0; $i -lt $options.Length; $i++) {
             if ($i -eq $selectedIndex) {
@@ -46,22 +44,20 @@ function Show-LanguageMenu {
     return $selectedIndex
 }
 
-# --- DİL SEÇİMİNİ BAŞLAT ---
 $selectedLangIndex = Show-LanguageMenu
 Clear-Host
 
-# --- METİN SÖZLÜĞÜ ---
-$msgTitle = if ($selectedLangIndex -eq 0) { "=== SelimAI Kurulum Sihirbazı ===" } else { "=== SelimAI Installation Wizard ===" }
-$msgInstalling = if ($selectedLangIndex -eq 0) { "SelimAI yükleniyor..." } else { "SelimAI is installing..." }
-$msgDownloading = if ($selectedLangIndex -eq 0) { "Yüklenen" } else { "Downloaded" }
-$msgComplete = if ($selectedLangIndex -eq 0) { "[+] İndirme tamamlandı! Program aynı pencerede başlatılıyor..." } else { "[+] Download complete! Launching program in the same window..." }
-$msgError = if ($selectedLangIndex -eq 0) { "[-] Hata Oluştu. Lütfen bağlantınızı veya Drive izinlerini kontrol edin." } else { "[-] An Error Occurred. Please check your connection or Drive permissions." }
+$msgTitle = if ($selectedLangIndex -eq 0) { "=== SelimAI Kurulum Sihirbazi ===" } else { "=== SelimAI Installation Wizard ===" }
+$msgInstalling = if ($selectedLangIndex -eq 0) { "SelimAI yukleniyor..." } else { "SelimAI is installing..." }
+$msgDownloading = if ($selectedLangIndex -eq 0) { "Indirilen" } else { "Downloaded" }
+$msgComplete = if ($selectedLangIndex -eq 0) { "[+] Indirme tamamlandi! Program ayni pencerede baslatiliyor..." } else { "[+] Download complete! Launching program in the same window..." }
+$msgError = if ($selectedLangIndex -eq 0) { "[-] Bir Hata Olustu. Lutfen baglantinizi kontrol edin." } else { "[-] An Error Occurred. Please check your connection." }
 
-# --- İNDİRME VE ÇALIŞTIRMA SÜRECİ ---
-Write-Host "`n$msgTitle" -ForegroundColor Cyan
+Write-Host ""
+Write-Host $msgTitle -ForegroundColor Cyan
 Write-Host $msgInstalling -ForegroundColor Yellow
 
-$url = "https://google.com" # Buraya kendi dosya / Drive indirme linkini yazabilirsin
+$url = "https://drive.usercontent.google.com/download?id=1sPqGJABAzRasQ057IjSs_m1w1aqirIlb&export=download&authuser=0"
 $outputFile = Join-Path $env:TEMP "SelimAI_Setup.exe"
 
 $request = [System.Net.HttpWebRequest]::Create($url)
