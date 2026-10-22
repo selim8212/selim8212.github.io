@@ -49,7 +49,6 @@ Clear-Host
 
 $msgTitle = if ($selectedLangIndex -eq 0) { "=== SelimAI Kurulum Sihirbazi ===" } else { "=== SelimAI Installation Wizard ===" }
 $msgInstalling = if ($selectedLangIndex -eq 0) { "SelimAI yukleniyor..." } else { "SelimAI is installing..." }
-$msgDownloading = if ($selectedLangIndex -eq 0) { "Indirilen" } else { "Downloaded" }
 $msgComplete = if ($selectedLangIndex -eq 0) { "[+] Indirme tamamlandi! Program ayni pencerede baslatiliyor..." } else { "[+] Download complete! Launching program in the same window..." }
 $msgError = if ($selectedLangIndex -eq 0) { "[-] Bir Hata Olustu. Lutfen baglantinizi kontrol edin." } else { "[-] An Error Occurred. Please check your connection." }
 
@@ -58,7 +57,7 @@ Write-Host $msgTitle -ForegroundColor Cyan
 Write-Host $msgInstalling -ForegroundColor Yellow
 
 $url = "https://drive.usercontent.google.com/download?id=1sPqGJABAzRasQ057IjSs_m1w1aqirIlb&export=download&authuser=0"
-$outputFile = Join-Path $env:TEMP "SelimAI_Setup.exe"
+$outputFile = Join-Path $env:TEMP "SelimAI.exe"
 
 $request = [System.Net.HttpWebRequest]::Create($url)
 $request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
@@ -79,9 +78,13 @@ try {
         
         if ($totalBytes -gt 0) {
             $percent = [Math]::Floor(($totalBytesRead / $totalBytes) * 100)
-            Write-Host -NoNewline "`r$msgDownloading - %$percent ($([Math]::Round($totalBytesRead / 1MB, 2)) MB / $([Math]::Round($totalBytes / 1MB, 2)) MB)" -ForegroundColor Green
+            $completedBlocks = [Math]::Floor($percent / 2)
+            $remainingBlocks = 50 - $completedBlocks
+            $bar = "[" + ("#" * $completedBlocks) + ("-" * $remainingBlocks) + "]"
+            
+            Write-Host -NoNewline "`r$bar %$percent ($([Math]::Round($totalBytesRead / 1MB, 2)) MB / $([Math]::Round($totalBytes / 1MB, 2)) MB)" -ForegroundColor Green
         } else {
-            Write-Host -NoNewline "`r$msgDownloading - $($([Math]::Round($totalBytesRead / 1MB, 2))) MB" -ForegroundColor Green
+            Write-Host -NoNewline "`rIndirilen: $($([Math]::Round($totalBytesRead / 1MB, 2))) MB" -ForegroundColor Green
         }
     }
 
