@@ -83,9 +83,9 @@ try {
         
         if ($totalBytes -gt 0) {
             $percent = [Math]::Floor(($totalBytesRead / $totalBytes) * 100)
-            Write-Host -NoNewline "`r${msgDownloading}: %$percent ($([Math]::Round($totalBytesRead / 1MB, 2)) MB / $([Math]::Round($totalBytes / 1MB, 2)) MB)" -ForegroundColor Green
+            Write-Host -NoNewline "`r$msgDownloading - %$percent ($([Math]::Round($totalBytesRead / 1MB, 2)) MB / $([Math]::Round($totalBytes / 1MB, 2)) MB)" -ForegroundColor Green
         } else {
-            Write-Host -NoNewline "`r${msgDownloading}: $($([Math]::Round($totalBytesRead / 1MB, 2))) MB" -ForegroundColor Green
+            Write-Host -NoNewline "`r$msgDownloading - $($([Math]::Round($totalBytesRead / 1MB, 2))) MB" -ForegroundColor Green
         }
     }
 
