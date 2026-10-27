@@ -53,7 +53,7 @@
             </div>
         </div>
         <span class="text-lg font-bold tracking-wide text-gray-200">SelTube <span class="text-xs text-red-500 font-extrabold">PREMIUM</span></span>
-        <p class="text-xs text-gray-500 mt-2">Sistem ve İçerikler Yükleniyor...</p>
+        <p class="text-xs text-gray-500 mt-2">Canlı YouTube İçerikleri Yükleniyor...</p>
     </div>
 
     <!-- HEADER -->
@@ -106,11 +106,11 @@
         <!-- SIDEBAR -->
         <aside id="sidebar" class="w-64 bg-yt-sidebar h-[calc(100vh-3.5rem)] fixed left-0 top-14 p-3 overflow-y-auto border-r border-yt-border z-40 transition-transform duration-300">
             <div class="space-y-1">
-                <button onclick="loadCategory('Ana Sayfa')" class="w-full flex items-center space-x-5 px-3 py-2.5 rounded-xl bg-yt-hover text-white font-medium text-sm transition text-left hover:bg-yt-border">
+                <button onclick="loadCategory('Trendler')" class="w-full flex items-center space-x-5 px-3 py-2.5 rounded-xl bg-yt-hover text-white font-medium text-sm transition text-left hover:bg-yt-border">
                     <i class="fa-solid fa-house w-5 text-center text-red-500"></i>
                     <span>Ana Sayfa</span>
                 </button>
-                <button onclick="loadCategory('Trendler')" class="w-full flex items-center space-x-5 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
+                <button onclick="loadCategory('Popüler')" class="w-full flex items-center space-x-5 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
                     <i class="fa-solid fa-fire w-5 text-center text-orange-500"></i>
                     <span>Trendler</span>
                 </button>
@@ -130,12 +130,12 @@
             <div class="flex items-center justify-between mb-6">
                 <h1 id="section-title" class="text-xl font-bold flex items-center gap-2">
                     <i class="fa-solid fa-sparkles text-red-500"></i>
-                    İçerik Akışı
+                    Öne Çıkan İçerikler
                 </h1>
             </div>
             <!-- Video Grid -->
             <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                <!-- Dinamik Durum / Hata Alanı -->
+                <!-- YouTube API Sonuçları Buraya Gelecek -->
             </div>
         </main>
     </div>
@@ -239,59 +239,108 @@
 
     <!-- JAVASCRIPT -->
     <script>
+        const YT_API_KEY = "AIzaSyCue9_7JYUbgBJ18GE58vRnQKP8A_W42ec";
+
         window.addEventListener('load', () => {
-            const loader = document.getElementById('page-loader');
-            setTimeout(() => {
-                loader.classList.add('opacity-0');
-                setTimeout(() => loader.style.display = 'none', 500);
-            }, 500);
-            
             detectSystemSpecs();
-            showEmptyState("SelTube Premium aktif. Canlı veri havuzu bekleniyor.");
-            logToConsole("INFO", "SelTube sistem başlatılması başarılı.");
+            fetchYouTubeVideos('Trendler');
         });
 
-        function showEmptyState(msg) {
+        async function fetchYouTubeVideos(query) {
+            logToConsole("INFO", `YouTube API isteği gönderiliyor: "${query}"`);
+            showLoader(true);
+
+            const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=16&q=${encodeURIComponent(query)}&type=video&key=${YT_API_KEY}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.error) {
+                    logToConsole("ERROR", `API Hatası: ${data.error.message}`);
+                    showErrorState(`API Hatası: ${data.error.message}`);
+                } else if (!data.items || data.items.length === 0) {
+                    logToConsole("WARN", "Arama sonucu boş döndü.");
+                    showErrorState("Hiçbir video bulunamadı.");
+                } else {
+                    logToConsole("SUCCESS", `${data.items.length} adet canlı video başarıyla çekildi.`);
+                    renderVideos(data.items);
+                }
+            } catch (err) {
+                logToConsole("ERROR", `Ağ veya CORS Hatası: ${err.message}`);
+                showErrorState("Bağlantı hatası veya CORS engeli oluştu.");
+            } finally {
+                showLoader(false);
+            }
+        }
+
+        function renderVideos(items) {
+            const grid = document.getElementById('video-grid');
+            grid.innerHTML = "";
+
+            items.forEach(item => {
+                const videoId = item.id.videoId;
+                if(!videoId) return;
+                const snippet = item.snippet;
+
+                const card = document.createElement('a');
+                card.href = `https://www.youtube.com/watch?v=${videoId}`;
+                card.target = "_blank";
+                card.className = "bg-yt-card border border-yt-border rounded-xl overflow-hidden hover:border-gray-700 transition group cursor-pointer shadow-md block";
+                card.innerHTML = `
+                    <div class="relative aspect-video bg-yt-hover overflow-hidden">
+                        <img src="${snippet.thumbnails.high.url}" alt="${snippet.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        <span class="absolute bottom-2 right-2 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow">HD</span>
+                    </div>
+                    <div class="p-3.5 flex gap-3">
+                        <div class="w-9 h-9 rounded-full bg-red-600/20 border border-red-500/30 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-play text-red-500 text-xs"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm line-clamp-2 group-hover:text-red-500 transition">${snippet.title}</h3>
+                            <p class="text-xs text-gray-400 mt-1">${snippet.channelTitle}</p>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function showErrorState(msg) {
             const grid = document.getElementById('video-grid');
             grid.innerHTML = `
-                <div class="col-span-full flex flex-col items-center justify-center py-20 text-center">
+                <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
                     <div class="w-14 h-14 rounded-full bg-red-600/10 border border-red-500/20 text-red-500 flex items-center justify-center mb-4 text-xl">
                         <i class="fa-solid fa-triangle-exclamation"></i>
                     </div>
-                    <h3 class="text-base font-bold text-white">Hiçbir içerik bulunamadı veya bir hata oluştu.</h3>
-                    <p class="text-xs text-gray-400 mt-1 max-w-sm">${msg}</p>
+                    <h3 class="text-base font-bold text-white">${msg}</h3>
+                    <p class="text-xs text-gray-400 mt-1 max-w-sm">Detaylar için geliştirici konsolunu açabilirsiniz.</p>
                 </div>
             `;
         }
 
         function performSearch() {
             const query = document.getElementById('search-input').value.trim();
-            if(!query) return;
-            logToConsole("INFO", `Arama isteği simüle edildi: "${query}"`);
-            
-            showLoader(() => {
-                showEmptyState(`"${query}" araması için sonuç eşleşmedi.`);
-                document.getElementById('section-title').innerHTML = `<i class="fa-solid fa-magnifying-glass text-red-500"></i> "${query}" Sonucu`;
-            });
+            if (!query) return;
+            document.getElementById('section-title').innerHTML = `<i class="fa-solid fa-magnifying-glass text-red-500"></i> "${query}" Sonuçları`;
+            fetchYouTubeVideos(query);
         }
 
         function loadCategory(categoryName) {
-            logToConsole("INFO", `Kategori yüklendi: ${categoryName}`);
-            document.getElementById('section-title').innerHTML = `<i class="fa-solid fa-fire text-red-500"></i> ${categoryName} Akışı`;
-            showLoader(() => {
-                showEmptyState(`${categoryName} kategorisinde gösterilecek aktif veri bulunamadı.`);
-            });
+            document.getElementById('section-title').innerHTML = `<i class="fa-solid fa-fire text-red-500"></i> ${categoryName} İçerikleri`;
+            fetchYouTubeVideos(categoryName);
         }
 
-        function showLoader(callback) {
+        function showLoader(show) {
             const loader = document.getElementById('page-loader');
-            loader.style.display = 'flex';
-            loader.classList.remove('opacity-0');
-            setTimeout(() => {
+            if (!loader) return;
+            if (show) {
+                loader.style.display = 'flex';
+                loader.classList.remove('opacity-0');
+            } else {
                 loader.classList.add('opacity-0');
                 setTimeout(() => loader.style.display = 'none', 400);
-                if(callback) callback();
-            }, 500);
+            }
         }
 
         document.getElementById('search-input').addEventListener('keypress', function (e) {
