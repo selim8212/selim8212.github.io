@@ -32,8 +32,6 @@
         ::-webkit-scrollbar-track { background: #0f0f0f; }
         ::-webkit-scrollbar-thumb { background: #3f3f3f; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #555555; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
         @keyframes pulse-glow {
             0%, 100% { opacity: 1; transform: scale(1); }
@@ -53,7 +51,7 @@
             </div>
         </div>
         <span class="text-lg font-bold tracking-wide text-gray-200">SelTube <span class="text-xs text-red-500 font-extrabold">PREMIUM</span></span>
-        <p class="text-xs text-gray-500 mt-2">Canlı YouTube İçerikleri Yükleniyor...</p>
+        <p class="text-xs text-gray-500 mt-2">İçerikler ve Oynatıcı Hazırlanıyor...</p>
     </div>
 
     <!-- HEADER -->
@@ -73,7 +71,7 @@
         <div class="flex items-center flex-1 max-w-2xl mx-4">
             <div class="flex items-center w-full bg-[#121212] border border-yt-border rounded-l-full px-4 py-2 focus-within:border-red-600 transition shadow-inner">
                 <i class="fa-solid fa-magnifying-glass text-gray-400 mr-3 text-sm"></i>
-                <input type="text" id="search-input" placeholder="YouTube'da ara..." class="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-500">
+                <input type="text" id="search-input" placeholder="SelTube'da ara..." class="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-500">
             </div>
             <button id="search-btn" onclick="performSearch()" class="bg-yt-card border border-l-0 border-yt-border px-6 py-2.5 rounded-r-full hover:bg-yt-hover transition text-gray-300 active:bg-yt-border">
                 <i class="fa-solid fa-magnifying-glass text-sm"></i>
@@ -135,12 +133,56 @@
             </div>
             <!-- Video Grid -->
             <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                <!-- YouTube API Sonuçları Buraya Gelecek -->
+                <!-- Videolar Buraya Gelecek -->
             </div>
         </main>
     </div>
 
-    <!-- GELİŞTİRİCİ KONSOLU (ALT PANEL) -->
+    <!-- DAHİLİ YOUTUBE VIDEO OYNATICI MODAL -->
+    <div id="player-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[90] hidden flex flex-col p-4 md:p-6 overflow-y-auto transition-all">
+        <div class="flex justify-end mb-3 max-w-7xl mx-auto w-full">
+            <button onclick="closePlayerModal()" class="bg-yt-hover hover:bg-red-600 text-white p-2.5 rounded-full transition flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- VİDEO EKRANI & BİLGİSİ -->
+            <div class="lg:col-span-2 space-y-4">
+                <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-yt-border shadow-2xl">
+                    <iframe id="youtube-iframe" class="w-full h-full" src="" title="SelTube Player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+                
+                <div class="bg-yt-card border border-yt-border p-4 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <h2 id="modal-video-title" class="text-lg font-bold text-white line-clamp-2">Video Başlığı</h2>
+                        <div class="flex items-center space-x-2 text-xs text-gray-400">
+                            <span id="modal-channel-title" class="font-bold text-red-400">Kanal İsmi</span>
+                            <span>•</span>
+                            <span id="modal-publish-date">Yayınlanma Zamanı</span>
+                        </div>
+                    </div>
+                    <a id="external-yt-link" href="#" target="_blank" class="bg-red-600 hover:bg-red-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center space-x-2 shrink-0 shadow-lg shadow-red-600/30">
+                        <i class="fa-brands fa-youtube text-base"></i>
+                        <span>YouTube'da Aç</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- SİZİN İÇİN ÖNERİLEN VİDEOLAR SEKMESİ -->
+            <div class="bg-yt-card border border-yt-border p-4 rounded-2xl space-y-3 h-fit">
+                <h3 class="text-sm font-bold text-gray-200 border-b border-yt-border pb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-compact-disc text-red-500"></i>
+                    Sizin İçin Önerilenler
+                </h3>
+                <div id="recommended-list" class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                    <!-- Dinamik öneriler yüklenecek -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GELİŞTİRİCİ KONSOLU -->
     <div id="dev-console" class="fixed bottom-0 left-64 right-0 bg-[#0a0a0a] border-t border-red-600/40 z-30 hidden flex flex-col shadow-2xl transition-all">
         <div class="bg-yt-card px-4 py-2 border-b border-yt-border flex items-center justify-between text-xs">
             <div class="flex items-center space-x-2 font-mono text-red-500">
@@ -153,7 +195,7 @@
             </div>
         </div>
         <div id="console-logs" class="p-3 h-36 overflow-y-auto font-mono text-xs space-y-1 text-gray-300 bg-black/50">
-            <div class="text-red-400">[SYSTEM] Geliştirici konsolu aktif.</div>
+            <div class="text-red-400">[SYSTEM] SelTube Dahili Oynatıcı Paneli Aktif.</div>
         </div>
     </div>
 
@@ -240,11 +282,30 @@
     <!-- JAVASCRIPT -->
     <script>
         const YT_API_KEY = "AIzaSyCue9_7JYUbgBJ18GE58vRnQKP8A_W42ec";
+        let currentLoadedVideos = [];
 
         window.addEventListener('load', () => {
             detectSystemSpecs();
             fetchYouTubeVideos('Trendler');
         });
+
+        function timeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+
+            let interval = Math.floor(seconds / 31536000);
+            if (interval >= 1) return interval + " yıl önce";
+            interval = Math.floor(seconds / 2592000);
+            if (interval >= 1) return interval + " ay önce";
+            interval = Math.floor(seconds / 86400);
+            if (interval >= 1) return interval + " gün önce";
+            interval = Math.floor(seconds / 3600);
+            if (interval >= 1) return interval + " saat önce";
+            interval = Math.floor(seconds / 60);
+            if (interval >= 1) return interval + " dakika önce";
+            return "Birkaç saniye önce";
+        }
 
         async function fetchYouTubeVideos(query) {
             logToConsole("INFO", `YouTube API isteği gönderiliyor: "${query}"`);
@@ -263,7 +324,8 @@
                     logToConsole("WARN", "Arama sonucu boş döndü.");
                     showErrorState("Hiçbir video bulunamadı.");
                 } else {
-                    logToConsole("SUCCESS", `${data.items.length} adet canlı video başarıyla çekildi.`);
+                    currentLoadedVideos = data.items;
+                    logToConsole("SUCCESS", `${data.items.length} adet canlı video çekildi.`);
                     renderVideos(data.items);
                 }
             } catch (err) {
@@ -278,31 +340,89 @@
             const grid = document.getElementById('video-grid');
             grid.innerHTML = "";
 
-            items.forEach(item => {
+            items.forEach((item, index) => {
                 const videoId = item.id.videoId;
                 if(!videoId) return;
                 const snippet = item.snippet;
+                const publishDate = timeAgo(snippet.publishedAt);
+                const firstLetter = snippet.channelTitle ? snippet.channelTitle.charAt(0).toUpperCase() : "S";
 
-                const card = document.createElement('a');
-                card.href = `https://www.youtube.com/watch?v=${videoId}`;
-                card.target = "_blank";
-                card.className = "bg-yt-card border border-yt-border rounded-xl overflow-hidden hover:border-gray-700 transition group cursor-pointer shadow-md block";
+                const card = document.createElement('div');
+                card.onclick = () => openPlayerModal(index);
+                card.className = "bg-yt-card border border-yt-border rounded-xl overflow-hidden hover:border-red-600/50 transition group cursor-pointer shadow-md block";
                 card.innerHTML = `
                     <div class="relative aspect-video bg-yt-hover overflow-hidden">
                         <img src="${snippet.thumbnails.high.url}" alt="${snippet.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                         <span class="absolute bottom-2 right-2 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow">HD</span>
                     </div>
                     <div class="p-3.5 flex gap-3">
-                        <div class="w-9 h-9 rounded-full bg-red-600/20 border border-red-500/30 flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-play text-red-500 text-xs"></i>
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-red-600 to-rose-500 border border-red-400 text-white font-black flex items-center justify-center shrink-0 shadow-sm text-sm">
+                            ${firstLetter}
                         </div>
-                        <div>
-                            <h3 class="font-bold text-sm line-clamp-2 group-hover:text-red-500 transition">${snippet.title}</h3>
-                            <p class="text-xs text-gray-400 mt-1">${snippet.channelTitle}</p>
+                        <div class="flex-1 overflow-hidden">
+                            <h3 class="font-bold text-sm line-clamp-2 group-hover:text-red-500 transition leading-snug">${snippet.title}</h3>
+                            <p class="text-xs text-gray-400 mt-1 font-medium truncate">${snippet.channelTitle}</p>
+                            <p class="text-[11px] text-gray-500 mt-0.5 flex items-center gap-1">
+                                <i class="fa-regular fa-clock text-[10px]"></i>
+                                <span>${publishDate}</span>
+                            </p>
                         </div>
                     </div>
                 `;
                 grid.appendChild(card);
+            });
+        }
+
+        // VİDEO OYNATICI MODALINI AÇMA (SİTE İÇİ OYNATICI)
+        function openPlayerModal(videoIndex) {
+            const video = currentLoadedVideos[videoIndex];
+            if (!video) return;
+
+            const videoId = video.id.videoId;
+            const snippet = video.snippet;
+
+            document.getElementById('youtube-iframe').src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            document.getElementById('modal-video-title').innerText = snippet.title;
+            document.getElementById('modal-channel-title').innerText = snippet.channelTitle;
+            document.getElementById('modal-publish-date').innerText = timeAgo(snippet.publishedAt);
+            document.getElementById('external-yt-link').href = `https://www.youtube.com/watch?v=${videoId}`;
+
+            // Sizin için önerilenler listesini doldur
+            renderRecommendations(videoIndex);
+
+            document.getElementById('player-modal').classList.remove('hidden');
+            logToConsole("INFO", `Dahili Oynatıcı Başlatıldı: ${snippet.title}`);
+        }
+
+        function closePlayerModal() {
+            document.getElementById('player-modal').classList.add('hidden');
+            document.getElementById('youtube-iframe').src = "";
+            logToConsole("INFO", "Dahili Oynatıcı Kapatıldı.");
+        }
+
+        function renderRecommendations(currentIndex) {
+            const recList = document.getElementById('recommended-list');
+            recList.innerHTML = "";
+
+            currentLoadedVideos.forEach((item, idx) => {
+                if (idx === currentIndex) return; // Şu an oynatılanı es geç
+                const videoId = item.id.videoId;
+                if (!videoId) return;
+                const snippet = item.snippet;
+
+                const recItem = document.createElement('div');
+                recItem.onclick = () => openPlayerModal(idx);
+                recItem.className = "flex space-x-3 cursor-pointer p-1.5 hover:bg-yt-hover rounded-xl transition group";
+                recItem.innerHTML = `
+                    <div class="relative w-28 aspect-video bg-yt-hover rounded-lg overflow-hidden shrink-0">
+                        <img src="${snippet.thumbnails.high.url}" class="w-full h-full object-cover group-hover:scale-105 transition">
+                    </div>
+                    <div class="flex-1 overflow-hidden">
+                        <h4 class="text-xs font-bold text-gray-200 line-clamp-2 group-hover:text-red-500 transition leading-snug">${snippet.title}</h4>
+                        <p class="text-[11px] text-gray-400 mt-1 truncate">${snippet.channelTitle}</p>
+                    </div>
+                `;
+                recList.appendChild(recItem);
             });
         }
 
@@ -416,42 +536,4 @@
             } else if (ua.indexOf("iPhone") !== -1 || ua.indexOf("iPad") !== -1) {
                 osName = "iOS";
                 const match = ua.match(/OS\s([0-9_]+)/);
-                if (match) osVer = match[1].replace(/_/g, '.');
-            } else if (ua.indexOf("Linux") !== -1) {
-                osName = "Linux";
-            }
-
-            if (ua.indexOf("OPR") !== -1 || ua.indexOf("Opera") !== -1) {
-                browserName = "Opera";
-                const match = ua.match(/(?:OPR|Opera)\/([0-9\.]+)/);
-                if (match) browserVer = match[1];
-            } else if (ua.indexOf("Edg") !== -1) {
-                browserName = "Edge";
-                const match = ua.match(/Edg\/([0-9\.]+)/);
-                if (match) browserVer = match[1];
-            } else if (ua.indexOf("Chrome") !== -1) {
-                browserName = "Chrome";
-                const match = ua.match(/Chrome\/([0-9\.]+)/);
-                if (match) browserVer = match[1];
-            } else if (ua.indexOf("Firefox") !== -1) {
-                browserName = "Firefox";
-                const match = ua.match(/Firefox\/([0-9\.]+)/);
-                if (match) browserVer = match[1];
-            } else if (ua.indexOf("Safari") !== -1 && ua.indexOf("Chrome") === -1) {
-                browserName = "Safari";
-                const match = ua.match(/Version\/([0-9\.]+)/);
-                if (match) browserVer = match[1];
-            }
-
-            document.getElementById('sys-os').innerText = osName;
-            document.getElementById('sys-os-ver').innerText = osVer !== "N/A" ? `v${osVer}` : "N/A";
-            document.getElementById('sys-browser').innerText = browserName;
-            document.getElementById('sys-browser-ver').innerText = browserVer !== "N/A" ? `v${browserVer}` : "N/A";
-            document.getElementById('sys-screen').innerText = `${window.screen.width} x ${window.screen.height}`;
-            document.getElementById('sys-device').innerText = /Mobi|Android/i.test(ua) ? "Mobil Cihaz" : "Masaüstü PC";
-
-            logToConsole("SUCCESS", `Sistem analiz edildi: ${osName} | ${browserName}`);
-        }
-    </script>
-</body>
-</html>
+                if (match) osVer = match[1].replace(/_/g,
