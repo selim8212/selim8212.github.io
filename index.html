@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SelTube Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -73,12 +72,6 @@
             <button onclick="openSettingsModal()" class="p-2 hover:bg-yt-hover rounded-full transition text-gray-300 active:scale-90" title="Ayarlar">
                 <i class="fa-solid fa-gear text-lg"></i>
             </button>
-            <div id="auth-container">
-                <button onclick="triggerGoogleLogin()" class="border border-yt-border hover:border-red-500/50 hover:bg-red-500/10 text-red-400 font-semibold px-4 py-1.5 rounded-full text-sm transition flex items-center space-x-2 shadow-sm">
-                    <i class="fa-brands fa-google text-base"></i>
-                    <span>YouTube Hesabı Bağla</span>
-                </button>
-            </div>
         </div>
     </header>
 
@@ -174,7 +167,7 @@
             </div>
         </div>
         <div id="console-logs" class="p-3 h-36 overflow-y-auto font-mono text-xs space-y-1 text-gray-300 bg-black/50">
-            <div class="text-red-400">[SYSTEM] Gerçek Google Identity Services (GIS) OAuth altyapısı hazır.</div>
+            <div class="text-red-400">[SYSTEM] Oturum açma kaldırıldı, sade mod aktif.</div>
         </div>
     </div>
 
@@ -261,76 +254,12 @@
     <!-- JAVASCRIPT -->
     <script>
         const YT_API_KEY = "AIzaSyCue9_7JYUbgBJ18GE58vRnQKP8A_W42ec";
-        // Not: Gerçek Google OAuth Client ID'ni buraya yazabilirsin (Google Cloud Console'dan alınır)
-        const GOOGLE_CLIENT_ID = "YOUR_CLIENT_ID.apps.googleusercontent.com"; 
-        
         let currentLoadedVideos = [];
-        let tokenClient;
 
         window.addEventListener('load', () => {
             detectSystemSpecs();
             fetchYouTubeVideos('Trendler');
-            initGoogleAuth();
         });
-
-        // GERÇEK GOOGLE OAUTH ENTEGRASYONU
-        function initGoogleAuth() {
-            if (typeof google !== 'undefined' && google.accounts) {
-                try {
-                    tokenClient = google.accounts.oauth2.initTokenClient({
-                        client_id: GOOGLE_CLIENT_ID,
-                        scope: 'https://www.googleapis.com/auth/youtube.readonly',
-                        callback: (response) => {
-                            if (response.access_token) {
-                                logToConsole("SUCCESS", "Google OAuth token başarıyla alındı.");
-                                fetchGoogleUserProfile(response.access_token);
-                            }
-                        },
-                    });
-                } catch (e) {
-                    logToConsole("WARN", "Google OAuth Client ID yapılandırılmadı, simülasyon modu devrede.");
-                }
-            }
-        }
-
-        function triggerGoogleLogin() {
-            if (tokenClient && GOOGLE_CLIENT_ID !== "YOUR_CLIENT_ID.apps.googleusercontent.com") {
-                tokenClient.requestAccessToken();
-            } else {
-                // Eğer Client ID girilmemişse güvenli fallback simülasyonu
-                logToConsole("INFO", "Google Giriş penceresi tetiklendi.");
-                const authContainer = document.getElementById('auth-container');
-                authContainer.innerHTML = `
-                    <div class="flex items-center space-x-2 bg-yt-card border border-yt-border px-3 py-1.5 rounded-full shadow-sm">
-                        <img src="https://www.gstatic.com/images/branding/product/1x/avatar_square_grey_48dp.png" class="w-6 h-6 rounded-full border border-red-500 object-cover">
-                        <span class="text-xs font-bold text-white">Selim8212</span>
-                        <i class="fa-solid fa-circle-check text-green-500 text-[10px] ml-1"></i>
-                    </div>
-                `;
-                logToConsole("SUCCESS", "Google Hesabı bağlandı: Selim8212");
-            }
-        }
-
-        async function fetchGoogleUserProfile(accessToken) {
-            try {
-                const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                    headers: { 'Authorization': `Bearer ${accessToken}` }
-                });
-                const profile = await res.json();
-                
-                const authContainer = document.getElementById('auth-container');
-                authContainer.innerHTML = `
-                    <div class="flex items-center space-x-2 bg-yt-card border border-yt-border px-3 py-1.5 rounded-full shadow-sm">
-                        <img src="${profile.picture}" class="w-6 h-6 rounded-full border border-red-500 object-cover">
-                        <span class="text-xs font-bold text-white">${profile.name}</span>
-                        <i class="fa-solid fa-circle-check text-green-500 text-[10px] ml-1"></i>
-                    </div>
-                `;
-                logToConsole("SUCCESS", `Google oturumu açıldı: ${profile.name}`);
-            } catch (err) {
-                logToConsole("ERROR", "Google profil bilgisi alınamadı: " + err.message);
-            }
-        }
 
         function timeAgo(dateString) {
             const date = new Date(dateString);
@@ -415,7 +344,6 @@
                 card.innerHTML = `
                     <div class="relative aspect-video bg-yt-hover overflow-hidden">
                         <img src="${snippet.thumbnails.high.url}" alt="${snippet.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        <span class="absolute bottom-2 right-2 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow">HD</span>
                     </div>
                     <div class="p-3.5 flex gap-3">
                         <img src="${avatarUrl}" alt="${snippet.channelTitle}" class="w-9 h-9 rounded-full object-cover border border-yt-border shrink-0 shadow-sm">
