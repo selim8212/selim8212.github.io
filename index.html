@@ -53,8 +53,356 @@
             </div>
         </div>
         <span class="text-lg font-bold tracking-wide text-gray-200">SelTube <span class="text-xs text-red-500 font-extrabold">PREMIUM</span></span>
-        <p class="text-xs text-gray-500 mt-2">Canlı YouTube İçerikleri Yükleniyor...</p>
+        <p class="text-xs text-gray-500 mt-2">Sistem ve İçerikler Yükleniyor...</p>
     </div>
 
     <!-- HEADER -->
     <header class="fixed top-0 left-0 right-0 h-14 bg-yt-black/90 backdrop-blur-md border-b border-yt-border px-4 flex items-center justify-between z-50">
+        <div class="flex items-center space-x-4">
+            <button id="menu-toggle" class="p-2 hover:bg-yt-hover rounded-full transition text-gray-300 active:scale-95">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+            <a href="#" onclick="location.reload();" class="flex items-center space-x-2 cursor-pointer group">
+                <div class="bg-gradient-to-tr from-red-700 to-red-500 text-white p-2 rounded-xl flex items-center justify-center shadow-lg shadow-red-600/30 group-hover:scale-105 transition">
+                    <i class="fa-solid fa-play text-xs"></i>
+                </div>
+                <span class="text-xl font-black tracking-tight">SelTube <span class="text-[10px] bg-red-600/20 text-red-500 border border-red-500/30 px-1.5 py-0.5 rounded-md font-bold ml-0.5 shadow-sm">PREMIUM</span></span>
+            </a>
+        </div>
+
+        <div class="flex items-center flex-1 max-w-2xl mx-4">
+            <div class="flex items-center w-full bg-[#121212] border border-yt-border rounded-l-full px-4 py-2 focus-within:border-red-600 transition shadow-inner">
+                <i class="fa-solid fa-magnifying-glass text-gray-400 mr-3 text-sm"></i>
+                <input type="text" id="search-input" placeholder="YouTube'da ara..." class="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-500">
+            </div>
+            <button id="search-btn" onclick="performSearch()" class="bg-yt-card border border-l-0 border-yt-border px-6 py-2.5 rounded-r-full hover:bg-yt-hover transition text-gray-300 active:bg-yt-border">
+                <i class="fa-solid fa-magnifying-glass text-sm"></i>
+            </button>
+        </div>
+
+        <div class="flex items-center space-x-2 sm:space-x-3">
+            <a href="https://selim8212.github.io/license.pdf" target="_blank" class="hidden md:flex items-center space-x-1.5 bg-yt-card hover:bg-yt-hover border border-yt-border hover:border-red-600/50 text-gray-300 hover:text-white text-xs font-semibold px-3 py-1.5 rounded-full transition shadow-sm">
+                <i class="fa-solid fa-file-contract text-red-500"></i>
+                <span>Lisans</span>
+            </a>
+            <a href="SelTube-1.0.apk" download class="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 text-white text-xs font-bold px-3.5 py-2 rounded-full transition shadow-md hover:shadow-red-600/20 active:scale-95">
+                <i class="fa-solid fa-download"></i>
+                <span>APK İndir</span>
+            </a>
+            <button onclick="openSettingsModal()" class="p-2 hover:bg-yt-hover rounded-full transition text-gray-300 active:scale-90" title="Ayarlar">
+                <i class="fa-solid fa-gear text-lg"></i>
+            </button>
+            <div id="auth-container">
+                <button class="border border-yt-border hover:border-blue-500/50 hover:bg-blue-500/10 text-blue-400 font-semibold px-4 py-1.5 rounded-full text-sm transition flex items-center space-x-2 shadow-sm">
+                    <i class="fa-regular fa-circle-user text-base"></i>
+                    <span>Oturum Aç</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTAINER -->
+    <div class="flex pt-14 flex-1">
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="w-64 bg-yt-sidebar h-[calc(100vh-3.5rem)] fixed left-0 top-14 p-3 overflow-y-auto border-r border-yt-border z-40 transition-transform duration-300">
+            <div class="space-y-1">
+                <button onclick="loadCategory('Ana Sayfa')" class="w-full flex items-center space-x-5 px-3 py-2.5 rounded-xl bg-yt-hover text-white font-medium text-sm transition text-left hover:bg-yt-border">
+                    <i class="fa-solid fa-house w-5 text-center text-red-500"></i>
+                    <span>Ana Sayfa</span>
+                </button>
+                <button onclick="loadCategory('Trendler')" class="w-full flex items-center space-x-5 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
+                    <i class="fa-solid fa-fire w-5 text-center text-orange-500"></i>
+                    <span>Trendler</span>
+                </button>
+                <button onclick="loadCategory('Müzik')" class="w-full flex items-center space-x-5 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
+                    <i class="fa-solid fa-music w-5 text-center text-blue-400"></i>
+                    <span>Müzik</span>
+                </button>
+                <button onclick="loadCategory('Oyun')" class="w-full flex items-center space-x-5 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
+                    <i class="fa-solid fa-gamepad w-5 text-center text-green-400"></i>
+                    <span>Oyun</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- İÇERİK ALANI -->
+        <main class="flex-1 ml-64 p-6 transition-all duration-300">
+            <div class="flex items-center justify-between mb-6">
+                <h1 id="section-title" class="text-xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-sparkles text-red-500"></i>
+                    İçerik Akışı
+                </h1>
+            </div>
+            <!-- Video Grid -->
+            <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <!-- Dinamik Durum / Hata Alanı -->
+            </div>
+        </main>
+    </div>
+
+    <!-- GELİŞTİRİCİ KONSOLU (ALT PANEL) -->
+    <div id="dev-console" class="fixed bottom-0 left-64 right-0 bg-[#0a0a0a] border-t border-red-600/40 z-30 hidden flex flex-col shadow-2xl transition-all">
+        <div class="bg-yt-card px-4 py-2 border-b border-yt-border flex items-center justify-between text-xs">
+            <div class="flex items-center space-x-2 font-mono text-red-500">
+                <i class="fa-solid fa-terminal"></i>
+                <span class="font-bold">SELTUBE // DEV_CONSOLE (v1.0)</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="clearConsole()" class="text-gray-400 hover:text-white px-2 py-0.5 rounded bg-yt-hover transition">Temizle</button>
+                <button onclick="toggleDevConsole(false)" class="text-gray-400 hover:text-white px-2 py-0.5 rounded bg-yt-hover transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+        <div id="console-logs" class="p-3 h-36 overflow-y-auto font-mono text-xs space-y-1 text-gray-300 bg-black/50">
+            <div class="text-red-400">[SYSTEM] Geliştirici konsolu aktif.</div>
+        </div>
+    </div>
+
+    <!-- AYARLAR & SİSTEM BİLGİSİ MODALI -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-all duration-300">
+        <div class="bg-yt-card border border-yt-border w-full max-w-md rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-95 opacity-0 duration-200" id="settings-content">
+            <div class="px-6 py-4 border-b border-yt-border flex items-center justify-between bg-yt-black/40">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-sliders text-red-500"></i>
+                    <h2 class="text-lg font-bold">Ayarlar & Sistem Bilgisi</h2>
+                </div>
+                <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-yt-hover transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4 text-sm max-h-[70vh] overflow-y-auto">
+                <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Geliştirici Seçenekleri</div>
+                
+                <div class="bg-[#121212] border border-yt-border p-3.5 rounded-xl flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center">
+                            <i class="fa-solid fa-terminal text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-white text-xs">Geliştirici Konsolu</div>
+                            <div class="text-[11px] text-gray-400">Terminal panelini açar/kapatır</div>
+                        </div>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="dev-console-toggle" onchange="toggleDevConsole(this.checked)" class="sr-only peer">
+                        <div class="w-11 h-6 bg-yt-hover peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                    </label>
+                </div>
+
+                <div class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-2 mb-2">Cihaz & Tarayıcı Analizi</div>
+                
+                <div class="bg-[#121212] border border-yt-border p-3.5 rounded-xl flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center">
+                            <i class="fa-solid fa-desktop text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-400">İşletim Sistemi</div>
+                            <div id="sys-os" class="font-bold text-white">Tespit ediliyor...</div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] bg-yt-hover px-2 py-1 rounded text-gray-300 font-mono" id="sys-os-ver">v0.0</span>
+                </div>
+
+                <div class="bg-[#121212] border border-yt-border p-3.5 rounded-xl flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center">
+                            <i class="fa-solid fa-globe text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-400">Tarayıcı Yapısı</div>
+                            <div id="sys-browser" class="font-bold text-white">Tespit ediliyor...</div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] bg-yt-hover px-2 py-1 rounded text-gray-300 font-mono" id="sys-browser-ver">v0.0</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <div class="bg-[#121212] border border-yt-border p-3 rounded-xl">
+                        <div class="text-[11px] text-gray-400">Ekran Çözünürlüğü</div>
+                        <div id="sys-screen" class="font-bold text-xs mt-0.5 text-gray-200">N/A</div>
+                    </div>
+                    <div class="bg-[#121212] border border-yt-border p-3 rounded-xl">
+                        <div class="text-[11px] text-gray-400">Cihaz Tipi</div>
+                        <div id="sys-device" class="font-bold text-xs mt-0.5 text-gray-200">N/A</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-6 py-3 bg-yt-black/60 border-t border-yt-border flex justify-end">
+                <button onclick="closeSettingsModal()" class="bg-red-600 hover:bg-red-500 text-white font-bold text-xs px-5 py-2 rounded-xl transition shadow-lg shadow-red-600/30">
+                    Tamam
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('page-loader');
+            setTimeout(() => {
+                loader.classList.add('opacity-0');
+                setTimeout(() => loader.style.display = 'none', 500);
+            }, 500);
+            
+            detectSystemSpecs();
+            showEmptyState("SelTube Premium aktif. Canlı veri havuzu bekleniyor.");
+            logToConsole("INFO", "SelTube sistem başlatılması başarılı.");
+        });
+
+        function showEmptyState(msg) {
+            const grid = document.getElementById('video-grid');
+            grid.innerHTML = `
+                <div class="col-span-full flex flex-col items-center justify-center py-20 text-center">
+                    <div class="w-14 h-14 rounded-full bg-red-600/10 border border-red-500/20 text-red-500 flex items-center justify-center mb-4 text-xl">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white">Hiçbir içerik bulunamadı veya bir hata oluştu.</h3>
+                    <p class="text-xs text-gray-400 mt-1 max-w-sm">${msg}</p>
+                </div>
+            `;
+        }
+
+        function performSearch() {
+            const query = document.getElementById('search-input').value.trim();
+            if(!query) return;
+            logToConsole("INFO", `Arama isteği simüle edildi: "${query}"`);
+            
+            showLoader(() => {
+                showEmptyState(`"${query}" araması için sonuç eşleşmedi.`);
+                document.getElementById('section-title').innerHTML = `<i class="fa-solid fa-magnifying-glass text-red-500"></i> "${query}" Sonucu`;
+            });
+        }
+
+        function loadCategory(categoryName) {
+            logToConsole("INFO", `Kategori yüklendi: ${categoryName}`);
+            document.getElementById('section-title').innerHTML = `<i class="fa-solid fa-fire text-red-500"></i> ${categoryName} Akışı`;
+            showLoader(() => {
+                showEmptyState(`${categoryName} kategorisinde gösterilecek aktif veri bulunamadı.`);
+            });
+        }
+
+        function showLoader(callback) {
+            const loader = document.getElementById('page-loader');
+            loader.style.display = 'flex';
+            loader.classList.remove('opacity-0');
+            setTimeout(() => {
+                loader.classList.add('opacity-0');
+                setTimeout(() => loader.style.display = 'none', 400);
+                if(callback) callback();
+            }, 500);
+        }
+
+        document.getElementById('search-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') performSearch();
+        });
+
+        // GELİŞTİRİCİ KONSOLU
+        function toggleDevConsole(show) {
+            const consolePanel = document.getElementById('dev-console');
+            const toggleCheckbox = document.getElementById('dev-console-toggle');
+            if (show) {
+                consolePanel.classList.remove('hidden');
+                toggleCheckbox.checked = true;
+                logToConsole("SUCCESS", "Geliştirici konsolu açıldı.");
+            } else {
+                consolePanel.classList.add('hidden');
+                toggleCheckbox.checked = false;
+            }
+        }
+
+        function logToConsole(type, message) {
+            const logsContainer = document.getElementById('console-logs');
+            if (!logsContainer) return;
+            const time = new Date().toLocaleTimeString();
+            let colorClass = "text-gray-300";
+            if (type === "INFO") colorClass = "text-blue-400";
+            else if (type === "SUCCESS") colorClass = "text-green-400";
+            else if (type === "WARN") colorClass = "text-yellow-400";
+            else if (type === "ERROR") colorClass = "text-red-500";
+
+            const logEntry = document.createElement('div');
+            logEntry.className = colorClass;
+            logEntry.innerHTML = `<span class="text-gray-500">[${time}]</span> <span class="font-bold">[${type}]</span> ${message}`;
+            logsContainer.appendChild(logEntry);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+
+        function clearConsole() {
+            document.getElementById('console-logs').innerHTML = '';
+            logToConsole("INFO", "Konsol temizlendi.");
+        }
+
+        function openSettingsModal() {
+            logToConsole("INFO", "Ayarlar paneli açıldı.");
+            const modal = document.getElementById('settings-modal');
+            const content = document.getElementById('settings-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeSettingsModal() {
+            const modal = document.getElementById('settings-modal');
+            const content = document.getElementById('settings-content');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 200);
+        }
+
+        function detectSystemSpecs() {
+            const ua = navigator.userAgent;
+            let osName = "N/A", osVer = "N/A", browserName = "N/A", browserVer = "N/A";
+
+            if (ua.indexOf("Win") !== -1) {
+                osName = "Windows";
+                if (ua.indexOf("Windows NT 10.0") !== -1) osVer = "10 / 11";
+            } else if (ua.indexOf("Android") !== -1) {
+                osName = "Android";
+                const match = ua.match(/Android\s([0-9\.]+)/);
+                if (match) osVer = match[1];
+            } else if (ua.indexOf("iPhone") !== -1 || ua.indexOf("iPad") !== -1) {
+                osName = "iOS";
+                const match = ua.match(/OS\s([0-9_]+)/);
+                if (match) osVer = match[1].replace(/_/g, '.');
+            } else if (ua.indexOf("Linux") !== -1) {
+                osName = "Linux";
+            }
+
+            if (ua.indexOf("OPR") !== -1 || ua.indexOf("Opera") !== -1) {
+                browserName = "Opera";
+                const match = ua.match(/(?:OPR|Opera)\/([0-9\.]+)/);
+                if (match) browserVer = match[1];
+            } else if (ua.indexOf("Edg") !== -1) {
+                browserName = "Edge";
+                const match = ua.match(/Edg\/([0-9\.]+)/);
+                if (match) browserVer = match[1];
+            } else if (ua.indexOf("Chrome") !== -1) {
+                browserName = "Chrome";
+                const match = ua.match(/Chrome\/([0-9\.]+)/);
+                if (match) browserVer = match[1];
+            } else if (ua.indexOf("Firefox") !== -1) {
+                browserName = "Firefox";
+                const match = ua.match(/Firefox\/([0-9\.]+)/);
+                if (match) browserVer = match[1];
+            } else if (ua.indexOf("Safari") !== -1 && ua.indexOf("Chrome") === -1) {
+                browserName = "Safari";
+                const match = ua.match(/Version\/([0-9\.]+)/);
+                if (match) browserVer = match[1];
+            }
+
+            document.getElementById('sys-os').innerText = osName;
+            document.getElementById('sys-os-ver').innerText = osVer !== "N/A" ? `v${osVer}` : "N/A";
+            document.getElementById('sys-browser').innerText = browserName;
+            document.getElementById('sys-browser-ver').innerText = browserVer !== "N/A" ? `v${browserVer}` : "N/A";
+            document.getElementById('sys-screen').innerText = `${window.screen.width} x ${window.screen.height}`;
+            document.getElementById('sys-device').innerText = /Mobi|Android/i.test(ua) ? "Mobil Cihaz" : "Masaüstü PC";
+
+            logToConsole("SUCCESS", `Sistem analiz edildi: ${osName} | ${browserName}`);
+        }
+    </script>
+</body>
+</html>
