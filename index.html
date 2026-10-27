@@ -75,7 +75,7 @@
                 <i class="fa-solid fa-magnifying-glass text-gray-400 mr-3 text-sm"></i>
                 <input type="text" id="search-input" placeholder="YouTube'da ara..." class="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-500">
             </div>
-            <button id="search-btn" class="bg-yt-card border border-l-0 border-yt-border px-6 py-2.5 rounded-r-full hover:bg-yt-hover transition text-gray-300 active:bg-yt-border">
+            <button id="search-btn" onclick="performSearch()" class="bg-yt-card border border-l-0 border-yt-border px-6 py-2.5 rounded-r-full hover:bg-yt-hover transition text-gray-300 active:bg-yt-border">
                 <i class="fa-solid fa-magnifying-glass text-sm"></i>
             </button>
         </div>
@@ -106,19 +106,19 @@
         <!-- SIDEBAR -->
         <aside id="sidebar" class="w-64 bg-yt-sidebar h-[calc(100vh-3.5rem)] fixed left-0 top-14 p-3 overflow-y-auto border-r border-yt-border z-40 transition-transform duration-300">
             <div class="space-y-1">
-                <button onclick="triggerSearch('Trending')" class="w-full flex items-center space-x-5 px-3 py-2.5 rounded-xl bg-yt-hover text-white font-medium text-sm transition text-left hover:bg-yt-border">
+                <button onclick="loadCategory('Ana Sayfa')" class="w-full flex items-center space-x-5 px-3 py-2.5 rounded-xl bg-yt-hover text-white font-medium text-sm transition text-left hover:bg-yt-border">
                     <i class="fa-solid fa-house w-5 text-center text-red-500"></i>
                     <span>Ana Sayfa</span>
                 </button>
-                <button onclick="triggerSearch('Trendler Popüler')" class="w-full flex items-center space-x-5 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
+                <button onclick="loadCategory('Trendler')" class="w-full flex items-center space-x-5 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
                     <i class="fa-solid fa-fire w-5 text-center text-orange-500"></i>
                     <span>Trendler</span>
                 </button>
-                <button onclick="triggerSearch('Music 2026')" class="w-full flex items-center space-x-5 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
+                <button onclick="loadCategory('Müzik')" class="w-full flex items-center space-x-5 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
                     <i class="fa-solid fa-music w-5 text-center text-blue-400"></i>
                     <span>Müzik</span>
                 </button>
-                <button onclick="triggerSearch('Gaming Gameplay')" class="w-full flex items-center space-x-5 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
+                <button onclick="loadCategory('Oyun')" class="w-full flex items-center space-x-5 px-3 py-2.5 rounded-xl hover:bg-yt-hover text-gray-300 hover:text-white font-medium text-sm transition text-left">
                     <i class="fa-solid fa-gamepad w-5 text-center text-green-400"></i>
                     <span>Oyun</span>
                 </button>
@@ -128,13 +128,14 @@
         <!-- İÇERİK ALANI -->
         <main class="flex-1 ml-64 p-6 transition-all duration-300">
             <div class="flex items-center justify-between mb-6">
-                <h1 class="text-xl font-bold flex items-center gap-2">
+                <h1 id="section-title" class="text-xl font-bold flex items-center gap-2">
                     <i class="fa-solid fa-sparkles text-red-500"></i>
-                    Öne Çıkan İçerikler
+                    İçerik Akışı
                 </h1>
             </div>
+            <!-- Video Grid -->
             <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                <!-- Dinamik içerikler buraya eklenecek -->
+                <!-- İçerik bulunamadı/hata mesajı buraya dinamik gelecek -->
             </div>
         </main>
     </div>
@@ -152,7 +153,7 @@
             </div>
         </div>
         <div id="console-logs" class="p-3 h-36 overflow-y-auto font-mono text-xs space-y-1 text-gray-300 bg-black/50">
-            <div class="text-red-400">[SYSTEM] Geliştirici konsolu başarıyla başlatıldı.</div>
+            <div class="text-red-400">[SYSTEM] Geliştirici konsolu aktif.</div>
         </div>
     </div>
 
@@ -172,7 +173,6 @@
             <div class="p-6 space-y-4 text-sm max-h-[70vh] overflow-y-auto">
                 <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Geliştirici Seçenekleri</div>
                 
-                <!-- Konsol Toggle -->
                 <div class="bg-[#121212] border border-yt-border p-3.5 rounded-xl flex items-center justify-between">
                     <div class="flex items-center space-x-3">
                         <div class="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center">
@@ -247,7 +247,65 @@
             }, 600);
             
             detectSystemSpecs();
-            logToConsole("INFO", "SelTube Premium arayüzü başarıyla yüklendi.");
+            checkAndRender([]); // Örnek video yok, doğrudan hata/boş durum yanıtını gösterir
+            logToConsole("INFO", "SelTube Premium başlatıldı. Veri havuzu boş.");
+        });
+
+        // HATA VEYA BOŞ DURUMU GÖSTERME FONKSİYONU
+        function checkAndRender(videos) {
+            const grid = document.getElementById('video-grid');
+            grid.innerHTML = "";
+            
+            if(!videos || videos.length === 0) {
+                logToConsole("WARN", "İçerik yüklenemedi veya veri bulunamadı.");
+                grid.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
+                        <div class="w-14 h-14 rounded-full bg-red-600/10 border border-red-500/20 text-red-500 flex items-center justify-center mb-4 text-xl">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white">Hiçbir içerik bulunamadı veya bir hata oluştu.</h3>
+                        <p class="text-xs text-gray-400 mt-1 max-w-sm">Veri kaynağı boş veya arama kriterine uygun sonuç eşleşmedi.</p>
+                    </div>
+                `;
+                return;
+            }
+        }
+
+        function performSearch() {
+            const query = document.getElementById('search-input').value.trim();
+            logToConsole("INFO", `Arama yapılıyor: "${query}"`);
+            
+            showLoader(() => {
+                // Örnek video havuzu olmadığından arama sorgusunda da doğrudan hata/boş yanıtı gösterilir
+                checkAndRender([]); 
+                document.getElementById('section-title').innerHTML = `<i class="fa-solid fa-magnifying-glass text-red-500"></i> "${query}" için sonuç bulunamadı`;
+            });
+        }
+
+        function loadCategory(categoryName) {
+            logToConsole("INFO", `Kategori seçildi: ${categoryName}`);
+            document.getElementById('section-title').innerHTML = `<i class="fa-solid fa-fire text-red-500"></i> ${categoryName} İçerikleri`;
+            showLoader(() => {
+                checkAndRender([]);
+                logToConsole("ERROR", `${categoryName} kategorisinde veri alınamadı.`);
+            });
+        }
+
+        function showLoader(callback) {
+            const loader = document.getElementById('page-loader');
+            loader.style.display = 'flex';
+            loader.classList.remove('opacity-0');
+            setTimeout(() => {
+                loader.classList.add('opacity-0');
+                setTimeout(() => loader.style.display = 'none', 400);
+                if(callback) callback();
+            }, 500);
+        }
+
+        document.getElementById('search-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
         });
 
         // GELİŞTİRİCİ KONSOLU FONKSİYONLARI
@@ -267,6 +325,7 @@
 
         function logToConsole(type, message) {
             const logsContainer = document.getElementById('console-logs');
+            if(!logsContainer) return;
             const time = new Date().toLocaleTimeString();
             let colorClass = "text-gray-300";
             
@@ -285,18 +344,6 @@
         function clearConsole() {
             document.getElementById('console-logs').innerHTML = '';
             logToConsole("INFO", "Konsol temizlendi.");
-        }
-
-        function triggerSearch(query) {
-            logToConsole("INFO", `Arama tetiklendi: "${query}"`);
-            const loader = document.getElementById('page-loader');
-            loader.style.display = 'flex';
-            loader.classList.remove('opacity-0');
-            setTimeout(() => {
-                loader.classList.add('opacity-0');
-                setTimeout(() => loader.style.display = 'none', 400);
-                logToConsole("SUCCESS", `İçerikler başarıyla getirildi: ${query}`);
-            }, 500);
         }
 
         function openSettingsModal() {
