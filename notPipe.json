@@ -1,4 +1,16 @@
 {
+  "yt2009": [
+    "http://157.254.18.46:14120",
+    "http://37.114.50.170:3000",
+    "http://14.225.212.141:3000",
+    "http://14.224.215.173:3000",
+    "http://61.221.6.111",
+    "http://34.80.232.20",
+    "https://yewtu.be",
+    "https://yt.artemislena.eu",
+    "https://invidious.flokinet.to",
+    "https://inv.tux.pizza"
+  ],
   "ytapilegacy": [
     "http://157.254.18.46:14120",
     "http://37.114.50.170:3000",
@@ -9,20 +21,7 @@
     "https://yewtu.be",
     "https://yt.artemislena.eu",
     "https://invidious.flokinet.to",
-    "https://inv.tux.pizza",
-    "https://invidious.protokolla.fi",
-    "https://invidious.private.coffee",
-    "https://yt.drgnz.club",
-    "https://iv.datura.network",
-    "https://invidious.drgns.space",
-    "https://inv.us.projectsegfau.lt",
-    "https://invidious.jing.rocks",
-    "https://invidious.privacyredirect.com",
-    "https://invidious.reallyaweso.me",
-    "https://invidious.materialio.us",
-    "https://inv.in.projectsegfau.lt",
-    "https://invidious.incogniweb.net",
-    "https://invidious.perennialte.ch"
+    "https://inv.tux.pizza"
   ],
   "invidious": [
     "https://yewtu.be",
@@ -41,6 +40,28 @@
     "https://invidious.materialio.us",
     "https://inv.in.projectsegfau.lt",
     "https://invidious.incogniweb.net",
-    "https://invidious.perennialte.ch"
+    "https://invidious.perennialte.ch",
+    "http://157.254.18.46:14120",
+    "http://37.114.50.170:3000",
+    "http://14.225.212.141:3000",
+    "http://14.224.215.173:3000",
+    "http://61.221.6.111",
+    "http://34.80.232.20"
+  ],
+  "piped": [
+    "https://pipedapi.kavin.rocks",
+    "https://pipedapi.adminforge.de",
+    "https://pipedapi.leptons.xyz",
+    "https://api.piped.private.coffee"
+  ],
+  "hyperpipe": [
+    "https://hyperpipe.surge.sh",
+    "https://hyperpipeapi.onrender.com"
+  ],
+  "cobalt": [
+    "https://api.cobalt.tools"
+  ],
+  "sponsorblock": [
+    "https://sponsor.ajay.app"
   ]
 }
