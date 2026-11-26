@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotSelPipe Web Player</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+        }
+
+        /* Embed Player Alani */
+        .player-wrapper {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Arama Cubugu */
+        .search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #333;
+            background: #1e1e1e;
+            color: #fff;
+            outline: none;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border-radius: 6px;
+            border: none;
+            background: #cc1818;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #e61c1c;
+        }
+
+        /* Video Listesi */
+        .video-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .video-card {
+            display: flex;
+            gap: 12px;
+            background: #1e1e1e;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .video-card:hover {
+            background: #2a2a2a;
+        }
+
+        .thumb-box {
+            position: relative;
+            width: 120px;
+            height: 68px;
+            flex-shrink: 0;
+            background: #000;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .thumb-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .video-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #eee;
+            line-height: 1.3;
+            margin-bottom: 4px;
+        }
+
+        .video-author {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .status {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Invidious Embed Player -->
+        <div class="player-wrapper">
+            <iframe id="embedFrame" src="about:blank" allowfullscreen></iframe>
+        </div>
+
+        <!-- Arama Cubugu -->
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Invidious'ta Ara...">
+            <button id="searchBtn">Ara</button>
+        </div>
+
+        <div class="status" id="statusText">Trend videolar yükleniyor...</div>
+
+        <!-- Video Listesi -->
+        <div class="video-list" id="videoList"></div>
+    </div>
+
+    <script>
+        // Invidious Sunucusu (Gerekirse degistirebilirsin)
+        const INVIDIOUS_INSTANCE = "http://157.254.18.46:14120";
+
+        const embedFrame = document.getElementById('embedFrame');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const videoList = document.getElementById('videoList');
+        const statusText = document.getElementById('statusText');
+
+        // Sayfa acilinca trend videoları getir
+        window.addEventListener('DOMContentLoaded', () => {
+            loadTrending();
+        });
+
+        // Arama yapma
+        searchBtn.addEventListener('click', () => {
+            const query = searchInput.value.trim();
+            if (query) {
+                searchVideos(query);
+            } else {
+                loadTrending();
+            }
+        });
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchBtn.click();
+        });
+
+        // Trend Videolari Cek
+        function loadTrending() {
+            statusText.textContent = "Popüler videolar çekiliyor...";
+            fetch(`${INVIDIOUS_INSTANCE}/api/v1/trending?region=TR&hl=tr`)
+                .then(res => res.json())
+                .then(data => {
+                    renderList(data);
+                    statusText.textContent = `Popüler (${data.length} video)`;
+                    // Ilk videoyu otomatik embed oynatıcıya koy
+                    if (data.length > 0 && data[0].videoId) {
+                        playVideo(data[0].videoId);
+                    }
+                })
+                .catch(err => {
+                    statusText.textContent = "Sunucudan veri alınamadı!";
+                });
+        }
+
+        // Videolarda Arama Yap
+        function searchVideos(query) {
+            statusText.textContent = `Aranıyor: ${query}...`;
+            fetch(`${INVIDIOUS_INSTANCE}/api/v1/search?q=${encodeURIComponent(query)}&region=TR&hl=tr`)
+                .then(res => res.json())
+                .then(data => {
+                    const videos = data.filter(item => item.type === 'video');
+                    renderList(videos);
+                    statusText.textContent = `Arama sonucu (${videos.length} video)`;
+                })
+                .catch(err => {
+                    statusText.textContent = "Arama başarısız oldu!";
+                });
+        }
+
+        // Listeyi Ekran Ekle
+        function renderList(videos) {
+            videoList.innerHTML = '';
+            videos.forEach(v => {
+                if (!v.videoId) return;
+
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.onclick = () => playVideo(v.videoId);
+
+                const thumbUrl = `${INVIDIOUS_INSTANCE}/vi/${v.videoId}/mqdefault.jpg`;
+
+                card.innerHTML = `
+                    <div class="thumb-box">
+                        <img src="${thumbUrl}" alt="thumb">
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">${v.title}</div>
+                        <div class="video-author">${v.author || 'Bilinmeyen Kanal'}</div>
+                    </div>
+                `;
+                videoList.appendChild(card);
+            });
+        }
+
+        // Videoyu Sitenin Içinde Embed Olarak Aç
+        function playVideo(videoId) {
+            embedFrame.src = `${INVIDIOUS_INSTANCE}/embed/${videoId}?autoplay=1`;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
